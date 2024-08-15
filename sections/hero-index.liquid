@@ -1,5 +1,23 @@
 
+{% comment %} portada video y descripcion {% endcomment %}
+<section class="relative  h-[500px] overflow-hidden">
+  <!-- Video de fondo -->
+  <video class="absolute inset-0 w-full h-full object-cover" autoplay muted loop playsinline>
+    <source src="{{ 'portada-shopify.mp4' | asset_url }}" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
 
+  <!-- Contenido sobre el video -->
+  <div class="relative z-10 flex items-center justify-center h-full bg-black bg-opacity-50">
+    <div class="text-center text-white p-4">
+      <h1 class="text-4xl font-bold mb-4">Título del Video</h1>
+      <p class="text-lg mb-4">Este es un texto descriptivo que aparece sobre el video de fondo.</p>
+      {% comment %} <a href="#" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-700 transition">Llamada a la acción</a> {% endcomment %}
+    </div>
+  </div>
+</section>
+
+{% comment %} carousel swiper {% endcomment %}
 <section class="contenedor-swiper">
 <div class="swiper mySwiper">
   <div class="swiper-wrapper">

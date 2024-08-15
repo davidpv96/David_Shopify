@@ -15,6 +15,7 @@
   }
   
   .swiper-slide {
+    border-radius: 1em;
     text-align: center;
     font-size: 18px;
     background: #fff;

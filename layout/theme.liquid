@@ -16,6 +16,8 @@
 
     <!-- CSS principal del tema -->
     {{ 'application.css' | asset_url | stylesheet_tag }}
+        <!-- CSS principal del tema -->
+   {{ 'swiper-custom.css' | asset_url | stylesheet_tag }}
 
     <!-- Hooks de contenido para el header (inclusión automática de plugins) -->
     {{ content_for_header }}
@@ -51,7 +53,7 @@
         spaceBetween: 20,
       },
       1024: {
-        slidesPerView: 3,   // Muestra 3 slides completos en pantallas grandes
+        slidesPerView: 6,   // Muestra 3 slides completos en pantallas grandes
         spaceBetween: 20,
       },
     },

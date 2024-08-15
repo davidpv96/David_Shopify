@@ -1,0 +1,91 @@
+<header>
+
+
+{% comment %} HEADER GLOBAL {% endcomment %}
+
+{% comment %} Start Before Header {% endcomment %}
+
+<div class="bg-[#0E2129] p-4 flex justify-center">
+  
+<a href="#" class="text-white mx-2">
+      {% render 'icon-fb' %}
+  </a>
+  <a href="#" class="text-white mx-2">
+      {% render 'icon-ig' %}
+  </a>
+  <a href="#" class="text-white mx-2">
+        {% render 'icon-tiktok' %}
+  </a>
+  
+</div>
+
+
+
+
+{% comment %} End Before Header {% endcomment %}
+
+{% comment %} Header mobile {% endcomment %}
+<div class="px-[15px] py-[20px] ">
+    <section class="flex justify-between flex-row items-center mb-[1rem] ">
+        <div>
+            <img src="../assets/logo-elec.png" width="90" alt="">
+        </div>
+      
+
+        
+        <div class="flex flex-row gap-3">
+            <!-- Ícono de Login -->
+            <div class="relative flex items-center justify-center w-12 h-12">
+                <a href="{{ routes.account_login_url }}" class="text-base text-gray-500 hover:text-gray-900 bg-[#1D495B] w-10 h-10 flex items-center justify-center rounded-full">
+                    {% render 'icon-login' %}
+                </a>
+                <div class="absolute inset-0 border-2 border-gray-300 rounded-full"></div>
+            </div>
+        
+            <!-- Ícono de Carrito -->
+            <div class="relative flex items-center justify-center w-12 h-12">
+                <a href="{{ routes.cart_url }}" class="text-base text-gray-500 hover:text-gray-900 bg-[#1D495B] w-10 h-10 flex items-center justify-center rounded-full">
+                    {% render 'icon-shopping-bag' %}
+                </a>
+                <div class="absolute inset-0 border-2 border-gray-300 rounded-full"></div>
+                 <!-- Círculo Verde con Número -->
+        <div class="absolute top-[-5px] right-0 bg-teal-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+            3
+        </div>
+            </div>
+            <div class="">
+                <button class="p-2  rounded-full border-2 border-solid border-[#e1e1e1]">
+                    {% render 'icon-menu' %}
+                </button>
+                    
+            </div>
+        </div>
+        
+        
+    </section>
+
+    {% comment %} section searchBar {% endcomment %}
+
+    <section class="flex items-center justify-center bg-white rounded-full shadow-sm w-full border-2 border-solid border-[#e1e1e1]">
+        <input type="text" placeholder="Buscar Productos" class="flex-grow p-3 text-gray-700 bg-transparent focus:outline-none rounded-full ">
+    <button class="p-3 text-gray-500">
+        {% render 'icon-search' %}
+    </button>
+
+    </section>
+</div>
+
+
+
+
+</header>
+
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    
+    ]
+}
+{% endschema %}

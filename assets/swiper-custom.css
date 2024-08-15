@@ -10,7 +10,7 @@
   
   .swiper {
     width: 100%;
-    height: 400px !important; /* Asegura que Swiper ocupe toda la altura del contenedor */
+    height: 300px !important; /* Asegura que Swiper ocupe toda la altura del contenedor */
     padding-bottom: 1em;
   }
   

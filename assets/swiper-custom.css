@@ -5,8 +5,8 @@
     height: 100%;/* Define una altura fija para el contenedor */ /* Define una altura fija para el contenedor */
     margin: 0;
     padding: 0;
-    margin-right: 0;
-    margin-left: 0;
+    margin-right: 0.1em;
+    margin-left: 0.1em;
     margin-top: -5em;
     z-index: 100;
   }

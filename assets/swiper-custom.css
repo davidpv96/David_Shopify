@@ -48,6 +48,7 @@
   }
 
   .contenedor-swiper-texto{
+    background: #0E2129 !important;
     position: relative;
     height: 100%;/* Define una altura fija para el contenedor */ /* Define una altura fija para el contenedor */
     margin: 0;

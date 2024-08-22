@@ -86,7 +86,11 @@
     padding: 20px !important; /* Espaciado interior */
 }
 
-/* .swiper-wrapper-testimonio{
-  margin-left: 0.2em !important;
+/* Swiper caracteristicas */
 
-} */
+.swiper-caracteristicas{
+  border-radius: 0px !important;
+  height: 80px;
+  max-height: 100px;
+  
+}

@@ -65,22 +65,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Nuevo slider para características
   initSwiper(".myFeatureSwiper", {
-    slidesPerView: 1.5, // Muestra 1.5 slides en pantallas pequeñas
-    spaceBetween: 20, // Espacio entre slides
-    loop: true, // Para un deslizamiento infinito
+    slidesPerView: 1,
+    spaceBetween: 20,
     breakpoints: {
-      640: {
-        slidesPerView: 1.5,
-        spaceBetween: 5,
-      },
-      768: {
-        slidesPerView: 2.5,
-        spaceBetween: 5,
-      },
-      1024: {
-        slidesPerView: 4, // Muestra 4 slides en pantallas grandes
-        spaceBetween: 5,
-      },
+        640: {
+            slidesPerView: 1,
+            spaceBetween: 20,
+        },
+        768: {
+            slidesPerView: 3,
+            spaceBetween: 20,
+        },
+        1024: {
+            slidesPerView: 4,
+            spaceBetween: 20,
+        },
     },
   });
 });

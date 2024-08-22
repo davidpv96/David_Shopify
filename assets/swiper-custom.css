@@ -64,3 +64,23 @@
     padding-top: 0.3em;
     padding-bottom: 0.3em;
   }
+
+
+
+   /* Clases de el swiper de testimonios  */
+
+   .myTestimonialsSwiper{
+    width: 100%;
+    height: auto !important; /* Asegura que Swiper ocupe toda la altura del contenedor */
+    padding-bottom: 0 !important;
+    margin-left: 0.2em;
+   
+    
+  }
+  .swiper-testimonio-slide {
+    flex-direction: column !important;
+    border-radius: 10px !important; /* Bordes redondeados */
+    background-color: #f7f8fa !important; /* Fondo gris claro */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important; /* Sombra suave */
+    padding: 20px !important; /* Espaciado interior */
+}

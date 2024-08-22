@@ -2,7 +2,10 @@
   "sections": {
     "hero-index": {
       "type": "hero-index"
+    },
+    "content-main": {
+      "type": "content-main"
     }
   },
-  "order": ["hero-index"]
+  "order": ["hero-index", "content-main"]
 }

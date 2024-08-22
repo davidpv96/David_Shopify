@@ -30,7 +30,7 @@
     {% section 'header' %}
 
     <!-- Contenido principal -->
-    <main role="main">
+    <main role="main" class="">
       {{ content_for_layout }}
     </main>
 
@@ -38,32 +38,7 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <!-- Inicialización de Swiper -->
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-  var swiper = new Swiper(".mySwiper", {
-    slidesPerView: 1.2, // Muestra 1 slide completo y parte de otro
-    spaceBetween: 20,   // Espacio entre los slides (ajusta según sea necesario)
-    breakpoints: {
-      640: {
-        slidesPerView: 1.5, // Ajusta para pantallas más grandes
-        spaceBetween: 20,   // Espacio entre los slides
-      },
-      768: {
-        slidesPerView: 2.5, // Muestra más slides en pantallas medianas
-        spaceBetween: 20,
-      },
-      1024: {
-        slidesPerView: 6,   // Muestra 3 slides completos en pantallas grandes
-        spaceBetween: 20,
-      },
-    },
-    scrollbar: {
-      el: ".swiper-scrollbar",
-      hide: true,
-    },
-  });
-});
-    </script>
+    
 
     <!-- Scripts principales del tema -->
     {{ 'application.js' | asset_url | script_tag }}

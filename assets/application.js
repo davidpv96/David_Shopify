@@ -67,6 +67,12 @@ document.addEventListener('DOMContentLoaded', function () {
   initSwiper(".myFeatureSwiper", {
     slidesPerView: 1,
     spaceBetween: 20,
+     pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+    },
+   
+    loop: false, // Asegúrate de que no esté en loop
     breakpoints: {
         640: {
             slidesPerView: 1,

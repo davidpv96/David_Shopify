@@ -90,7 +90,24 @@
 
 .swiper-caracteristicas{
   border-radius: 0px !important;
-  height: 80px;
-  max-height: 100px;
+
   
+}
+
+.myFeatureSwiper{
+  width: 100%;
+  height: auto !important; /* Asegura que Swiper ocupe toda la altura del contenedor */
+  padding-bottom: 50px !important;  
+}
+
+
+/* Estilos para los puntitos de paginación */
+.swiper-pagination-bullet {
+  background-color: #00796b; /* Color base de los puntitos */
+  opacity: 1; /* Asegura que los puntos sean opacos */
+}
+
+/* Estilos para el puntito activo */
+.swiper-pagination-bullet-active {
+  background-color: #004d40; /* Color diferente para el puntito activo */
 }

@@ -2,20 +2,240 @@
  <div class="bg-[#f8f8f8] py-10 my-10 mx-[0.3em] lg:mx-0">
 <div class="lg:mx-20 relative group ">
 
-<div class="flex justify-between items-center my-8">
+<div class="flex justify-between items-center my-8 mx-2 lg:mx-0">
     <!-- Título y subtítulo -->
     <div>
         <h2 class="text-2xl font-semibold text-gray-800">Nuevo Ingreso</h2>
         <p class="text-gray-600">El último stock que tenemos para tí.</p>
     </div>
     
-    <!-- Botón -->
-    <a href="#" class="bg-[#52A1BF] text-white font-semibold py-2 px-4 rounded-full hover:bg-[#52A1BF] transition duration-300 flex items-center">
-        Ver Tienda 
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-    </a>
+  <!-- Botón -->
+<a href="#" class="bg-[#52A1BF] text-white font-semibold py-2 px-4 rounded-full hover:bg-[#52A1BF] transition duration-300 flex items-center justify-center  whitespace-nowrap space-x-2">
+    <span>Ver Tienda</span>
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+    </svg>
+</a>
+</div>
+
+<div class="swiper productSwiper my-8 z-10">
+    <div class="swiper-wrapper">
+        <!-- Slide 1 -->
+        <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
+            <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
+            <div class="text-left">
+            <div class="text-sm text-gray-700">CircuitTonik</div>
+            <div class="text-[#52A1BF] font-semibold">In stock</div>
+            <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
+            <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
+            <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
+            </div>
+            <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
+        </div>
+
+            <!-- Slide 1 -->
+            <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
+                <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
+                <div class="text-left">
+                <div class="text-sm text-gray-700">CircuitTonik</div>
+                <div class="text-[#52A1BF] font-semibold">In stock</div>
+                <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
+                <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
+                <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
+                </div>
+                <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
+            </div>
+        
+        <!-- Repite los slides para cada producto -->
+        <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
+            <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
+            <div class="text-left">
+            <div class="text-sm text-gray-700">CircuitTonik</div>
+            <div class="text-[#52A1BF] font-semibold">In stock</div>
+            <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
+            <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
+            <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
+            </div>
+            <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
+        </div>
+        
+        <!-- Slide 3 -->
+        <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
+            <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
+            <div class="text-left">
+            <div class="text-sm text-gray-700">CircuitTonik</div>
+            <div class="text-[#52A1BF] font-semibold">In stock</div>
+            <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
+            <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
+            <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
+            </div>
+            <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
+        </div>
+
+        <!-- Más slides según sea necesario -->
+              <!-- Slide 3 -->
+              <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
+                <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
+                <div class="text-left">
+                <div class="text-sm text-gray-700">CircuitTonik</div>
+                <div class="text-[#52A1BF] font-semibold">In stock</div>
+                <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
+                <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
+                <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
+                </div>
+                <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
+            </div>
+
+             <!-- Slide 3 -->
+             <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
+                <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
+                <div class="text-left">
+                <div class="text-sm text-gray-700">CircuitTonik</div>
+                <div class="text-[#52A1BF] font-semibold">In stock</div>
+                <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
+                <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
+                <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
+                </div>
+                <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
+            </div>
+    </div>
+    
+
+    <div class=" hidden lg:flex swiper-button-next opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    <div class=" hidden lg:flex swiper-button-prev opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+</div>
+</div>
+
+
+
+{% comment %} slide mas populares inicia aqui {% endcomment %}
+
+<div class="lg:mx-20 relative group ">
+
+<div class="flex justify-between items-center my-8 mx-2 lg:mx-0">
+    <!-- Título y subtítulo -->
+    <div>
+        <h2 class="text-2xl font-semibold text-gray-800">En Oferta</h2>
+        <p class="text-gray-600">Encuentra nuestros productos con rebaja</p>
+    </div>
+    
+  <!-- Botón -->
+<a href="#" class="bg-[#52A1BF] text-white font-semibold py-2 px-4 rounded-full hover:bg-[#52A1BF] transition duration-300 flex items-center justify-center  whitespace-nowrap space-x-2">
+    <span>Ver Tienda</span>
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+    </svg>
+</a>
+</div>
+
+<div class="swiper productSwiper my-8 z-10">
+    <div class="swiper-wrapper">
+        <!-- Slide 1 -->
+        <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
+            <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
+            <div class="text-left">
+            <div class="text-sm text-gray-700">CircuitTonik</div>
+            <div class="text-[#52A1BF] font-semibold">In stock</div>
+            <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
+            <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
+            <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
+            </div>
+            <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
+        </div>
+
+            <!-- Slide 1 -->
+            <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
+                <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
+                <div class="text-left">
+                <div class="text-sm text-gray-700">CircuitTonik</div>
+                <div class="text-[#52A1BF] font-semibold">In stock</div>
+                <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
+                <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
+                <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
+                </div>
+                <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
+            </div>
+        
+        <!-- Repite los slides para cada producto -->
+        <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
+            <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
+            <div class="text-left">
+            <div class="text-sm text-gray-700">CircuitTonik</div>
+            <div class="text-[#52A1BF] font-semibold">In stock</div>
+            <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
+            <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
+            <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
+            </div>
+            <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
+        </div>
+        
+        <!-- Slide 3 -->
+        <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
+            <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
+            <div class="text-left">
+            <div class="text-sm text-gray-700">CircuitTonik</div>
+            <div class="text-[#52A1BF] font-semibold">In stock</div>
+            <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
+            <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
+            <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
+            </div>
+            <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
+        </div>
+
+        <!-- Más slides según sea necesario -->
+              <!-- Slide 3 -->
+              <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
+                <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
+                <div class="text-left">
+                <div class="text-sm text-gray-700">CircuitTonik</div>
+                <div class="text-[#52A1BF] font-semibold">In stock</div>
+                <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
+                <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
+                <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
+                </div>
+                <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
+            </div>
+
+             <!-- Slide 3 -->
+             <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
+                <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
+                <div class="text-left">
+                <div class="text-sm text-gray-700">CircuitTonik</div>
+                <div class="text-[#52A1BF] font-semibold">In stock</div>
+                <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
+                <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
+                <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
+                </div>
+                <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
+            </div>
+    </div>
+    
+
+    <div class=" hidden lg:flex swiper-button-next opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    <div class=" hidden lg:flex swiper-button-prev opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+</div>
+</div>
+
+{% comment %} 
+slide oferta inicia aca {% endcomment %}
+
+
+<div class="lg:mx-20 relative group ">
+
+<div class="flex justify-between items-center my-8 mx-2 lg:mx-0">
+    <!-- Título y subtítulo -->
+    <div>
+        <h2 class="text-2xl font-semibold text-gray-800">Productos Recomendados</h2>
+        <p class="text-gray-600">Lo mejor para tí</p>
+    </div>
+    
+  <!-- Botón -->
+<a href="#" class="bg-[#52A1BF] text-white font-semibold py-2 px-4 rounded-full hover:bg-[#52A1BF] transition duration-300 flex items-center justify-center  whitespace-nowrap space-x-2">
+    <span>Ver Tienda</span>
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+    </svg>
+</a>
 </div>
 
 <div class="swiper productSwiper my-8 z-10">

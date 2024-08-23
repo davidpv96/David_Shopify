@@ -111,3 +111,31 @@
 .swiper-pagination-bullet-active {
   background-color: #004d40; /* Color diferente para el puntito activo */
 }
+
+
+/* swiper del producto */
+
+.productSwiper{
+  
+  height: 600px !important;
+}
+
+/* Para ocultar los botones cuando están deshabilitados */
+.swiper-button-disabled {
+  opacity: 0 !important;  /* Mantén la opacidad en 0 */
+  pointer-events: none;   /* Desactiva los eventos del cursor */
+}
+
+/* Asegura que el botón aparezca al hacer hover, incluso si está deshabilitado */
+.group:hover .swiper-button-prev,
+.group:hover .swiper-button-next {
+  opacity: 1 !important;
+}
+
+.swiper-button-next, .swiper-button-prev {
+ 
+  color: #1D495B; /* Color de fondo de los botones */
+
+}
+
+

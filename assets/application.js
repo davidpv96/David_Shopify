@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
             spaceBetween: 20,
         },
         1024: {
-            slidesPerView: 3, // 3 slides en pantallas grandes
+            slidesPerView: 4, // 4 slides en pantallas grandes
             spaceBetween: 20,
         },
     },
@@ -67,11 +67,10 @@ document.addEventListener('DOMContentLoaded', function () {
   initSwiper(".myFeatureSwiper", {
     slidesPerView: 1,
     spaceBetween: 20,
-     pagination: {
-        el: ".swiper-pagination",
-        clickable: true,
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true,
     },
-   
     loop: false, // Asegúrate de que no esté en loop
     breakpoints: {
         640: {
@@ -84,6 +83,31 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         1024: {
             slidesPerView: 4,
+            spaceBetween: 20,
+        },
+    },
+  });
+
+  // Nuevo slider para productos
+  initSwiper(".productSwiper", {
+    slidesPerView: 1.5,
+    spaceBetween: 20,
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+    loop: false,
+    breakpoints: {
+        640: {
+            slidesPerView: 1.5,
+            spaceBetween: 20,
+        },
+        768: {
+            slidesPerView: 2,
+            spaceBetween: 20,
+        },
+        1024: {
+            slidesPerView: 5,
             spaceBetween: 20,
         },
     },

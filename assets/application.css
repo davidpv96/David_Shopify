@@ -554,6 +554,10 @@ video {
   --tw-contain-style:  ;
 }
 
+.pointer-events-none {
+  pointer-events: none;
+}
+
 .fixed {
   position: fixed;
 }
@@ -605,6 +609,10 @@ video {
 
 .z-\[100\] {
   z-index: 100;
+}
+
+.z-0 {
+  z-index: 0;
 }
 
 .m-5 {

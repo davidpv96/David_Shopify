@@ -34,16 +34,23 @@
         </div>
 
         <!-- Ícono de Carrito -->
-        <div class="relative flex items-center justify-center w-12 h-12">
-          <button @click="openCart = !openCart" class="text-base text-gray-500 hover:text-gray-900 bg-[#1D495B] w-10 h-10 flex items-center justify-center rounded-full">
-            {% render 'icon-shopping-bag' %}
-          </button>
-          <div class="absolute inset-0 border-2 border-gray-300 rounded-full"></div>
-          <!-- Círculo Verde con Número -->
-          <div class="absolute top-[-5px] right-0 bg-[#52A1BF] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-            3
-          </div>
-        </div>
+     
+<div class="relative flex items-center justify-center w-12 h-12">
+    <!-- Borde del Botón -->
+    <div class="absolute inset-0 border-2 border-gray-300 rounded-full pointer-events-none z-0"></div>
+    
+    <!-- Botón de Carrito -->
+    <button @click="openCart = !openCart" class="text-base text-gray-500 hover:text-gray-900 bg-[#1D495B] w-10 h-10 flex items-center justify-center rounded-full relative z-10">
+        {% render 'icon-shopping-bag' %}
+    </button>
+    
+    <!-- Círculo Verde con Número -->
+    <div class="absolute top-[-5px] right-0 bg-[#52A1BF] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center" style="z-index: 20 !important;">
+        3
+    </div>
+</div>
+
+
 
         <!-- Botón de Menú -->
         <div>
@@ -155,7 +162,6 @@
     </div>
   </div>
 </header>
-
 
 
 

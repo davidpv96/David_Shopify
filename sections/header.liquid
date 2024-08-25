@@ -17,7 +17,7 @@
 
   <!-- Header mobile -->
   <div x-data="{ openMenu: false, openCart: false }" 
-       x-init="$watch('openMenu', value => document.body.classList.toggle('overflow-hidden', value))" 
+       x-init="$watch('openMenu', value => document.body.classList.toggle('overflow-hidden', value)); $watch('openCart', value => document.body.classList.toggle('overflow-hidden', value))" 
        class="px-[15px] py-[20px] relative">
     <section class="flex justify-between flex-row items-center mb-[1rem]">
       <div>
@@ -113,7 +113,7 @@
       x-transition:leave="transition ease-in duration-300 transform"
       x-transition:leave-start="translate-x-0"
       x-transition:leave-end="translate-x-full"
-      class="fixed top-0 right-0 w-80 md:w-96 bg-white shadow-lg z-[100] h-full overflow-y-auto"
+      class="fixed top-0 right-0 w-80 md:w-96 bg-white shadow-lg z-[100] h-full overflow-hidden"
     >
       <div class="p-5 flex justify-between items-center bg-[#1D495B] text-white">
         <h2 class="text-lg font-semibold">Your cart</h2>
@@ -121,8 +121,9 @@
           {% render 'icon-close' %}
         </button>
       </div>
+      
+      <!-- Contenido del carrito -->
       <div class="p-5">
-        <!-- Aquí iría el contenido del carrito -->
         <p class="text-sm text-yellow-500">You are eligible for free shipping!</p>
         <div class="mt-4">
           <p>Total: <strong>€296,85 EUR</strong></p>
@@ -134,28 +135,28 @@
             <button class="bg-green-500 text-white px-4 py-2 rounded">Check out</button>
           </div>
         </div>
-        <div class="mt-4">
-          <!-- Lista de productos en el carrito -->
-          <div class="flex items-center mb-4">
-            <img src="path-to-image.jpg" class="w-16 h-16 mr-4" alt="Product Image">
-            <div>
-              <p class="text-sm">LED lamp for DIY projects</p>
-              <p class="text-sm">€0,85</p>
-              <div class="flex items-center">
-                <button class="px-2">-</button>
-                <input type="number" value="1" class="w-10 text-center">
-                <button class="px-2">+</button>
-                <button class="ml-4 text-red-500">Remove</button>
-              </div>
+      </div>
+
+      <!-- Lista de productos en el carrito con scroll -->
+      <div class="overflow-y-auto p-5 h-[calc(100vh-20rem)]">
+        <div class="flex items-center mb-4">
+          <img src="path-to-image.jpg" class="w-16 h-16 mr-4" alt="Product Image">
+          <div>
+            <p class="text-sm">LED lamp for DIY projects</p>
+            <p class="text-sm">€0,85</p>
+            <div class="flex items-center">
+              <button class="px-2">-</button>
+              <input type="number" value="1" class="w-10 text-center">
+              <button class="px-2">+</button>
+              <button class="ml-4 text-red-500">Remove</button>
             </div>
           </div>
-          <!-- Repite para otros productos -->
         </div>
+        <!-- Repite para otros productos -->
       </div>
     </div>
   </div>
 </header>
-
 
 
 

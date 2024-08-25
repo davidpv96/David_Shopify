@@ -16,7 +16,9 @@
   <!-- End Before Header -->
 
   <!-- Header mobile -->
-  <div x-data="{ open: false }" class="px-[15px] py-[20px] relative">
+  <div x-data="{ open: false }" 
+       x-init="$watch('open', value => document.body.classList.toggle('overflow-hidden', value))" 
+       class="px-[15px] py-[20px] relative">
     <section class="flex justify-between flex-row items-center mb-[1rem]">
       <div>
         <img src="{{'logo-elec.png' | asset_url}}" width="90" alt="Logo">
@@ -70,8 +72,7 @@
       x-transition:leave="transition ease-in duration-300"
       x-transition:leave-start="opacity-100 transform translate-y-0"
       x-transition:leave-end="opacity-0 transform -translate-y-10"
-      :class="{'fixed inset-0 overflow-y-auto bg-red-700 z-50 p-5 shadow-lg': open, 'absolute': !open}"
-      @scroll.window="if(open) $event.stopPropagation();"
+      class="fixed inset-0 overflow-y-auto bg-white z-50 p-5 shadow-lg"
     >
       <div class="flex justify-between items-center">
         <img src="{{'logo-elec.png' | asset_url}}" width="90" alt="Logo">
@@ -98,6 +99,7 @@
     </div>
   </div>
 </header>
+
 
 
 

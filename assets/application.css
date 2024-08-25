@@ -615,6 +615,10 @@ video {
   z-index: 0;
 }
 
+.z-20 {
+  z-index: 20;
+}
+
 .m-5 {
   margin: 1.25rem;
 }

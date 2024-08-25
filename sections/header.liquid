@@ -72,7 +72,7 @@
       x-transition:leave="transition ease-in duration-300"
       x-transition:leave-start="opacity-100 transform translate-y-0"
       x-transition:leave-end="opacity-0 transform -translate-y-10"
-      class="fixed inset-0 overflow-y-auto bg-white z-50 p-5 shadow-lg"
+      class="fixed inset-0 bg-white z-50 p-5 shadow-lg overflow-hidden"
     >
       <div class="flex justify-between items-center">
         <img src="{{'logo-elec.png' | asset_url}}" width="90" alt="Logo">
@@ -82,9 +82,8 @@
       </div>
 
       <!-- Sección del menú que tendrá scroll -->
-      <nav class="mt-5 overflow-y-auto max-h-[75vh]">
+      <nav class="mt-5 overflow-y-auto h-full pr-4">
         <ul class="space-y-4">
-          <li><a href="#" class="text-gray-700 hover:text-gray-900">Boards</a></li>
           <li><a href="#" class="text-gray-700 hover:text-gray-900">Components</a></li>
           <li><a href="#" class="text-gray-700 hover:text-gray-900">Tools</a></li>
           <li><a href="#" class="text-gray-700 hover:text-gray-900">Deals</a></li>
@@ -103,12 +102,14 @@
           <li><a href="#" class="text-gray-700 hover:text-gray-900">3D Printers</a></li>
           <li><a href="#" class="text-gray-700 hover:text-gray-900">3D Printers</a></li>
           <li><a href="#" class="text-gray-700 hover:text-gray-900">3D Printers</a></li>
+          <li><a href="#" class="text-gray-700 hover:text-gray-900">3D Printers</a></li>
           <!-- Agrega más elementos aquí si es necesario -->
         </ul>
       </nav>
     </div>
   </div>
 </header>
+
 
 
 

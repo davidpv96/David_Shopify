@@ -782,6 +782,10 @@ video {
   height: calc(100vh - 20rem);
 }
 
+.h-8 {
+  height: 2rem;
+}
+
 .max-h-\[75vh\] {
   max-height: 75vh;
 }
@@ -828,6 +832,10 @@ video {
 
 .w-80 {
   width: 20rem;
+}
+
+.w-8 {
+  width: 2rem;
 }
 
 .max-w-7xl {

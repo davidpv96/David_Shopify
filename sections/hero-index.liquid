@@ -1,60 +1,69 @@
-<!-- Nuevo slider de solo texto -->
-<!-- Contenido HTML para el slider de texto y la portada de video -->
+<!-- Slider de solo texto -->
 <div class="contenedor-swiper-texto z-10">
   <div class="swiper myTextSwiper">
     <div class="swiper-wrapper">
       {% for block in section.blocks %}
-      {% if block.type == 'slide' %}
-      <div class="swiper-slide swiper-text-slide">{{ block.settings.text }}</div>
-      {% endif %}
+        {% if block.type == 'text_slide' %}
+          <div class="swiper-slide swiper-text-slide">{{ block.settings.text }}</div>
+        {% endif %}
       {% endfor %}
     </div>
   </div>
 </div>
 
-{% comment %} portada video y descripcion {% endcomment %}
-
+{% comment %} Portada de video y descripción {% endcomment %}
 <section class="relative h-[500px] overflow-hidden">
-   <!-- Video de fondo -->
-   {% if section.settings.background_video_url %}
+  <!-- Video de fondo -->
+  {% if section.settings.background_video_url %}
     <video class="absolute inset-0 w-full h-full object-cover" autoplay muted loop playsinline>
       <source src="{{ section.settings.background_video_url }}" type="video/mp4">
       Your browser does not support the video tag.
     </video>
-    {% endif %}
+  {% endif %}
 
-  <!-- Contenido sobre el videoSS   -->
+  <!-- Contenido sobre el video -->
   <div class="relative z-10 flex items-center justify-center h-full bg-black bg-opacity-50">
     <div class="text-center text-white p-4">
-      <div class="flex justify-center">
-        <img src="{{ section.settings.logo_image | img_url: '350x' }}" alt="Logo">
-      </div>
-      <p class="text-lg mb-4">{{ section.settings.description_text }}</p>
+      {% if section.settings.logo_image %}
+        <div class="flex justify-center">
+          <img src="{{ section.settings.logo_image | img_url: '350x' }}" alt="Logo">
+        </div>
+      {% endif %}
+      {% if section.settings.description_text %}
+        <p class="text-lg mb-4">{{ section.settings.description_text }}</p>
+      {% endif %}
     </div>
   </div>
 </section>
 
-
-{% comment %} carousel swiper {% endcomment %}
+<!-- Carrusel Swiper -->
 <section class="contenedor-swiper">
-<div class="swiper mySwiper">
-  <div class="swiper-wrapper">
-    <div class="swiper-slide" style="background-image: url('{{ 'motherboard-category.jpg' | asset_url }}'); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
-      <div style="text-align: center; padding-top: 20px;">
-           <div class=" flex justify-center">
-          {% render 'icon-category-boards' %}
+  <div class="swiper mySwiper">
+    <div class="swiper-wrapper">
+      {% for block in section.blocks %}
+        {% if block.type == 'image_slide' %}
+          <div class="swiper-slide" style="background-image: url('{{ block.settings.image | img_url: 'master' }}'); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+            <div style="text-align: center; padding-top: 20px;">
+              <div class="flex justify-center">
+                {% render block.settings.icon %}
+              </div>
+              {% if block.settings.collection_name %}
+                <h1 class="text-white">{{ block.settings.collection_name }}</h1>
+              {% endif %}
+            </div>
+            <div style="text-align: center; padding-bottom: 20px;">
+              {% if block.settings.collection_url %}
+                <a href="{{ block.settings.collection_url }}" class="text-white" style="font-size: 18px; text-decoration: none;">Comprar →</a>
+              {% endif %}
+            </div>
           </div>
-          <h1 class="text-white">Boards</h1>
-      </div>
-      <div style="text-align: center; padding-bottom: 20px;">
-          <a href="#" class="text-white" style="font-size: 18px; text-decoration: none;">Comprar →</a>
-      </div>
-  </div> 
-   
+        {% endif %}
+      {% endfor %}
+    </div>
+    <div class="swiper-scrollbar"></div>
   </div>
-  <div class="swiper-scrollbar"></div>
-</div>
 </section>
+
 
 
 
@@ -64,10 +73,10 @@
     "name": "Hero Index",
     "settings": [
       {
-      "type": "url",
-      "id": "background_video_url",
-      "label": "URL del video de fondo"
-    },
+        "type": "url",
+        "id": "background_video_url",
+        "label": "URL del video de fondo"
+      },
       {
         "type": "image_picker",
         "id": "logo_image",
@@ -81,21 +90,65 @@
     ],
     "blocks": [
       {
-        "type": "slide",
-        "name": "Diapositiva",
+        "type": "text_slide",
+        "name": "Texto de diapositiva",
         "settings": [
           {
             "type": "text",
             "id": "text",
-            "label": "Texto de la diapositiva"
+            "label": "Texto"
+          }
+        ]
+      },
+      {
+        "type": "image_slide",
+        "name": "Diapositiva de imagen",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Imagen de fondo"
+          },
+          {
+            "type": "select",
+            "id": "icon",
+            "label": "Icono",
+            "options": [
+              {
+                "value": "icon-category-boards",
+                "label": "Boards Icon"
+              },
+              {
+                "value": "icon-category-cpus",
+                "label": "CPUs Icon"
+              },
+              {
+                "value": "icon-category-gpus",
+                "label": "GPUs Icon"
+              }
+           
+            ]
+          },
+          {
+            "type": "text",
+            "id": "collection_name",
+            "label": "Nombre de la colección"
+          },
+          {
+            "type": "url",
+            "id": "collection_url",
+            "label": "URL de la colección"
           }
         ]
       }
     ],
     "presets": [
       {
-        "name": "Hero Index"
+        "name": "Hero Index",
+        "category": "Slideshow"
       }
     ]
   }
   {% endschema %}
+  
+  

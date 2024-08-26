@@ -37,17 +37,6 @@
         {% endif %}
       </div>
       <p class="text-lg mb-4">{{ section.settings.portada_descripcion }}</p>
-
-      <!-- Slider de texto dinámico -->
-      <div class="swiper myTextSwiper">
-        <div class="swiper-wrapper">
-          {% for block in section.blocks %}
-            <div class="swiper-slide swiper-text-slide">
-              {{ block.settings.slide_text }}
-            </div>
-          {% endfor %}
-        </div>
-      </div>
       
     </div>
   </div>

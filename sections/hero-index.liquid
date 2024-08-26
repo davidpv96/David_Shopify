@@ -16,20 +16,21 @@
 
 
 {% comment %} Portada video, imagen y descripción dinámicos {% endcomment %}
-
 <section class="relative h-[500px] overflow-hidden">
   <!-- Video de fondo -->
-  <video class="absolute inset-0 w-full h-full object-cover" autoplay muted loop playsinline>
-    <source src="{% if section.settings.portada_video %}{{ section.settings.portada_video }}{% else %}{{ 'portada-shopify.mp4' | asset_url }}{% endif %}" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+  {% if section.settings.portada_video %}
+    <video class="absolute inset-0 w-full h-full object-cover" autoplay muted loop playsinline>
+      <source src="{{ section.settings.portada_video }}" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  {% endif %}
 
   <!-- Contenido sobre el video -->
   <div class="relative z-10 flex items-center justify-center h-full bg-black bg-opacity-50">
     <div class="text-center text-white p-4">
       <div class="flex justify-center">
         {% if section.settings.portada_imagen %}
-        <img src="{{ section.settings.portada_imagen | img_url: '350x' }}" width="350" alt="Portada Imagen">
+          <img src="{{ section.settings.portada_imagen | img_url: '350x' }}" width="350" alt="Portada Imagen">
         {% endif %}
       </div>
       <p class="text-lg mb-4">{{ section.settings.portada_descripcion }}</p>

@@ -4,14 +4,16 @@
 <div class="contenedor-swiper-texto z-10">
   <div class="swiper myTextSwiper">
     <div class="swiper-wrapper">
-      <div class="swiper-slide swiper-text-slide">Envíos gratis por apertura</div>
-      <div class="swiper-slide swiper-text-slide">Descuentos exclusivos</div>
-   
-      <!-- Más diapositivas... -->
+      {% for block in section.blocks %}
+        <div class="swiper-slide swiper-text-slide">
+          {{ block.settings.slide_text }}
+        </div>
+      {% endfor %}
     </div>
     <!-- La paginación ha sido eliminada -->
   </div>
 </div>
+
 
 {% comment %} portada video y descripcion {% endcomment %}
 
@@ -76,3 +78,33 @@
   <div class="swiper-scrollbar"></div>
 </div>
 </section>
+
+
+
+{% schema %}
+  {
+    "name": "Text Slider",
+    "settings": [
+     
+    ],
+    "blocks": [
+      {
+        "type": "text_slide",
+        "name": "Texto de la Diapositiva",
+        "settings": [
+          {
+            "type": "text",
+            "id": "slide_text",
+            "label": "Texto de la diapositiva"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Text Slider",
+        "category": "Custom"
+      }
+    ]
+  }
+  {% endschema %}

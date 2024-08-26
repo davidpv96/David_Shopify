@@ -11,41 +11,9 @@
   "sections": {
     "hero-index": {
       "type": "hero-index",
-      "blocks": {
-        "text_slide_aUMrnd": {
-          "type": "text_slide",
-          "settings": {
-            "slide_text": "Envíos Gratis"
-          }
-        },
-        "text_slide_UJU8LY": {
-          "type": "text_slide",
-          "settings": {
-            "slide_text": "HOLA"
-          }
-        },
-        "text_slide_YprLqk": {
-          "type": "text_slide",
-          "settings": {
-            "slide_text": "HOLAAAA"
-          }
-        },
-        "text_slide_7MMrqf": {
-          "type": "text_slide",
-          "settings": {
-            "slide_text": "Descuentos Exclusivos"
-          }
-        }
-      },
-      "block_order": [
-        "text_slide_aUMrnd",
-        "text_slide_UJU8LY",
-        "text_slide_YprLqk",
-        "text_slide_7MMrqf"
-      ],
       "settings": {
-        "hero_image": "shopify:\/\/shop_images\/Frame_38.png",
-        "hero_description": "HOLA"
+        "logo_image": "shopify:\/\/shop_images\/logo-hero.png",
+        "description_text": "Lo mejor de electrónica en Costa Rica"
       }
     },
     "content-main": {

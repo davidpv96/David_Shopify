@@ -1,11 +1,45 @@
+/*
+* ------------------------------------------------------------
+* IMPORTANT: The contents of this file are auto-generated.
+*
+* This file may be updated by the Shopify admin theme editor
+* or related systems. Please exercise caution as any changes
+* made to this file may be overwritten.
+* ------------------------------------------------------------
+*/
 {
   "sections": {
     "hero-index": {
-      "type": "hero-index"
+      "type": "hero-index",
+      "blocks": {
+        "text_slide_aUMrnd": {
+          "type": "text_slide",
+          "settings": {
+            "slide_text": "Envíos Gratis"
+          }
+        },
+        "text_slide_7MMrqf": {
+          "type": "text_slide",
+          "settings": {
+            "slide_text": "Esto es una prueba"
+          }
+        }
+      },
+      "block_order": [
+        "text_slide_aUMrnd",
+        "text_slide_7MMrqf"
+      ],
+      "settings": {
+      }
     },
     "content-main": {
-      "type": "content-main"
+      "type": "content-main",
+      "settings": {
+      }
     }
   },
-  "order": ["hero-index", "content-main"]
+  "order": [
+    "hero-index",
+    "content-main"
+  ]
 }

@@ -15,28 +15,46 @@
 </div>
 
 
-{% comment %} portada video y descripcion {% endcomment %}
 
-<section class="relative  h-[500px] overflow-hidden">
+
+{% comment %} Portada video, imagen y descripción dinámicos {% endcomment %}
+
+<section class="relative h-[500px] overflow-hidden">
   <!-- Video de fondo -->
-  <video class="absolute inset-0 w-full h-full object-cover" autoplay muted loop playsinline>
-    <source src="{{ 'portada-shopify.mp4' | asset_url }}" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+  {% if section.settings.portada_video %}
+    <video class="absolute inset-0 w-full h-full object-cover" autoplay muted loop playsinline>
+      <source src="{{ section.settings.portada_video | file_url }}" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  {% endif %}
 
   <!-- Contenido sobre el video -->
   <div class="relative z-10 flex items-center justify-center h-full bg-black bg-opacity-50">
     <div class="text-center text-white p-4">
       <div class="flex justify-center">
-      <img src="{{'logo-hero.png' | asset_url}}" width="350"  alt="">
+        {% if section.settings.portada_imagen %}
+          <img src="{{ section.settings.portada_imagen | img_url: '350x' }}" width="350" alt="Portada Imagen">
+        {% endif %}
       </div>
-      <p class="text-lg mb-4">Lo mejor en electrónica en Costa Rica</p>
-      {% comment %} <a href="#" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-700 transition">Llamada a la acción</a> {% endcomment %}
+      <p class="text-lg mb-4">{{ section.settings.portada_descripcion }}</p>
+
+      <!-- Slider de texto dinámico -->
+      <div class="swiper myTextSwiper">
+        <div class="swiper-wrapper">
+          {% for block in section.blocks %}
+            <div class="swiper-slide swiper-text-slide">
+              {{ block.settings.slide_text }}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      
     </div>
   </div>
 </section>
 
-{% comment %} carousel swiper {% endcomment %}
+
+{% comment %} carousel swiperS {% endcomment %}
 <section class="contenedor-swiper">
 <div class="swiper mySwiper">
   <div class="swiper-wrapper">
@@ -85,7 +103,22 @@
   {
     "name": "Hero Index",
     "settings": [
-     
+      {
+        "type": "video_url",
+        "id": "portada_video",
+        "label": "Video de Portada"
+      },
+      {
+        "type": "image_picker",
+        "id": "portada_imagen",
+        "label": "Imagen sobre el Video"
+      },
+      {
+        "type": "text",
+        "id": "portada_descripcion",
+        "label": "Descripción",
+        "default": "Lo mejor en electrónica en Costa Rica"
+      }
     ],
     "blocks": [
       {
@@ -108,3 +141,5 @@
     ]
   }
   {% endschema %}
+  
+  

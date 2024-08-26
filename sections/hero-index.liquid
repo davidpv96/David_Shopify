@@ -1,24 +1,21 @@
 
-
 <!-- Nuevo slider de solo texto -->
 <div class="contenedor-swiper-texto z-10">
   <div class="swiper myTextSwiper">
     <div class="swiper-wrapper">
-      <div class="swiper-slide swiper-text-slide">Envíos gratis por apertura</div>
-      <div class="swiper-slide swiper-text-slide">Descuentos exclusivos</div>
-   
-      <!-- Más diapositivas... -->
+      {% for block in section.blocks %}
+        <div class="swiper-slide swiper-text-slide">{{ block.settings.slide_text }}</div>
+      {% endfor %}
     </div>
-    <!-- La paginación ha sido eliminada -->
   </div>
 </div>
 
 {% comment %} portada video y descripcion {% endcomment %}
 
-<section class="relative  h-[500px] overflow-hidden">
+<section class="relative h-[500px] overflow-hidden">
   <!-- Video de fondo -->
   <video class="absolute inset-0 w-full h-full object-cover" autoplay muted loop playsinline>
-    <source src="{{ 'portada-shopify.mp4' | asset_url }}" type="video/mp4">
+    <source src="{{ section.settings.background_video | asset_url }}" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 
@@ -26,13 +23,13 @@
   <div class="relative z-10 flex items-center justify-center h-full bg-black bg-opacity-50">
     <div class="text-center text-white p-4">
       <div class="flex justify-center">
-      <img src="{{'logo-hero.png' | asset_url}}" width="350"  alt="">
+        <img src="{{ section.settings.hero_image | asset_url }}" width="350" alt="">
       </div>
-      <p class="text-lg mb-4">Lo mejor en electrónica en Costa Rica</p>
-      {% comment %} <a href="#" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-700 transition">Llamada a la acción</a> {% endcomment %}
+      <p class="text-lg mb-4">{{ section.settings.hero_description }}</p>
     </div>
   </div>
 </section>
+
 
 {% comment %} carousel swiper {% endcomment %}
 <section class="contenedor-swiper">
@@ -76,3 +73,51 @@
   <div class="swiper-scrollbar"></div>
 </div>
 </section>
+
+
+{% schema %}
+  {
+    "name": "Hero Index",
+    "settings": [
+      {
+        "type": "video_picker",
+        "id": "background_video",
+        "label": "Video de fondo",
+        "default": "portada-shopify.mp4"
+      },
+      {
+        "type": "image_picker",
+        "id": "hero_image",
+        "label": "Imagen del héroe",
+        "default": "logo-hero.png"
+      },
+      {
+        "type": "text",
+        "id": "hero_description",
+        "label": "Descripción del héroe",
+        "default": "Lo mejor en electrónica en Costa Rica"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "text_slide",
+        "name": "Diapositiva de Texto",
+        "settings": [
+          {
+            "type": "text",
+            "id": "slide_text",
+            "label": "Texto de la diapositiva",
+            "default": "Texto de ejemplo"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Hero Index",
+        "category": "Portada"
+      }
+    ]
+  }
+  {% endschema %}
+  

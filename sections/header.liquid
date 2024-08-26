@@ -3,16 +3,16 @@
 
   <!-- Start Before Header -->
   <div class="bg-[#0E2129] p-4 flex justify-center">
-    <a href="#" class="text-white mx-2">
+    <a href="{{ settings.facebook_link }}" class="text-white mx-2">
       {% render 'icon-fb' %}
     </a>
-    <a href="#" class="text-white mx-2">
+    <a href="{{ settings.instagram_link }}" class="text-white mx-2">
       {% render 'icon-ig' %}
     </a>
-    <a href="#" class="text-white mx-2">
+    <a href="{{ settings.tiktok_link }}" class="text-white mx-2">
       {% render 'icon-tiktok' %}
     </a>
-  </div>
+</div>
   <!-- End Before Header -->
 
   <!-- Header mobile -->
@@ -301,11 +301,29 @@
 
 
 
+
 {% schema %}
 {
   "name": "Header",
   "settings": [
-    
-    ]
+    /* Social Media Links */
+    {
+      "type": "url",
+      "id": "facebook_link",
+      "label": "Facebook URL"
+    },
+    {
+      "type": "url",
+      "id": "instagram_link",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "url",
+      "id": "tiktok_link",
+      "label": "TikTok URL"
+    }
+
+    /* Additional Settings */
+    // Puedes agregar más configuraciones aquí
+  ]
 }
-{% endschema %}

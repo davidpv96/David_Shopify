@@ -66,7 +66,7 @@
       </button>
     </section>
 
-    <!-- Menú desplegable como Modal -->
+    <!-- Menú desplegable como ModalS -->
     <div 
     x-show="openMenu" 
     x-cloak
@@ -95,8 +95,8 @@
         {% if section.settings.header_menu %}
             <ul class="space-y-4">
                 {% for link in linklists[section.settings.header_menu].links %}
-                    <li>
-                        <a href="{{ link.url }}" class="text-gray-700 hover:text-gray-900 flex items-center">
+                    <li x-data="{ open: false }">
+                        <a href="{{ link.url }}" class="text-gray-700 hover:text-gray-900 flex items-center justify-between" @click.prevent="open = !open">
                             {{ link.title }}
                             {% if link.links != empty %}
                                 <!-- Ícono indicativo de submenú -->
@@ -106,7 +106,7 @@
                             {% endif %}
                         </a>
                         {% if link.links != empty %}
-                            <ul class="pl-4 mt-2 space-y-2">
+                            <ul x-show="open" x-transition class="pl-4 mt-2 space-y-2">
                                 {% for sublink in link.links %}
                                     <li>
                                         <a href="{{ sublink.url }}" class="text-gray-600 hover:text-gray-800">
@@ -124,6 +124,7 @@
         {% endif %}
     </nav>
 </div>
+
 
 
 

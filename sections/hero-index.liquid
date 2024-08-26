@@ -38,7 +38,7 @@
     <div class="swiper-wrapper">
       {% for block in section.blocks %}
       {% if block.type == 'image_slide' %}
-      <div class="swiper-slide" style="background-image: url('{{ block.settings.background_image | img_url: 'master' }}'); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+      <div class="swiper-slide" style="background-image: url('{{ block.settings.background_image  }}'); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
         <div style="text-align: center; padding-top: 20px;">
           <div class="flex justify-center">
             {% render block.settings.icon %}
@@ -111,7 +111,7 @@
           "label": "Nombre de la colección (H1)"
         },
         {
-          "type": "collection",
+          "type": "url",
           "id": "collection_url",
           "label": "Enlace de la colección"
         }

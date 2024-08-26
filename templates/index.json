@@ -12,6 +12,12 @@
     "hero-index": {
       "type": "hero-index",
       "blocks": {
+        "text_slide_DFWKL6": {
+          "type": "text_slide",
+          "settings": {
+            "text": "100% CALIDAD"
+          }
+        },
         "text_slide_7hgq3T": {
           "type": "text_slide",
           "settings": {
@@ -29,6 +35,7 @@
         }
       },
       "block_order": [
+        "text_slide_DFWKL6",
         "text_slide_7hgq3T",
         "image_slide_7mjN4f"
       ],

@@ -66,13 +66,13 @@
 <!-- Configuración del esquema de ShopifyS -->
 {% schema %}
   {
-    "name": "Hero Index",
+    "name": "HeroIndex",
     "settings": [
       {
-        "type": "url",
-        "id": "background_video_url",
-        "label": "URL del video de fondo"
-      },
+      "type": "url",
+      "id": "background_video_url",
+      "label": "URL del video de fondo"
+    },
       {
         "type": "image_picker",
         "id": "logo_image",
@@ -90,26 +90,9 @@
         "name": "Diapositiva",
         "settings": [
           {
-            "type": "image_picker",
-            "id": "background_image",
-            "label": "Imagen de fondo"
-          },
-          {
-            "type": "image_picker",
-            "id": "icon",
-            "label": "Ícono de la categoría",
-            "default": "icon-category-boards",
-            "info": "Nombre del snippet que contiene el ícono"
-          },
-          {
             "type": "text",
-            "id": "collection_name",
-            "label": "Nombre de la colección (H1)"
-          },
-          {
-            "type": "collection",
-            "id": "collection_url",
-            "label": "Enlace de la colección"
+            "id": "text",
+            "label": "Texto de la diapositiva"
           }
         ]
       }
@@ -121,4 +104,3 @@
     ]
   }
   {% endschema %}
-  

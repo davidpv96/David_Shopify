@@ -11,6 +11,24 @@
   "sections": {
     "hero-index": {
       "type": "hero-index",
+      "blocks": {
+        "slide_z4JWpX": {
+          "type": "slide",
+          "settings": {
+            "text": "Envíos Gratis"
+          }
+        },
+        "slide_XQd7jg": {
+          "type": "slide",
+          "settings": {
+            "text": "100% de costa rica"
+          }
+        }
+      },
+      "block_order": [
+        "slide_z4JWpX",
+        "slide_XQd7jg"
+      ],
       "settings": {
         "logo_image": "shopify:\/\/shop_images\/logo-hero.png",
         "description_text": "Lo mejor de electrónica en Costa Rica"

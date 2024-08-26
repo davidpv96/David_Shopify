@@ -39,46 +39,28 @@
 
 {% comment %} carousel swiper {% endcomment %}
 <section class="contenedor-swiper">
-<div class="swiper mySwiper">
-  <div class="swiper-wrapper">
-    <div class="swiper-slide" style="background-image: url('{{ 'motherboard-category.jpg' | asset_url }}'); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
-      <div style="text-align: center; padding-top: 20px;">
-           <div class=" flex justify-center">
-          {% render 'icon-category-boards' %}
+  <div class="swiper mySwiper">
+    <div class="swiper-wrapper">
+      {% for block in section.blocks %}
+      {% if block.type == 'slide' %}
+      <div class="swiper-slide" style="background-image: url('{{ block.settings.background_image | img_url: 'master' }}'); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+        <div style="text-align: center; padding-top: 20px;">
+          <div class="flex justify-center">
+            {% render block.settings.icon %}
           </div>
-          <h1 class="text-white">Boards</h1>
-      </div>
-      <div style="text-align: center; padding-bottom: 20px;">
-          <a href="#" class="text-white" style="font-size: 18px; text-decoration: none;">Comprar Componentes Básicos →</a>
-      </div>
-  </div>
-
-  <div class="swiper-slide" style="background-image: url('{{ 'components-category.jpg' | asset_url }}'); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
-    <div style="text-align: center; padding-top: 20px;">
-         <div class=" flex justify-center">
-        {% render 'icon-category-components' %}
+          <h1 class="text-white">{{ block.settings.collection_name }}</h1>
         </div>
-        <h1 class="text-white">Componentes</h1>
+        <div style="text-align: center; padding-bottom: 20px;">
+          <a href="{{ block.settings.collection_url }}" class="text-white" style="font-size: 18px; text-decoration: none;">Comprar →</a>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
     </div>
-    <div style="text-align: center; padding-bottom: 20px;">
-        <a href="#" class="text-white" style="font-size: 18px; text-decoration: none;">Comprar Semiconductores →</a>
-    </div>
-</div>
-    <div class="swiper-slide" style="background-image: url('{{ 'motherboard-category.jpg' | asset_url }}'); background-size: cover; background-position: center;">
-        <h1 class="text-white">hola 2</h1>
-    </div>
-   
-    <div class="swiper-slide">Slide 3</div>
-    <div class="swiper-slide">Slide 4</div>
-    <div class="swiper-slide">Slide 5</div>
-    <div class="swiper-slide">Slide 6</div>
-    <div class="swiper-slide">Slide 7</div>
-    <div class="swiper-slide">Slide 8</div>
-    <div class="swiper-slide">Slide 9</div>
+    <div class="swiper-scrollbar"></div>
   </div>
-  <div class="swiper-scrollbar"></div>
-</div>
 </section>
+
 
 
 <!-- Configuración del esquema de ShopifyS -->
@@ -87,10 +69,10 @@
     "name": "Hero Index",
     "settings": [
       {
-      "type": "url",
-      "id": "background_video_url",
-      "label": "URL del video de fondo"
-    },
+        "type": "url",
+        "id": "background_video_url",
+        "label": "URL del video de fondo"
+      },
       {
         "type": "image_picker",
         "id": "logo_image",
@@ -108,9 +90,26 @@
         "name": "Diapositiva",
         "settings": [
           {
+            "type": "image_picker",
+            "id": "background_image",
+            "label": "Imagen de fondo"
+          },
+          {
+            "type": "snippet",
+            "id": "icon",
+            "label": "Ícono de la categoría",
+            "default": "icon-category-boards",
+            "info": "Nombre del snippet que contiene el ícono"
+          },
+          {
             "type": "text",
-            "id": "text",
-            "label": "Texto de la diapositiva"
+            "id": "collection_name",
+            "label": "Nombre de la colección (H1)"
+          },
+          {
+            "type": "collection",
+            "id": "collection_url",
+            "label": "Enlace de la colección"
           }
         ]
       }
@@ -122,3 +121,4 @@
     ]
   }
   {% endschema %}
+  

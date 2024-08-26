@@ -96,9 +96,26 @@
             <ul class="space-y-4">
                 {% for link in linklists[section.settings.header_menu].links %}
                     <li>
-                        <a href="{{ link.url }}" class="text-gray-700 hover:text-gray-900">
+                        <a href="{{ link.url }}" class="text-gray-700 hover:text-gray-900 flex items-center">
                             {{ link.title }}
+                            {% if link.links != empty %}
+                                <!-- Ícono indicativo de submenú -->
+                                <span class="ml-2">
+                                    {% render 'icon-chevron-down' %}
+                                </span>
+                            {% endif %}
                         </a>
+                        {% if link.links != empty %}
+                            <ul class="pl-4 mt-2 space-y-2">
+                                {% for sublink in link.links %}
+                                    <li>
+                                        <a href="{{ sublink.url }}" class="text-gray-600 hover:text-gray-800">
+                                            {{ sublink.title }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
                     </li>
                 {% endfor %}
             </ul>
@@ -107,6 +124,7 @@
         {% endif %}
     </nav>
 </div>
+
 
 
     <!-- Carrito deslizante desde la derecha -->

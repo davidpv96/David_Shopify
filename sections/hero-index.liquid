@@ -1,9 +1,10 @@
 <!-- Nuevo slider de solo texto -->
+<!-- Contenido HTML para el slider de texto y la portada de video -->
 <div class="contenedor-swiper-texto z-10">
   <div class="swiper myTextSwiper">
     <div class="swiper-wrapper">
       {% for block in section.blocks %}
-      {% if block.type == 'text_slide' %}
+      {% if block.type == 'slide' %}
       <div class="swiper-slide swiper-text-slide">{{ block.settings.text }}</div>
       {% endif %}
       {% endfor %}
@@ -11,7 +12,8 @@
   </div>
 </div>
 
-{% comment %} Portada video y descripción {% endcomment %}
+{% comment %} portada video y descripcion {% endcomment %}
+
 <section class="relative h-[500px] overflow-hidden">
    <!-- Video de fondo -->
    {% if section.settings.background_video_url %}
@@ -21,7 +23,7 @@
     </video>
     {% endif %}
 
-  <!-- Contenido sobre el video -->
+  <!-- Contenido sobre el videoSS   -->
   <div class="relative z-10 flex items-center justify-center h-full bg-black bg-opacity-50">
     <div class="text-center text-white p-4">
       <div class="flex justify-center">
@@ -32,13 +34,14 @@
   </div>
 </section>
 
-{% comment %} Carousel Swiper {% endcomment %}
+
+{% comment %} carousel swiper {% endcomment %}
 <section class="contenedor-swiper">
   <div class="swiper mySwiper">
     <div class="swiper-wrapper">
       {% for block in section.blocks %}
-      {% if block.type == 'image_slide' %}
-      <div class="swiper-slide" style="background-image: url('{{ block.settings.background_image  }}'); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+      {% if block.type == 'slide' %}
+      <div class="swiper-slide" style="background-image: url('{{ block.settings.background_image | img_url: 'master' }}'); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
         <div style="text-align: center; padding-top: 20px;">
           <div class="flex justify-center">
             {% render block.settings.icon %}
@@ -56,72 +59,46 @@
   </div>
 </section>
 
-<!-- Configuración del esquema de Shopify -->
+
+
+<!-- Configuración del esquema de ShopifyS -->
 {% schema %}
-{
-  "name": "Hero Index",
-  "settings": [
-    {
+  {
+    "name": "Hero Index",
+    "settings": [
+      {
       "type": "url",
       "id": "background_video_url",
       "label": "URL del video de fondo"
     },
-    {
-      "type": "image_picker",
-      "id": "logo_image",
-      "label": "Logo sobre el video"
-    },
-    {
-      "type": "text",
-      "id": "description_text",
-      "label": "Texto de descripción"
-    }
-  ],
-  "blocks": [
-    {
-      "type": "text_slide",
-      "name": "Diapositiva de Texto",
-      "settings": [
-        {
-          "type": "text",
-          "id": "text",
-          "label": "Texto de la diapositiva"
-        }
-      ]
-    },
-    {
-      "type": "image_slide",
-      "name": "Diapositiva de Imagen",
-      "settings": [
-        {
-          "type": "url",
-          "id": "background_image",
-          "label": "Imagen de fondo"
-        },
-        {
-          "type": "url",
-          "id": "icon",
-          "label": "Ícono de la categoría",
-          "default": "icon-category-boards",
-          "info": "Nombre del snippet que contiene el ícono"
-        },
-        {
-          "type": "text",
-          "id": "collection_name",
-          "label": "Nombre de la colección (H1)"
-        },
-        {
-          "type": "url",
-          "id": "collection_url",
-          "label": "Enlace de la colección"
-        }
-      ]
-    }
-  ],
-  "presets": [
-    {
-      "name": "Hero Index"
-    }
-  ]
-}
-{% endschema %}
+      {
+        "type": "image_picker",
+        "id": "logo_image",
+        "label": "Logo sobre el video"
+      },
+      {
+        "type": "text",
+        "id": "description_text",
+        "label": "Texto de descripción"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "slide",
+        "name": "Diapositiva",
+        "settings": [
+          {
+            "type": "text",
+            "id": "text",
+            "label": "Texto de la diapositiva"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Hero Index"
+      }
+    ]
+  }
+  {% endschema %}

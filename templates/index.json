@@ -12,6 +12,12 @@
     "hero-index": {
       "type": "hero-index",
       "blocks": {
+        "text_slide_7hgq3T": {
+          "type": "text_slide",
+          "settings": {
+            "text": "ENVÍOS GRATIS"
+          }
+        },
         "image_slide_7mjN4f": {
           "type": "image_slide",
           "settings": {
@@ -23,6 +29,7 @@
         }
       },
       "block_order": [
+        "text_slide_7hgq3T",
         "image_slide_7mjN4f"
       ],
       "settings": {

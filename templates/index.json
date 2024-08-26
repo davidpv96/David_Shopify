@@ -12,22 +12,18 @@
     "hero-index": {
       "type": "hero-index",
       "blocks": {
-        "slide_z4JWpX": {
-          "type": "slide",
+        "image_slide_7mjN4f": {
+          "type": "image_slide",
           "settings": {
-            "text": "Envíos Gratis"
-          }
-        },
-        "slide_XQd7jg": {
-          "type": "slide",
-          "settings": {
-            "text": "100% de costa rica"
+            "image": "shopify:\/\/shop_images\/motherboard-category.jpg",
+            "icon": "icon-category-gpus",
+            "collection_name": "Boards",
+            "collection_url": "shopify:\/\/collections\/tarjetas"
           }
         }
       },
       "block_order": [
-        "slide_z4JWpX",
-        "slide_XQd7jg"
+        "image_slide_7mjN4f"
       ],
       "settings": {
         "background_video_url": "https:\/\/cdn.shopify.com\/videos\/c\/o\/v\/a773ac28fb904ef08f4881a401421c97.mp4",

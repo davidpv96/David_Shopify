@@ -68,45 +68,46 @@
 
     <!-- Menú desplegable como Modal -->
     <div 
-      x-show="openMenu" 
-      x-cloak
-      @click.away="openMenu = false" 
-      x-transition:enter="transition ease-out duration-300"
-      x-transition:enter-start="opacity-0 transform scale-90"
-      x-transition:enter-end="opacity-100 transform scale-100"
-      x-transition:leave="transition ease-in duration-300"
-      x-transition:leave-start="opacity-100 transform scale-100"
-      x-transition:leave-end="opacity-0 transform scale-90"
-      class="fixed inset-0 bg-white z-[100] shadow-lg overflow-hidden flex flex-col"
-    >
-      <div class="flex justify-between items-center p-5">
-        <img src="{{'logo-elec.png' | asset_url}}" width="90" alt="Logo">
+    x-show="openMenu" 
+    x-cloak
+    @click.away="openMenu = false" 
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0 transform scale-90"
+    x-transition:enter-end="opacity-100 transform scale-100"
+    x-transition:leave="transition ease-in duration-300"
+    x-transition:leave-start="opacity-100 transform scale-100"
+    x-transition:leave-end="opacity-0 transform scale-90"
+    class="fixed inset-0 bg-white z-[100] shadow-lg overflow-hidden flex flex-col"
+>
+    <div class="flex justify-between items-center p-5">
+        {% if section.settings.logo_image %}
+            <img src="{{ section.settings.logo_image | img_url: '300x' }}" width="90" alt="Logo">
+        {% else %}
+            <img src="{{ 'logo-elec.png' | asset_url }}" width="90" alt="Logo">
+        {% endif %}
         <button @click="openMenu = false" class="text-gray-500 hover:text-gray-900">
-          {% render 'icon-close' %}
+            {% render 'icon-close' %}
         </button>
-      </div>
-
-      <!-- Sección del menú que tendrá scroll -->
-      <nav class="overflow-y-auto h-full p-5">
-        <ul class="space-y-4">
-          <li><a href="#" class="text-gray-700 hover:text-gray-900">Components</a></li>
-          <li><a href="#" class="text-gray-700 hover:text-gray-900">Tools</a></li>
-          <li><a href="#" class="text-gray-700 hover:text-gray-900">Deals</a></li>
-          <li><a href="#" class="text-gray-700 hover:text-gray-900">Workshops</a></li>
-          <li><a href="#" class="text-gray-700 hover:text-gray-900">B2B</a></li>
-          <li><a href="#" class="text-gray-700 hover:text-gray-900">Boards</a></li>
-          <li><a href="#" class="text-gray-700 hover:text-gray-900">Components</a></li>
-          <li><a href="#" class="text-gray-700 hover:text-gray-900">Tools</a></li>
-          <li><a href="#" class="text-gray-700 hover:text-gray-900">3D Printers</a></li>
-          <li><a href="#" class="text-gray-700 hover:text-gray-900">B2B</a></li>
-          <li><a href="#" class="text-gray-700 hover:text-gray-900">Boards</a></li>
-          <li><a href="#" class="text-gray-700 hover:text-gray-900">Components</a></li>
-          <li><a href="#" class="text-gray-700 hover:text-gray-900">Tools</a></li>
-          <li><a href="#" class="text-gray-700 hover:text-gray-900">3D Printers</a></li>
-          <!-- Agrega más elementos aquí si es necesario -->
-        </ul>
-      </nav>
     </div>
+
+    <!-- Sección del menú que tendrá scroll -->
+    <nav class="overflow-y-auto h-full p-5">
+        {% if section.settings.header_menu %}
+            <ul class="space-y-4">
+                {% for link in linklists[section.settings.header_menu].links %}
+                    <li>
+                        <a href="{{ link.url }}" class="text-gray-700 hover:text-gray-900">
+                            {{ link.title }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No se ha seleccionado ningún menú.</p>
+        {% endif %}
+    </nav>
+</div>
+
 
     <!-- Carrito deslizante desde la derecha -->
     <div 

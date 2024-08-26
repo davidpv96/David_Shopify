@@ -22,7 +22,11 @@
        class="px-[15px] py-[20px] relative">
     <section class="flex justify-between flex-row items-center mb-[1rem]">
       <div>
-        <img src="{{'logo-elec.png' | asset_url}}" width="90" alt="Logo">
+        {% if section.settings.logo_image %}
+          <img src="{{ section.settings.logo_image | img_url: '300x' }}" width="90" alt="Logo">
+        {% else %}
+          <img src="{{ 'logo-elec.png' | asset_url }}" width="90" alt="Logo">
+        {% endif %}
       </div>
 
       <div class="flex flex-row gap-3">
@@ -302,12 +306,15 @@
 
 
 
-
 {% schema %}
   {
     "name": "Header",
     "settings": [
-  
+      {
+        "type": "image_picker",
+        "id": "logo_image",
+        "label": "Logo"
+      },
       {
         "type": "url",
         "id": "facebook_link",
@@ -323,8 +330,6 @@
         "id": "tiktok_link",
         "label": "TikTok URL"
       }
-  
-      
     ]
   }
   {% endschema %}

@@ -17,11 +17,13 @@
 {% comment %} portada video y descripcion {% endcomment %}
 
 <section class="relative h-[500px] overflow-hidden">
-  <!-- Video de fondo -->
-  <video class="absolute inset-0 w-full h-full object-cover" autoplay muted loop playsinline>
-    <source src="{{ 'portada-shopify.mp4' | asset_url }}" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
+   <!-- Video de fondo -->
+   {% if section.settings.background_video_url %}
+    <video class="absolute inset-0 w-full h-full object-cover" autoplay muted loop playsinline>
+      <source src="{{ section.settings.background_video_url }}" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    {% endif %}
 
   <!-- Contenido sobre el video -->
   <div class="relative z-10 flex items-center justify-center h-full bg-black bg-opacity-50">
@@ -84,6 +86,12 @@
   {
     "name": "Hero Index",
     "settings": [
+      {
+      "type": "url",
+      "id": "background_video_url",
+      "label": "URL del video de fondo",
+      "default": "{{ 'portada-shopify.mp4' | asset_url }}"
+    },
       {
         "type": "image_picker",
         "id": "logo_image",

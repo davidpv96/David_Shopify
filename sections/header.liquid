@@ -4,13 +4,13 @@
   <!-- Start Before Header -->
 
   <div class="bg-[#0E2129] p-4 flex justify-center">
-    <a href="{{ settings.facebook_link }}" class="text-white mx-2">
+    <a href="{{ settings.facebook_link }}" class="text-white mx-2" target="_blank" rel="noopener noreferrer">
       {% render 'icon-fb' %}
     </a>
-    <a href="{{ settings.instagram_link }}" class="text-white mx-2">
+    <a href="{{ settings.instagram_link }}" class="text-white mx-2" target="_blank" rel="noopener noreferrer">
       {% render 'icon-ig' %}
     </a>
-    <a href="{{ settings.tiktok_link }}" class="text-white mx-2">
+    <a href="{{ settings.tiktok_link }}" class="text-white mx-2" target="_blank" rel="noopener noreferrer">
       {% render 'icon-tiktok' %}
     </a>
 </div>
@@ -307,24 +307,24 @@
   {
     "name": "Header",
     "settings": [
-  
       {
-        "type": "text",
+        "type": "url",
         "id": "facebook_link",
-        "label": "Facebook URL"
+        "label": "Facebook URL",
+        "default": "https://www.facebook.com/"
       },
       {
-        "type": "text",
+        "type": "url",
         "id": "instagram_link",
-        "label": "Instagram URL"
+        "label": "Instagram URL",
+        "default": "https://www.instagram.com/"
       },
       {
-        "type": "text",
+        "type": "url",
         "id": "tiktok_link",
-        "label": "TikTok URL"
+        "label": "TikTok URL",
+        "default": "https://www.tiktok.com/"
       }
-
     ]
   }
-  {% endschema %}
-  
+{% endschema %}

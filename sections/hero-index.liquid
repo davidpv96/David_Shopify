@@ -23,12 +23,18 @@
   <div class="relative z-10 flex items-center justify-center h-full bg-black bg-opacity-50">
     <div class="text-center text-white p-4">
       <div class="flex justify-center">
-        <img src="{{ section.settings.hero_image }}" width="350" alt="">
+        {% if section.settings.hero_image %}
+          <img src="{{ section.settings.hero_image }}" width="350" alt="Hero Image">
+        {% else %}
+          <p>No se ha seleccionado ninguna imagen.</p>
+        {% endif %}
       </div>
       <p class="text-lg mb-4">{{ section.settings.hero_description }}</p>
     </div>
   </div>
 </section>
+
+
 
 
 {% comment %} carousel swiperS {% endcomment %}

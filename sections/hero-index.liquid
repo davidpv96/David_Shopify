@@ -80,11 +80,14 @@
     "name": "Hero Index",
     "settings": [
       {
-        "type": "video_picker",
-        "id": "background_video",
-        "label": "Video de fondo",
-        "default": "portada-shopify.mp4"
-      },
+      "type": "video_url",
+      "id": "background_video",
+      "label": "URL del video de fondo",
+      "accepts": [
+        "mp4",
+        "webm"
+      ]
+    },
       {
         "type": "image_picker",
         "id": "hero_image",

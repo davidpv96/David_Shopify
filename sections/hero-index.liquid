@@ -31,7 +31,7 @@
 </section>
 
 
-{% comment %} carousel swiper {% endcomment %}
+{% comment %} carousel swiperS {% endcomment %}
 <section class="contenedor-swiper">
 <div class="swiper mySwiper">
   <div class="swiper-wrapper">
@@ -77,8 +77,18 @@
 
 {% schema %}
   {
-    "name": "HeroIndex",
+    
+    "name": "Hero Index",
     "settings": [
+      {
+      "type": "video_url",
+      "id": "background_video",
+      "label": "URL del video de fondo",
+      "accepts": [
+        "mp4",
+        "webm"
+      ]
+    },
       {
         "type": "image_picker",
         "id": "hero_image",

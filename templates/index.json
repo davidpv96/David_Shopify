@@ -30,8 +30,8 @@
         "text_slide_7MMrqf"
       ],
       "settings": {
-        "portada_imagen": "shopify:\/\/shop_images\/logo-hero.png",
-        "portada_descripcion": "Lo mejor en electrónica en Costa Rica"
+        "hero_image": "shopify:\/\/shop_images\/logo-hero.png",
+        "hero_description": "HOLA"
       }
     },
     "content-main": {

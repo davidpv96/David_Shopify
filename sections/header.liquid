@@ -4,13 +4,13 @@
   <!-- Start Before Header -->
 
   <div class="bg-[#0E2129] p-4 flex justify-center">
-    <a href="{{ settings.facebook_link }}" class="text-white mx-2" target="_blank" rel="noopener noreferrer">
+    <a href="{{ settings.facebook_link }}" class="text-white mx-2">
       {% render 'icon-fb' %}
     </a>
-    <a href="{{ settings.instagram_link }}" class="text-white mx-2" target="_blank" rel="noopener noreferrer">
+    <a href="{{ settings.instagram_link }}" class="text-white mx-2">
       {% render 'icon-ig' %}
     </a>
-    <a href="{{ settings.tiktok_link }}" class="text-white mx-2" target="_blank" rel="noopener noreferrer">
+    <a href="{{ settings.tiktok_link }}" class="text-white mx-2">
       {% render 'icon-tiktok' %}
     </a>
 </div>
@@ -82,7 +82,7 @@
         </button>
       </div>
 
-      <!-- Sección del menú que tendrá scroll d -->
+      <!-- Sección del menú que tendrá scroll -->
       <nav class="overflow-y-auto h-full p-5">
         <ul class="space-y-4">
           <li><a href="#" class="text-gray-700 hover:text-gray-900">Components</a></li>
@@ -307,24 +307,24 @@
   {
     "name": "Header",
     "settings": [
+  
       {
-        "type": "url",
+        "type": "text",
         "id": "facebook_link",
         "label": "Facebook URL"
-      
       },
       {
-        "type": "url",
+        "type": "text",
         "id": "instagram_link",
         "label": "Instagram URL"
-      
       },
       {
-        "type": "url",
+        "type": "text",
         "id": "tiktok_link",
         "label": "TikTok URL"
-        
       }
+
     ]
   }
-{% endschema %}
+  {% endschema %}
+  

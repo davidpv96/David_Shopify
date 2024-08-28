@@ -47,7 +47,22 @@
     },
     "content-main": {
       "type": "content-main",
+      "blocks": {
+        "testimonial_jtWarh": {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "Lorem impusm Lorem impusm Lorem impusm Lorem impusm Lorem impusm Lorem impusmLorem impusm Lorem impusm Lorem impusmLorem impusm Lorem impusm Lorem impusm",
+            "author_name": "Carlos Alvarez",
+            "author_role": "Cliente"
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_jtWarh"
+      ],
       "settings": {
+        "testimonials_heading": "Testimonios",
+        "testimonials_subheading": "Nuestros clientes nos dicen lo que piensan"
       }
     }
   },

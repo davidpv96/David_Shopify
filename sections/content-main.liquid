@@ -362,25 +362,27 @@ slide oferta inicia aca {% endcomment %}
 SECCION NOSOTROS {% endcomment %}
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
-    <h1 class="text-3xl font-extrabold text-gray-900">Bienvenidos a H2 Electronics</h1>
-    <p class="mt-4 text-xl text-gray-600">En H2ElectronicsCR, fusionamos robótica, inteligencia artificial y electrónica para abrir un mundo de posibilidades. Nuestro enfoque es simplificar el acceso a herramientas innovadoras, ayudando a cada cliente a transformar ideas en proyectos tangibles.</p>
+    <h1 class="text-3xl font-extrabold text-gray-900">{{ section.settings.about_heading }}</h1>
+    <p class="mt-4 text-xl text-gray-600">{{ section.settings.about_description }}</p>
     
     <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 text-center md:text-left">
         <!-- Misión -->
         <div>
-            <h2 class="text-2xl font-bold text-gray-800 ">Misión</h2>
+            <h2 class="text-2xl font-bold text-gray-800">{{ section.settings.mission_heading }}</h2>
             <p class="mt-4 text-gray-600 leading-relaxed">
-                Facilitar el acceso a herramientas de robótica e inteligencia artificial para todos, proporcionando recursos que fomentan la innovación y el aprendizaje. En H2ElectronicsCR, creemos en el poder de la tecnología para ampliar horizontes y posibilidades.
+                {{ section.settings.mission_text }}
+            </p>
         </div>
         <!-- Visión -->
         <div>
-            <h2 class="text-2xl font-bold text-gray-800">Visión</h2>
+            <h2 class="text-2xl font-bold text-gray-800">{{ section.settings.vision_heading }}</h2>
             <p class="mt-4 text-gray-600 leading-relaxed">
-                Liderar en hacer que la robótica, la inteligencia artificial y la electrónica sean accesibles para todos, desde estudiantes hasta profesionales. Nos dedicamos a ofrecer componentes de calidad que permiten explorar y crear sin barreras.
+                {{ section.settings.vision_text }}
             </p>
         </div>
     </div>
 </div>
+
 
 {% comment %} slide de caracteristicas {% endcomment %}
  <div class=" mx-[0.2em] lg:mx-20">
@@ -451,14 +453,50 @@ SECCION NOSOTROS {% endcomment %}
       "settings": [
         {
           "type": "text",
+          "id": "about_heading",
+          "label": "Título de la sección 'Nosotros'",
+          "default": "Bienvenidos a H2 Electronics"
+        },
+        {
+          "type": "textarea",
+          "id": "about_description",
+          "label": "Descripción de la sección 'Nosotros'",
+          "default": "En H2ElectronicsCR, fusionamos robótica, inteligencia artificial y electrónica para abrir un mundo de posibilidades. Nuestro enfoque es simplificar el acceso a herramientas innovadoras, ayudando a cada cliente a transformar ideas en proyectos tangibles."
+        },
+        {
+          "type": "text",
+          "id": "mission_heading",
+          "label": "Título de la Misión",
+          "default": "Misión"
+        },
+        {
+          "type": "textarea",
+          "id": "mission_text",
+          "label": "Texto de la Misión",
+          "default": "Facilitar el acceso a herramientas de robótica e inteligencia artificial para todos, proporcionando recursos que fomentan la innovación y el aprendizaje. En H2ElectronicsCR, creemos en el poder de la tecnología para ampliar horizontes y posibilidades."
+        },
+        {
+          "type": "text",
+          "id": "vision_heading",
+          "label": "Título de la Visión",
+          "default": "Visión"
+        },
+        {
+          "type": "textarea",
+          "id": "vision_text",
+          "label": "Texto de la Visión",
+          "default": "Liderar en hacer que la robótica, la inteligencia artificial y la electrónica sean accesibles para todos, desde estudiantes hasta profesionales. Nos dedicamos a ofrecer componentes de calidad que permiten explorar y crear sin barreras."
+        },
+        {
+          "type": "text",
           "id": "testimonials_heading",
-          "label": "Título de la sección",
+          "label": "Título de la sección de testimonios",
           "default": "Testimonials"
         },
         {
           "type": "text",
           "id": "testimonials_subheading",
-          "label": "Subtítulo de la sección",
+          "label": "Subtítulo de la sección de testimonios",
           "default": "Discover the stories of satisfaction and success from our community."
         }
       ],

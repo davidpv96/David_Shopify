@@ -48,7 +48,7 @@
               <div class="flex justify-center">
                 {% assign collection = collections[block.settings.collection_handle] %}
                 {% if collection and collection.image %}
-                  <img src="{{ collection.image | img_url: '350x' }}" alt="{{ collection.title }} " style="max-width: 32px; max-height: 32px;">
+                  <img src="{{ collection.image | img_url: '350x' }}" alt="{{ collection.title }} " style="max-width: 35px; max-height: 35px;">
                 {% endif %}
               </div>
               {% if block.settings.collection_name %}

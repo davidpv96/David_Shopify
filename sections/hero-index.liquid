@@ -37,6 +37,7 @@
 </section>
 
 <!-- Carrusel Swiper -->
+<!-- Carrusel Swiper -->
 <section class="contenedor-swiper">
   <div class="swiper mySwiper">
     <div class="swiper-wrapper">
@@ -45,7 +46,10 @@
           <div class="swiper-slide" style="background-image: url('{{ block.settings.image | img_url: 'master' }}'); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
             <div style="text-align: center; padding-top: 20px;">
               <div class="flex justify-center">
-                {% render block.settings.icon %}
+                {% assign collection = collections[block.settings.collection_handle] %}
+                {% if collection and collection.image %}
+                  <img src="{{ collection.image | img_url: '350x' }}" alt="{{ collection.title }}">
+                {% endif %}
               </div>
               {% if block.settings.collection_name %}
                 <h1 class="text-white">{{ block.settings.collection_name }}</h1>
@@ -110,26 +114,6 @@
             "label": "Imagen de fondo"
           },
           {
-            "type": "select",
-            "id": "icon",
-            "label": "Icono",
-            "options": [
-              {
-                "value": "icon-category-boards",
-                "label": "Boards Icon"
-              },
-              {
-                "value": "icon-category-cpus",
-                "label": "CPUs Icon"
-              },
-              {
-                "value": "icon-category-gpus",
-                "label": "GPUs Icon"
-              }
-           
-            ]
-          },
-          {
             "type": "text",
             "id": "collection_name",
             "label": "Nombre de la colección"
@@ -138,6 +122,11 @@
             "type": "url",
             "id": "collection_url",
             "label": "URL de la colección"
+          },
+          {
+            "type": "collection",
+            "id": "collection_handle",
+            "label": "Colección"
           }
         ]
       }
@@ -150,5 +139,6 @@
     ]
   }
   {% endschema %}
+  
   
   

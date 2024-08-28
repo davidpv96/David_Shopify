@@ -55,10 +55,28 @@
             "author_name": "Carlos Alvarez",
             "author_role": "Cliente"
           }
+        },
+        "testimonial_wbwANR": {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "Lorem impusm Lorem impusm Lorem impusm Lorem impusm Lorem impusm Lorem impusmLorem impusm Lorem impusm Lorem impusmLorem impusm Lorem impusm Lorem impusm",
+            "author_name": "Cecilia",
+            "author_role": "Cliente"
+          }
+        },
+        "testimonial_d7DfTN": {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "",
+            "author_name": "",
+            "author_role": ""
+          }
         }
       },
       "block_order": [
-        "testimonial_jtWarh"
+        "testimonial_jtWarh",
+        "testimonial_wbwANR",
+        "testimonial_d7DfTN"
       ],
       "settings": {
         "testimonials_heading": "Testimonios",

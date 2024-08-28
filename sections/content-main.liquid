@@ -331,54 +331,30 @@ slide oferta inicia aca {% endcomment %}
 
 
 
-
 {% comment %} Slide testimonios {% endcomment %}
 
 <div class="text-center mb-8 mt-10">
-    <h2 class="text-3xl font-extrabold text-gray-900">Testimonials</h2>
-    <p class="mt-4 text-gray-500">Discover the stories of satisfaction and success from our community.</p>
+    <h2 class="text-3xl font-extrabold text-gray-900">{{ section.settings.testimonials_heading }}</h2>
+    <p class="mt-4 text-gray-500">{{ section.settings.testimonials_subheading }}</p>
 </div>
 
-<div class=" ml-[0.4em] lg:ml-20 lg:mr-20">
-<div class="swiper myTestimonialsSwiper mt-10 ">
+<div class="ml-[0.4em] lg:ml-20 lg:mr-20">
+  <div class="swiper myTestimonialsSwiper mt-10">
     <div class="swiper-wrapper swiper-wrapper-testimonio">
-        <!-- Testimonios van aquí -->
-        <div class="swiper-slide swiper-testimonio-slide  p-8 rounded-lg shadow-lg mb-2">
+      {% for block in section.blocks %}
+        {% if block.type == 'testimonial' %}
+          <div class="swiper-slide swiper-testimonio-slide p-8 rounded-lg shadow-lg mb-2">
             <div class="text-[#00796b] text-3xl">“</div>
-            <p class="mt-4 text-gray-800 leading-relaxed">Using the Speedster Series board transformed my projects. Its reliability and performance are unmatched. I highly recommend it to any tech enthusiast looking for quality and innovation.</p>
+            <p class="mt-4 text-gray-800 leading-relaxed">{{ block.settings.testimonial_text }}</p>
             <div class="mt-6">
-                <p class="text-lg font-semibold text-gray-900">Alex Johnson</p>
-                <p class="text-gray-500">Electronics Hobbyist</p>
+              <p class="text-lg font-semibold text-gray-900">{{ block.settings.author_name }}</p>
+              <p class="text-gray-500">{{ block.settings.author_role }}</p>
             </div>
-        </div>
-
-        <div class="swiper-slide swiper-testimonio-slide bg-[#f7f8fa] p-8 rounded-lg shadow-lg">
-            <div class="text-[#00796b] text-3xl">“</div>
-            <p class="mt-4 text-gray-800 leading-relaxed">Using the Speedster Series board transformed my projects. Its reliability and performance are unmatched. I highly recommend it to any tech enthusiast looking for quality and innovation.</p>
-            <div class="mt-6">
-                <p class="text-lg font-semibold text-gray-900">Alex Johnson</p>
-                <p class="text-gray-500">Electronics Hobbyist</p>
-            </div>
-        </div>
-        <!-- Repite para cada testimonio -->
-        <div class="swiper-slide swiper-testimonio-slide bg-[#f7f8fa] p-8 rounded-lg shadow-lg">
-            <div class="text-[#00796b] text-3xl">“</div>
-            <p class="mt-4 text-gray-800 leading-relaxed">Using the Speedster Series board transformed my projects. Its reliability and performance are unmatched. I highly recommend it to any tech enthusiast looking for quality and innovation.</p>
-            <div class="mt-6">
-                <p class="text-lg font-semibold text-gray-900">Alex Johnson</p>
-                <p class="text-gray-500">Electronics Hobbyist</p>
-            </div>
-        </div>
-        <div class="swiper-slide swiper-testimonio-slide bg-[#f7f8fa] p-8 rounded-lg shadow-lg">
-            <div class="text-[#00796b] text-3xl">“</div>
-            <p class="mt-4 text-gray-800 leading-relaxed">Using the Speedster Series board transformed my projects. Its reliability and performance are unmatched. I highly recommend it to any tech enthusiast looking for quality and innovation.</p>
-            <div class="mt-6">
-                <p class="text-lg font-semibold text-gray-900">Alex Johnson</p>
-                <p class="text-gray-500">Electronics Hobbyist</p>
-            </div>
-        </div>
+          </div>
+        {% endif %}
+      {% endfor %}
     </div>
-</div>
+  </div>
 </div>
 
 
@@ -469,3 +445,51 @@ SECCION NOSOTROS {% endcomment %}
 </div>
 
 
+{% schema %}
+    {
+      "name": "Testimonial Section",
+      "settings": [
+        {
+          "type": "text",
+          "id": "testimonials_heading",
+          "label": "Título de la sección",
+          "default": "Testimonials"
+        },
+        {
+          "type": "text",
+          "id": "testimonials_subheading",
+          "label": "Subtítulo de la sección",
+          "default": "Discover the stories of satisfaction and success from our community."
+        }
+      ],
+      "blocks": [
+        {
+          "type": "testimonial",
+          "name": "Testimonio",
+          "settings": [
+            {
+              "type": "textarea",
+              "id": "testimonial_text",
+              "label": "Texto del testimonio"
+            },
+            {
+              "type": "text",
+              "id": "author_name",
+              "label": "Nombre del autor"
+            },
+            {
+              "type": "text",
+              "id": "author_role",
+              "label": "Rol del autor"
+            }
+          ]
+        }
+      ],
+      "presets": [
+        {
+          "name": "Testimonial Section",
+          "category": "Testimonials"
+        }
+      ]
+    }
+    {% endschema %}

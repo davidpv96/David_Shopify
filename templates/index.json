@@ -28,9 +28,9 @@
           "type": "image_slide",
           "settings": {
             "image": "shopify:\/\/shop_images\/motherboard-category.jpg",
-            "icon": "icon-category-gpus",
             "collection_name": "Boards",
-            "collection_url": "shopify:\/\/collections\/tarjetas"
+            "collection_url": "shopify:\/\/collections\/tarjetas",
+            "collection_handle": "tarjetas"
           }
         }
       },

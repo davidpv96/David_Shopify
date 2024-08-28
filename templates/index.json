@@ -79,13 +79,31 @@
             "author_name": "David",
             "author_role": "Cliente"
           }
+        },
+        "testimonial_wNmyUz": {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "Lorem impusm Lorem impusm Lorem impusm Lorem impusm Lorem impusm Lorem impusmLorem impusm Lorem impusm Lorem impusmLorem impusm Lorem impusm Lorem impusm",
+            "author_name": "Denis",
+            "author_role": "Cliente"
+          }
+        },
+        "testimonial_c9K4je": {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "Lorem impusm Lorem impusm Lorem impusm Lorem impusm Lorem impusm Lorem impusmLorem impusm Lorem impusm Lorem impusmLorem impusm Lorem impusm Lorem impusm",
+            "author_name": "Jorge",
+            "author_role": "Cliente"
+          }
         }
       },
       "block_order": [
         "testimonial_jtWarh",
         "testimonial_wbwANR",
         "testimonial_d7DfTN",
-        "testimonial_nTLQwL"
+        "testimonial_nTLQwL",
+        "testimonial_wNmyUz",
+        "testimonial_c9K4je"
       ],
       "settings": {
         "testimonials_heading": "Testimonios",

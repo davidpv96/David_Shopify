@@ -28,7 +28,7 @@
           "type": "image_slide",
           "settings": {
             "image": "shopify:\/\/shop_images\/motherboard-category.jpg",
-            "collection_name": "Boards",
+            "collection_name": "DA",
             "collection_url": "shopify:\/\/collections\/tarjetas",
             "collection_handle": "tarjetas"
           }

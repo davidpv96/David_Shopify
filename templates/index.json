@@ -47,7 +47,67 @@
     },
     "content-main": {
       "type": "content-main",
+      "blocks": {
+        "testimonial_jtWarh": {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "Lorem impusm Lorem impusm Lorem impusm Lorem impusm Lorem impusm Lorem impusmLorem impusm Lorem impusm Lorem impusmLorem impusm Lorem impusm Lorem impusm",
+            "author_name": "Carlos Alvarez",
+            "author_role": "Cliente"
+          }
+        },
+        "testimonial_wbwANR": {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "Lorem impusm Lorem impusm Lorem impusm Lorem impusm Lorem impusm Lorem impusmLorem impusm Lorem impusm Lorem impusmLorem impusm Lorem impusm Lorem impusm",
+            "author_name": "Cecilia",
+            "author_role": "Cliente"
+          }
+        },
+        "testimonial_d7DfTN": {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "Lorem impusm Lorem impusm Lorem impusm Lorem impusm Lorem impusm Lorem impusmLorem impusm Lorem impusm Lorem impusmLorem impusm Lorem impusm Lorem impusm",
+            "author_name": "Carla",
+            "author_role": "Cliente"
+          }
+        },
+        "testimonial_nTLQwL": {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "Lorem impusm Lorem impusm Lorem impusm Lorem impusm Lorem impusm Lorem impusmLorem impusm Lorem impusm Lorem impusmLorem impusm Lorem impusm Lorem impusm",
+            "author_name": "David",
+            "author_role": "Cliente"
+          }
+        },
+        "testimonial_wNmyUz": {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "Lorem impusm Lorem impusm Lorem impusm Lorem impusm Lorem impusm Lorem impusmLorem impusm Lorem impusm Lorem impusmLorem impusm Lorem impusm Lorem impusm",
+            "author_name": "Denis",
+            "author_role": "Cliente"
+          }
+        },
+        "testimonial_c9K4je": {
+          "type": "testimonial",
+          "settings": {
+            "testimonial_text": "Lorem impusm Lorem impusm Lorem impusm Lorem impusm Lorem impusm Lorem impusmLorem impusm Lorem impusm Lorem impusmLorem impusm Lorem impusm Lorem impusm",
+            "author_name": "Jorge",
+            "author_role": "Cliente"
+          }
+        }
+      },
+      "block_order": [
+        "testimonial_jtWarh",
+        "testimonial_wbwANR",
+        "testimonial_d7DfTN",
+        "testimonial_nTLQwL",
+        "testimonial_wNmyUz",
+        "testimonial_c9K4je"
+      ],
       "settings": {
+        "testimonials_heading": "Testimonios",
+        "testimonials_subheading": "Nuestros clientes nos dicen lo que piensan"
       }
     }
   },

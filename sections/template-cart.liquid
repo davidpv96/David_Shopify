@@ -5,14 +5,14 @@
   </div>
   
   <!-- Formulario del carrito -->
-  <form action="/cart" method="post" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <form action="/cart" method="post" class="grid grid-cols-1 lg:grid-cols-3 gap-6" id="cart-form">
     <!-- Tabla de productos del carrito -->
     <div class="lg:col-span-2 overflow-x-auto">
       <table class="min-w-full bg-white border rounded-lg">
         <tbody>
           <!-- Iterar sobre los items del carrito -->
           {% for item in cart.items %}
-          <tr class="border-b last:border-none">
+          <tr class="border-b last:border-none" data-key="{{ item.key }}">
             <!-- Columna del producto -->
             <td class="py-4">
               <div class="flex items-center space-x-4">
@@ -21,25 +21,25 @@
                   <h3 class="text-lg font-semibold">{{ item.product.title }}</h3>
                   <p class="text-sm text-gray-500">{{ item.variant.title }}</p>
                   <p class="text-xs text-gray-400">Model: {{ item.sku }}</p>
-                  <p class="text-sm font-semibold mt-2">{{ item.line_price | money }}</p>
+                  <p class="text-sm font-semibold mt-2 item-price">{{ item.line_price | money }}</p>
                 </div>
               </div>
             </td>
             <!-- Columna de la cantidad -->
             <td class="py-4 text-center">
               <div class="flex items-center justify-center space-x-2">
-                <button type="button" class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full text-gray-500 hover:bg-gray-200 focus:outline-none">
+                <button type="button" class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full text-gray-500 hover:bg-gray-200 focus:outline-none btn-decrease" data-key="{{ item.key }}">
                   <span class="text-lg font-bold leading-none">-</span>
                 </button>
-                <input type="number" name="updates[{{ item.key }}]" value="{{ item.quantity }}" min="1" class="w-12 h-10 text-center border border-gray-300 rounded outline-none focus:ring focus:ring-gray-300 no-spinner">
-                <button type="button" class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full text-gray-500 hover:bg-gray-200 focus:outline-none">
+                <input type="number" name="updates[{{ item.key }}]" value="{{ item.quantity }}" min="0" class="w-12 h-10 text-center border border-gray-300 rounded outline-none focus:ring focus:ring-gray-300 item-quantity" data-key="{{ item.key }}">
+                <button type="button" class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full text-gray-500 hover:bg-gray-200 focus:outline-none btn-increase" data-key="{{ item.key }}">
                   <span class="text-lg font-bold leading-none">+</span>
                 </button>
               </div>
             </td>
             <!-- Columna para eliminar el producto -->
             <td class="py-4 text-center">
-              <button type="submit" name="updates[{{ item.key }}]" value="0" class="text-gray-500 hover:text-red-700">
+              <button type="button" class="text-gray-500 hover:text-red-700 btn-remove" data-key="{{ item.key }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
@@ -56,7 +56,7 @@
       <textarea name="note" class="w-full p-2 border rounded-md mb-4" placeholder="Order special instructions"></textarea>
       <div class="flex justify-between mb-4">
         <p>Subtotal</p>
-        <p class="font-semibold">{{ cart.total_price | money }}</p>
+        <p class="font-semibold" id="cart-subtotal">{{ cart.total_price | money }}</p>
       </div>
       <p class="text-sm text-gray-500 mb-4">Tax included and shipping calculated at checkout</p>
       {% if cart.total_price >= 10000 %}

@@ -117,69 +117,79 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
+// Decrease quantity
+document.querySelectorAll(".btn-decrease").forEach(button => {
+  button.addEventListener("click", function() {
+    let key = this.getAttribute("data-key");
+    let quantityInput = document.querySelector(`input[data-key="${key}"]`);
+    let currentQuantity = parseInt(quantityInput.value);
+    let newQuantity = currentQuantity - 1;
 
-  // Decrease quantity
-  document.querySelectorAll(".btn-decrease").forEach(button => {
-    button.addEventListener("click", function() {
-      let key = this.getAttribute("data-key");
-      let quantityInput = document.querySelector(`input[data-key="${key}"]`);
-      let newQuantity = parseInt(quantityInput.value) - 1;
+    // Actualizar la cantidad en la interfaz de usuario inmediatamente
+    if (newQuantity >= 0) {
+      quantityInput.value = newQuantity;
+    }
 
-      if (newQuantity <= 0) {
-        removeItemFromCart(key);
-      } else {
-        updateCart(key, newQuantity);
-      }
-    });
-  });
-
-  // Increase quantity
-  document.querySelectorAll(".btn-increase").forEach(button => {
-    button.addEventListener("click", function() {
-      let key = this.getAttribute("data-key");
-      let quantityInput = document.querySelector(`input[data-key="${key}"]`);
-      let newQuantity = parseInt(quantityInput.value) + 1;
-
-      updateCart(key, newQuantity);
-    });
-  });
-
-  // Remove item
-  document.querySelectorAll(".btn-remove").forEach(button => {
-    button.addEventListener("click", function() {
-      let key = this.getAttribute("data-key");
+    // Enviar la actualización al servidor
+    if (newQuantity <= 0) {
       removeItemFromCart(key);
-    });
+    } else {
+      updateCart(key, newQuantity);
+    }
   });
+});
 
-  // Update cart function
-  function updateCart(key, quantity) {
-    fetch(`/cart/change.js`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify({
-        id: key,
-        quantity: quantity
-      })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (quantity <= 0) {
-        document.querySelector(`tr[data-key="${key}"]`).remove();
-      } else {
-        document.querySelector(`input[data-key="${key}"]`).value = quantity;
-        document.querySelector(`tr[data-key="${key}"] .item-price`).textContent = Shopify.formatMoney(data.items.find(item => item.key === key).line_price);
-      }
-      document.getElementById("cart-subtotal").textContent = Shopify.formatMoney(data.total_price);
-    })
-    .catch(error => console.error("Error updating cart:", error));
-  }
+// Increase quantity
+document.querySelectorAll(".btn-increase").forEach(button => {
+  button.addEventListener("click", function() {
+    let key = this.getAttribute("data-key");
+    let quantityInput = document.querySelector(`input[data-key="${key}"]`);
+    let currentQuantity = parseInt(quantityInput.value);
+    let newQuantity = currentQuantity + 1;
 
-  // Remove item from cart
-  function removeItemFromCart(key) {
-    updateCart(key, 0);
-  }
+    // Actualizar la cantidad en la interfaz de usuario inmediatamente
+    quantityInput.value = newQuantity;
+
+    // Enviar la actualización al servidor
+    updateCart(key, newQuantity);
+  });
+});
+
+// Remove item
+document.querySelectorAll(".btn-remove").forEach(button => {
+  button.addEventListener("click", function() {
+    let key = this.getAttribute("data-key");
+    removeItemFromCart(key);
+  });
+});
+
+// Update cart function
+function updateCart(key, quantity) {
+  fetch(`/cart/change.js`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify({
+      id: key,
+      quantity: quantity
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (quantity <= 0) {
+      document.querySelector(`tr[data-key="${key}"]`).remove();
+    } else {
+      document.querySelector(`tr[data-key="${key}"] .item-price`).textContent = Shopify.formatMoney(data.items.find(item => item.key === key).line_price);
+    }
+    document.getElementById("cart-subtotal").textContent = Shopify.formatMoney(data.total_price);
+  })
+  .catch(error => console.error("Error updating cart:", error));
+}
+
+// Remove item from cart
+function removeItemFromCart(key) {
+  updateCart(key, 0);
+}
 });

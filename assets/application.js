@@ -118,135 +118,105 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-  // Función para actualizar el carrito y la interfaz de usuario
-  async function updateCart(key, quantity) {
-    try {
-      const response = await fetch(`/cart/change.js`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({
-          id: key,
-          quantity: quantity
-        })
-      });
+ // Función para actualizar la cantidad y el carrito
+ function updateCart(key, quantity) {
+  fetch(`/cart/change.js`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    body: JSON.stringify({
+      id: key,
+      quantity: quantity
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log("Cart updated:", data);
 
-      if (!response.ok) {
-        throw new Error(`Error en la respuesta del servidor: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      console.log("Carrito actualizado:", data);
-
-      // Encontrar el ítem actualizado
-      const updatedItem = data.items.find(item => item.key === key);
-
-      // Actualizar o eliminar la fila del producto en la interfaz
-      const itemRow = document.querySelector(`tr[data-key="${key}"]`);
-      if (quantity <= 0) {
-        if (itemRow) itemRow.remove();
-      } else if (updatedItem && itemRow) {
-        const quantityInput = itemRow.querySelector(".item-quantity");
-        const itemPrice = itemRow.querySelector(".item-price");
-
-        quantityInput.value = updatedItem.quantity;
-        itemPrice.textContent = Shopify.formatMoney(updatedItem.line_price);
-      }
-
-      // Actualizar el subtotal
-      const subtotalElement = document.getElementById("cart-subtotal");
-      if (subtotalElement) {
-        subtotalElement.textContent = Shopify.formatMoney(data.total_price);
-      } else {
-        console.error("Elemento con id 'cart-subtotal' no encontrado en el DOM.");
-      }
-    } catch (error) {
-      console.error("Error al actualizar el carrito:", error);
-      alert("Hubo un error al actualizar el carrito. Por favor, intenta de nuevo.");
-    }
-  }
-
-  // Función genérica para manejar cambios de cantidad
-  function changeQuantity(key, delta) {
-    const itemRow = document.querySelector(`tr[data-key="${key}"]`);
-    if (!itemRow) {
-      console.error(`Fila del producto con key ${key} no encontrada.`);
-      return;
+    // Si la cantidad es 0, eliminamos la fila correspondiente
+    if (quantity <= 0) {
+      document.querySelector(`tr[data-key="${key}"]`).remove();
+    } else {
+      // Actualizamos la cantidad y el precio del ítem
+      document.querySelector(`input[data-key="${key}"]`).value = quantity;
+      document.querySelector(`tr[data-key="${key}"] .item-price`).textContent = Shopify.formatMoney(data.items.find(item => item.key === key).line_price);
     }
 
-    const quantityInput = itemRow.querySelector(".item-quantity");
-    const stockAttr = quantityInput.getAttribute("data-stock");
-    const currentQuantity = parseInt(quantityInput.value) || 0;
-    let stock = stockAttr ? parseInt(stockAttr) : Infinity; // Asumir stock ilimitado si no está definido
+    // Actualizar el subtotal
+    document.getElementById("cart-subtotal").textContent = Shopify.formatMoney(data.total_price);
+    console.log("Subtotal updated:", data.total_price);
+  })
+  .catch(error => console.error("Error updating cart:", error));
+}
 
-    if (isNaN(stock)) {
-      stock = Infinity; // Si el stock no es un número, se asume que es ilimitado
-    }
+// Decrease quantity
+document.querySelectorAll(".btn-decrease").forEach(button => {
+  button.addEventListener("click", function() {
+    let key = this.getAttribute("data-key");
+    let stock = this.getAttribute("data-stock");
+    stock = stock && !isNaN(stock) ? parseInt(stock) : Infinity; // Manejar stock ilimitado
+    let quantityInput = document.querySelector(`input[data-key="${key}"]`);
+    let currentQuantity = parseInt(quantityInput.value);
+    let newQuantity = currentQuantity - 1;
 
-    const newQuantity = currentQuantity + delta;
-
-    if (newQuantity < 0) return;
-
-    if (newQuantity > stock && stock !== Infinity) {
-      alert(`Lo sentimos, solo hay ${stock} unidades disponibles en stock.`);
-      return;
-    }
-
-    updateCart(key, newQuantity);
-  }
-
-  // Eventos para el botón de disminuir cantidad
-  document.querySelectorAll(".btn-decrease").forEach(button => {
-    button.addEventListener("click", function() {
-      const key = this.getAttribute("data-key");
-      changeQuantity(key, -1);
-    });
-  });
-
-  // Eventos para el botón de aumentar cantidad
-  document.querySelectorAll(".btn-increase").forEach(button => {
-    button.addEventListener("click", function() {
-      const key = this.getAttribute("data-key");
-      changeQuantity(key, 1);
-    });
-  });
-
-  // Evento para cambiar cantidad manualmente desde el input
-  document.querySelectorAll(".item-quantity").forEach(input => {
-    input.addEventListener("change", function() {
-      const key = this.getAttribute("data-key");
-      const stockAttr = this.getAttribute("data-stock");
-      const newQuantity = parseInt(this.value) || 0;
-      let stock = stockAttr ? parseInt(stockAttr) : Infinity;
-
-      if (isNaN(stock)) {
-        stock = Infinity;
-      }
-
-      if (newQuantity < 0) {
-        this.value = 0;
-        updateCart(key, 0);
-        return;
-      }
-
-      if (newQuantity > stock && stock !== Infinity) {
-        alert(`Lo sentimos, solo hay ${stock} unidades disponibles en stock.`);
-        this.value = stock;
-        updateCart(key, stock);
-        return;
-      }
-
+    if (newQuantity >= 0) {
       updateCart(key, newQuantity);
-    });
+    }
   });
+});
 
-  // Eventos para el botón de eliminar ítem
-  document.querySelectorAll(".btn-remove").forEach(button => {
-    button.addEventListener("click", function() {
-      const key = this.getAttribute("data-key");
-      updateCart(key, 0);
-    });
+// Increase quantity
+document.querySelectorAll(".btn-increase").forEach(button => {
+  button.addEventListener("click", function() {
+    let key = this.getAttribute("data-key");
+    let stock = this.getAttribute("data-stock");
+    stock = stock && !isNaN(stock) ? parseInt(stock) : Infinity; // Manejar stock ilimitado
+    let quantityInput = document.querySelector(`input[data-key="${key}"]`);
+    let currentQuantity = parseInt(quantityInput.value);
+    let newQuantity = currentQuantity + 1;
+
+    if (newQuantity <= stock) {
+      updateCart(key, newQuantity);
+    } else {
+      alert(`Sorry, only ${stock} items in stock.`);
+    }
   });
+});
+
+// Update quantity on input change
+document.querySelectorAll(".item-quantity").forEach(input => {
+  input.addEventListener("change", function() {
+    let key = this.getAttribute("data-key");
+    let stock = this.getAttribute("data-stock");
+    stock = stock && !isNaN(stock) ? parseInt(stock) : Infinity; // Manejar stock ilimitado
+    let newQuantity = parseInt(this.value);
+
+    if (newQuantity > stock) {
+      alert(`Sorry, only ${stock} items in stock.`);
+      this.value = stock; // Restablecer al stock máximo
+      newQuantity = stock;
+    }
+
+    if (newQuantity <= 0) {
+      removeItemFromCart(key);
+    } else {
+      updateCart(key, newQuantity);
+    }
+  });
+});
+
+// Remove item
+document.querySelectorAll(".btn-remove").forEach(button => {
+  button.addEventListener("click", function() {
+    let key = this.getAttribute("data-key");
+    removeItemFromCart(key);
+  });
+});
+
+// Remove item from cart
+function removeItemFromCart(key) {
+  updateCart(key, 0);
+}
 });

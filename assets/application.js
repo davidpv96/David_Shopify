@@ -116,78 +116,92 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-
- // Decrease quantity
- document.querySelectorAll(".btn-decrease").forEach(button => {
-  button.addEventListener("click", function() {
-    let key = this.getAttribute("data-key");
-    let stock = parseInt(this.getAttribute("data-stock"));
-    let quantityInput = document.querySelector(`input[data-key="${key}"]`);
-    let currentQuantity = parseInt(quantityInput.value);
-    let newQuantity = currentQuantity - 1;
-
-    if (newQuantity <= 0) {
-      removeItemFromCart(key);
-    } else {
-      quantityInput.value = newQuantity; // Update UI immediately
-      updateCart(key, newQuantity);
+  document.addEventListener("DOMContentLoaded", function() {
+    // Decrease quantity
+    document.querySelectorAll(".btn-decrease").forEach(button => {
+      button.addEventListener("click", function() {
+        let key = this.getAttribute("data-key");
+        let stock = parseInt(this.getAttribute("data-stock"));
+        let quantityInput = document.querySelector(`input[data-key="${key}"]`);
+        let currentQuantity = parseInt(quantityInput.value);
+        let newQuantity = currentQuantity - 1;
+  
+        if (newQuantity <= 0) {
+          removeItemFromCart(key);
+        } else {
+          quantityInput.value = newQuantity; // Update UI immediately
+          updateCart(key, newQuantity);
+        }
+      });
+    });
+  
+    // Increase quantity
+    document.querySelectorAll(".btn-increase").forEach(button => {
+      button.addEventListener("click", function() {
+        let key = this.getAttribute("data-key");
+        let stock = parseInt(this.getAttribute("data-stock"));
+        let quantityInput = document.querySelector(`input[data-key="${key}"]`);
+        let currentQuantity = parseInt(quantityInput.value);
+        let newQuantity = currentQuantity + 1;
+  
+        if (newQuantity <= stock) {
+          quantityInput.value = newQuantity; // Update UI immediately
+          updateCart(key, newQuantity);
+        } else {
+          alert(`Sorry, only ${stock} items in stock.`);
+        }
+      });
+    });
+  
+    // Remove item
+    document.querySelectorAll(".btn-remove").forEach(button => {
+      button.addEventListener("click", function() {
+        let key = this.getAttribute("data-key");
+        removeItemFromCart(key);
+      });
+    });
+  
+    // Update cart function
+    function updateCart(key, quantity) {
+      fetch(`/cart/change.js`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          id: key,
+          quantity: quantity
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (quantity <= 0) {
+          document.querySelector(`tr[data-key="${key}"]`).remove();
+        } else {
+          document.querySelector(`input[data-key="${key}"]`).value = quantity;
+          document.querySelector(`tr[data-key="${key}"] .item-price`).textContent = Shopify.formatMoney(data.items.find(item => item.key === key).line_price);
+        }
+  
+        // Actualizar el subtotal
+        document.getElementById("cart-subtotal").textContent = Shopify.formatMoney(data.total_price);
+  
+        // Actualizar las cantidades y precios en la UI (en caso de cambios)
+        data.items.forEach(item => {
+          const row = document.querySelector(`tr[data-key="${item.key}"]`);
+          if (row) {
+            row.querySelector(".item-quantity").value = item.quantity;
+            row.querySelector(".item-price").textContent = Shopify.formatMoney(item.line_price);
+          }
+        });
+      })
+      .catch(error => console.error("Error updating cart:", error));
+    }
+  
+    // Remove item from cart
+    function removeItemFromCart(key) {
+      updateCart(key, 0);
     }
   });
-});
-
-// Increase quantity
-document.querySelectorAll(".btn-increase").forEach(button => {
-  button.addEventListener("click", function() {
-    let key = this.getAttribute("data-key");
-    let stock = parseInt(this.getAttribute("data-stock"));
-    let quantityInput = document.querySelector(`input[data-key="${key}"]`);
-    let currentQuantity = parseInt(quantityInput.value);
-    let newQuantity = currentQuantity + 1;
-
-    if (newQuantity <= stock) {
-      quantityInput.value = newQuantity; // Update UI immediately
-      updateCart(key, newQuantity);
-    } else {
-      alert(`Sorry, only ${stock} items in stock.`);
-    }
-  });
-});
-
-// Remove item
-document.querySelectorAll(".btn-remove").forEach(button => {
-  button.addEventListener("click", function() {
-    let key = this.getAttribute("data-key");
-    removeItemFromCart(key);
-  });
-});
-
-// Update cart function
-function updateCart(key, quantity) {
-  fetch(`/cart/change.js`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-    body: JSON.stringify({
-      id: key,
-      quantity: quantity
-    })
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (quantity <= 0) {
-      document.querySelector(`tr[data-key="${key}"]`).remove();
-    } else {
-      document.querySelector(`tr[data-key="${key}"] .item-price`).textContent = Shopify.formatMoney(data.items.find(item => item.key === key).line_price);
-    }
-    document.getElementById("cart-subtotal").textContent = Shopify.formatMoney(data.total_price);
-  })
-  .catch(error => console.error("Error updating cart:", error));
-}
-
-// Remove item from cart
-function removeItemFromCart(key) {
-  updateCart(key, 0);
-}
+  
 });

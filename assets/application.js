@@ -116,6 +116,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
+
+  
+
   // Función para actualizar la cantidad y el carrito
   function updateCart(key, quantity) {
     fetch(`/cart/change.js`, {
@@ -131,6 +134,9 @@ document.addEventListener('DOMContentLoaded', function () {
     })
     .then(response => response.json())
     .then(data => {
+      console.log("Cart updated:", data);
+
+      // Si la cantidad es 0, eliminamos la fila correspondiente
       if (quantity <= 0) {
         document.querySelector(`tr[data-key="${key}"]`).remove();
       } else {
@@ -140,6 +146,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // Actualizar el subtotal
       document.getElementById("cart-subtotal").textContent = Shopify.formatMoney(data.total_price);
+      console.log("Subtotal updated:", data.total_price);
     })
     .catch(error => console.error("Error updating cart:", error));
   }

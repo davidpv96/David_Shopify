@@ -1,7 +1,8 @@
 {
-    "sections":
+  "sections": {
     "template": {
-        "type": "template-cart"
-    },
-    "order": ["template"]
+      "type": "template-cart"
+    }
+  },
+  "order": ["template"]
 }

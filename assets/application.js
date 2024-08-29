@@ -179,12 +179,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const quantityInput = itemRow.querySelector(".item-quantity");
     const stockAttr = quantityInput.getAttribute("data-stock");
     const currentQuantity = parseInt(quantityInput.value) || 0;
-    const stock = stockAttr ? parseInt(stockAttr) : Infinity;
+    let stock = stockAttr ? parseInt(stockAttr) : Infinity; // Asumir stock ilimitado si no está definido
+
+    if (isNaN(stock)) {
+      stock = Infinity; // Si el stock no es un número, se asume que es ilimitado
+    }
+
     const newQuantity = currentQuantity + delta;
 
     if (newQuantity < 0) return;
 
-    if (newQuantity > stock) {
+    if (newQuantity > stock && stock !== Infinity) {
       alert(`Lo sentimos, solo hay ${stock} unidades disponibles en stock.`);
       return;
     }
@@ -214,7 +219,11 @@ document.addEventListener('DOMContentLoaded', function () {
       const key = this.getAttribute("data-key");
       const stockAttr = this.getAttribute("data-stock");
       const newQuantity = parseInt(this.value) || 0;
-      const stock = stockAttr ? parseInt(stockAttr) : Infinity;
+      let stock = stockAttr ? parseInt(stockAttr) : Infinity;
+
+      if (isNaN(stock)) {
+        stock = Infinity;
+      }
 
       if (newQuantity < 0) {
         this.value = 0;
@@ -222,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
 
-      if (newQuantity > stock) {
+      if (newQuantity > stock && stock !== Infinity) {
         alert(`Lo sentimos, solo hay ${stock} unidades disponibles en stock.`);
         this.value = stock;
         updateCart(key, stock);

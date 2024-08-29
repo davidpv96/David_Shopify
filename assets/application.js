@@ -117,7 +117,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-  
 
   // Función para actualizar la cantidad y el carrito
   function updateCart(key, quantity) {
@@ -140,15 +139,21 @@ document.addEventListener('DOMContentLoaded', function () {
       if (quantity <= 0) {
         document.querySelector(`tr[data-key="${key}"]`).remove();
       } else {
+        // Actualiza la cantidad y el precio del ítem en la interfaz
         document.querySelector(`input[data-key="${key}"]`).value = quantity;
         document.querySelector(`tr[data-key="${key}"] .item-price`).textContent = Shopify.formatMoney(data.items.find(item => item.key === key).line_price);
       }
 
-      // Actualizar el subtotal
-      document.getElementById("cart-subtotal").textContent = Shopify.formatMoney(data.total_price);
-      console.log("Subtotal updated:", data.total_price);
+      // Actualizar el subtotal de la interfaz
+      updateSubtotal(data.total_price);
     })
     .catch(error => console.error("Error updating cart:", error));
+  }
+
+  // Función para actualizar el subtotal en la interfaz
+  function updateSubtotal(totalPrice) {
+    document.getElementById("cart-subtotal").textContent = Shopify.formatMoney(totalPrice);
+    console.log("Subtotal updated:", totalPrice);
   }
 
   // Decrease quantity

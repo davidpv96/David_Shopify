@@ -1,5 +1,8 @@
 <div class="max-w-7xl mx-auto p-6">
-  <h2 class="text-2xl font-semibold mb-6">Your cart</h2>
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-semibold">Your cart</h2>
+    <a href="/" class="text-green-600 hover:text-green-700 underline">Continue shopping</a>
+  </div>
   
   <!-- Formulario del carrito -->
   <form action="/cart" method="post" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -55,10 +58,9 @@
       </table>
     </div>
 
-    <!-- Resumen del pedido y otras acciones -->
+    <!-- Resumen del pedido y área de instrucciones -->
     <div class="lg:col-span-1 space-y-6">
       <div class="p-6 border rounded-lg bg-gray-50">
-        <textarea name="note" class="w-full p-2 border rounded-md mb-4" placeholder="Order special instructions"></textarea>
         <div class="flex justify-between mb-4">
           <p>Subtotal</p>
           <p class="font-semibold">{{ cart.total_price | money }}</p>
@@ -73,10 +75,9 @@
         </label>
         <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700">Check out</button>
       </div>
-      <div class="mt-6">
-        <a href="/" class="text-green-600 hover:text-green-700 underline">Continue shopping</a>
+      <div class="p-6 border rounded-lg bg-gray-50">
+        <textarea name="note" class="w-full p-2 border rounded-md" placeholder="Order special instructions"></textarea>
       </div>
     </div>
   </form>
 </div>
-

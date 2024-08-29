@@ -59,25 +59,22 @@
     </div>
 
     <!-- Resumen del pedido y área de instrucciones -->
-    <div class="lg:col-span-1 space-y-6">
-      <div class="p-6 border rounded-lg bg-gray-50">
-        <div class="flex justify-between mb-4">
-          <p>Subtotal</p>
-          <p class="font-semibold">{{ cart.total_price | money }}</p>
-        </div>
-        <p class="text-sm text-gray-500 mb-4">Tax included and shipping calculated at checkout</p>
-        {% if cart.total_price >= 10000 %}
-          <p class="text-sm text-green-500 mb-4">You are eligible for free shipping!</p>
-        {% endif %}
-        <label class="flex items-center mb-4">
-          <input type="checkbox" class="form-checkbox h-4 w-4 text-green-500" required>
-          <span class="ml-2 text-sm">I have read and agree to the <a href="/policies/privacy-policy" class="text-green-500 underline">Privacy Policy</a>.</span>
-        </label>
-        <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700">Check out</button>
+    <div class="lg:col-span-1 p-6 border rounded-lg bg-gray-50">
+      <textarea name="note" class="w-full p-2 border rounded-md mb-4" placeholder="Order special instructions"></textarea>
+      <div class="flex justify-between mb-4">
+        <p>Subtotal</p>
+        <p class="font-semibold">{{ cart.total_price | money }}</p>
       </div>
-      <div class="p-6 border rounded-lg bg-gray-50">
-        <textarea name="note" class="w-full p-2 border rounded-md" placeholder="Order special instructions"></textarea>
-      </div>
+      <p class="text-sm text-gray-500 mb-4">Tax included and shipping calculated at checkout</p>
+      {% if cart.total_price >= 10000 %}
+        <p class="text-sm text-green-500 mb-4">You are eligible for free shipping!</p>
+      {% endif %}
+      <label class="flex items-center mb-4">
+        <input type="checkbox" class="form-checkbox h-4 w-4 text-green-500" required>
+        <span class="ml-2 text-sm">I have read and agree to the <a href="/policies/privacy-policy" class="text-green-500 underline">Privacy Policy</a>.</span>
+      </label>
+      <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700">Check out</button>
     </div>
   </form>
 </div>
+

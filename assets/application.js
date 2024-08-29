@@ -117,23 +117,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-// Decrease quantity
-document.querySelectorAll(".btn-decrease").forEach(button => {
+ // Decrease quantity
+ document.querySelectorAll(".btn-decrease").forEach(button => {
   button.addEventListener("click", function() {
     let key = this.getAttribute("data-key");
+    let stock = parseInt(this.getAttribute("data-stock"));
     let quantityInput = document.querySelector(`input[data-key="${key}"]`);
     let currentQuantity = parseInt(quantityInput.value);
     let newQuantity = currentQuantity - 1;
 
-    // Actualizar la cantidad en la interfaz de usuario inmediatamente
-    if (newQuantity >= 0) {
-      quantityInput.value = newQuantity;
-    }
-
-    // Enviar la actualización al servidor
     if (newQuantity <= 0) {
       removeItemFromCart(key);
     } else {
+      quantityInput.value = newQuantity; // Update UI immediately
       updateCart(key, newQuantity);
     }
   });
@@ -143,15 +139,17 @@ document.querySelectorAll(".btn-decrease").forEach(button => {
 document.querySelectorAll(".btn-increase").forEach(button => {
   button.addEventListener("click", function() {
     let key = this.getAttribute("data-key");
+    let stock = parseInt(this.getAttribute("data-stock"));
     let quantityInput = document.querySelector(`input[data-key="${key}"]`);
     let currentQuantity = parseInt(quantityInput.value);
     let newQuantity = currentQuantity + 1;
 
-    // Actualizar la cantidad en la interfaz de usuario inmediatamente
-    quantityInput.value = newQuantity;
-
-    // Enviar la actualización al servidor
-    updateCart(key, newQuantity);
+    if (newQuantity <= stock) {
+      quantityInput.value = newQuantity; // Update UI immediately
+      updateCart(key, newQuantity);
+    } else {
+      alert(`Sorry, only ${stock} items in stock.`);
+    }
   });
 });
 

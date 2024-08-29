@@ -116,50 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-  document.querySelectorAll(".btn-decrease").forEach(button => {
-    button.addEventListener("click", function() {
-      let key = this.getAttribute("data-key");
-      let stock = parseInt(this.getAttribute("data-stock"));
-      let quantityInput = document.querySelector(`input[data-key="${key}"]`);
-      let currentQuantity = parseInt(quantityInput.value);
-      let newQuantity = currentQuantity - 1;
-
-      if (newQuantity <= 0) {
-        removeItemFromCart(key);
-      } else {
-        quantityInput.value = newQuantity; // Update UI immediately
-        updateCart(key, newQuantity);
-      }
-    });
-  });
-
-  // Increase quantity
-  document.querySelectorAll(".btn-increase").forEach(button => {
-    button.addEventListener("click", function() {
-      let key = this.getAttribute("data-key");
-      let stock = parseInt(this.getAttribute("data-stock"));
-      let quantityInput = document.querySelector(`input[data-key="${key}"]`);
-      let currentQuantity = parseInt(quantityInput.value);
-      let newQuantity = currentQuantity + 1;
-
-      if (newQuantity <= stock) {
-        quantityInput.value = newQuantity; // Update UI immediately
-        updateCart(key, newQuantity);
-      } else {
-        alert(`Sorry, only ${stock} items in stock.`);
-      }
-    });
-  });
-
-  // Remove item
-  document.querySelectorAll(".btn-remove").forEach(button => {
-    button.addEventListener("click", function() {
-      let key = this.getAttribute("data-key");
-      removeItemFromCart(key);
-    });
-  });
-
-  // Update cart function
+  // Función para actualizar la cantidad y el carrito
   function updateCart(key, quantity) {
     fetch(`/cart/change.js`, {
       method: "POST",
@@ -183,18 +140,73 @@ document.addEventListener('DOMContentLoaded', function () {
 
       // Actualizar el subtotal
       document.getElementById("cart-subtotal").textContent = Shopify.formatMoney(data.total_price);
-
-      // Actualizar las cantidades y precios en la UI (en caso de cambios)
-      data.items.forEach(item => {
-        const row = document.querySelector(`tr[data-key="${item.key}"]`);
-        if (row) {
-          row.querySelector(".item-quantity").value = item.quantity;
-          row.querySelector(".item-price").textContent = Shopify.formatMoney(item.line_price);
-        }
-      });
     })
     .catch(error => console.error("Error updating cart:", error));
   }
+
+  // Decrease quantity
+  document.querySelectorAll(".btn-decrease").forEach(button => {
+    button.addEventListener("click", function() {
+      let key = this.getAttribute("data-key");
+      let stock = this.getAttribute("data-stock");
+      stock = stock ? parseInt(stock) : Infinity; // Manejar stock ilimitado
+      let quantityInput = document.querySelector(`input[data-key="${key}"]`);
+      let currentQuantity = parseInt(quantityInput.value);
+      let newQuantity = currentQuantity - 1;
+
+      if (newQuantity >= 0) {
+        updateCart(key, newQuantity);
+      }
+    });
+  });
+
+  // Increase quantity
+  document.querySelectorAll(".btn-increase").forEach(button => {
+    button.addEventListener("click", function() {
+      let key = this.getAttribute("data-key");
+      let stock = this.getAttribute("data-stock");
+      stock = stock ? parseInt(stock) : Infinity; // Manejar stock ilimitado
+      let quantityInput = document.querySelector(`input[data-key="${key}"]`);
+      let currentQuantity = parseInt(quantityInput.value);
+      let newQuantity = currentQuantity + 1;
+
+      if (newQuantity <= stock) {
+        updateCart(key, newQuantity);
+      } else {
+        alert(`Sorry, only ${stock} items in stock.`);
+      }
+    });
+  });
+
+  // Update quantity on input change
+  document.querySelectorAll(".item-quantity").forEach(input => {
+    input.addEventListener("change", function() {
+      let key = this.getAttribute("data-key");
+      let stock = this.getAttribute("data-stock");
+      stock = stock ? parseInt(stock) : Infinity; // Manejar stock ilimitado
+      let newQuantity = parseInt(this.value);
+
+      if (newQuantity > stock) {
+        alert(`Sorry, only ${stock} items in stock.`);
+        this.value = stock; // Restablecer al stock máximo
+        newQuantity = stock;
+      }
+
+      if (newQuantity <= 0) {
+        removeItemFromCart(key);
+      } else {
+        updateCart(key, newQuantity);
+      }
+    });
+  });
+
+  // Remove item
+  document.querySelectorAll(".btn-remove").forEach(button => {
+    button.addEventListener("click", function() {
+      let key = this.getAttribute("data-key");
+      removeItemFromCart(key);
+    });
+  });
 
   // Remove item from cart
   function removeItemFromCart(key) {

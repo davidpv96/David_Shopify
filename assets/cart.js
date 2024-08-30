@@ -40,10 +40,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para actualizar la interfaz de usuario del carrito
     function updateCartUI(cart) {
-        // Actualizar el subtotal
-        document.getElementById('cart-subtotal').textContent = `$${(cart.total_price / 100).toFixed(2)}`;
-
-        // Opcional: puedes actualizar otras partes de la UI como la cantidad total de ítems, el botón de checkout, etc.
+        // Si el carrito está vacío
+        if (cart.item_count === 0) {
+            document.querySelector('.max-w-7xl').innerHTML = `
+                <div class="text-center">
+                    <h2 class="text-2xl font-semibold">Your cart is empty</h2>
+                    <a href="/" class="inline-block bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 mt-4">Continue shopping</a>
+                    <p class="mt-4">Have an account? <a href="/account/login" class="text-green-600 hover:text-green-700 underline">Log in to check out faster.</a></p>
+                </div>
+            `;
+        } else {
+            // Actualizar el subtotal
+            document.getElementById('cart-subtotal').textContent = `$${(cart.total_price / 100).toFixed(2)}`;
+            
+            // Puedes actualizar otras partes del carrito como la cantidad total de ítems, etc.
+        }
     }
 
     // Asignar eventos a los botones de decremento
@@ -66,6 +77,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const key = this.getAttribute('data-key');
             updateCart(key, 0); // Enviar una cantidad de 0 para eliminar el producto
             document.querySelector(`tr[data-key="${key}"]`).remove(); // Eliminar la fila de la tabla
+            checkIfCartIsEmpty();
         });
     });
+
+    // Función para verificar si el carrito está vacío después de eliminar un ítem
+    function checkIfCartIsEmpty() {
+        const remainingItems = document.querySelectorAll('tbody tr').length;
+        if (remainingItems === 0) {
+            updateCartUI({ item_count: 0 });
+        }
+    }
 });

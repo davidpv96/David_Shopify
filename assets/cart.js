@@ -1,186 +1,228 @@
 var Shopify = Shopify || {};
+
 // ---------------------------------------------------------------------------
 // Money format handler
 // ---------------------------------------------------------------------------
 Shopify.money_format = "${{amount}}";
 Shopify.formatMoney = function(cents, format) {
-  if (typeof cents == 'string') { cents = cents.replace('.',''); }
-  var value = '';
-  var placeholderRegex = /\{\{\s*(\w+)\s*\}\}/;
-  var formatString = (format || this.money_format);
+    if (typeof cents == 'string') { cents = cents.replace('.',''); }
+    var value = '';
+    var placeholderRegex = /\{\{\s*(\w+)\s*\}\}/;
+    var formatString = (format || this.money_format);
 
-  function defaultOption(opt, def) {
-     return (typeof opt == 'undefined' ? def : opt);
-  }
+    function defaultOption(opt, def) {
+        return (typeof opt == 'undefined' ? def : opt);
+    }
 
-  function formatWithDelimiters(number, precision, thousands, decimal) {
-    precision = defaultOption(precision, 2);
-    thousands = defaultOption(thousands, ',');
-    decimal   = defaultOption(decimal, '.');
+    function formatWithDelimiters(number, precision, thousands, decimal) {
+        precision = defaultOption(precision, 2);
+        thousands = defaultOption(thousands, ',');
+        decimal   = defaultOption(decimal, '.');
 
-    if (isNaN(number) || number == null) { return 0; }
+        if (isNaN(number) || number == null) { return 0; }
 
-    number = (number/100.0).toFixed(precision);
+        number = (number / 100.0).toFixed(precision);
 
-    var parts   = number.split('.'),
-        dollars = parts[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1' + thousands),
-        cents   = parts[1] ? (decimal + parts[1]) : '';
+        var parts   = number.split('.'),
+            dollars = parts[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1' + thousands),
+            cents   = parts[1] ? (decimal + parts[1]) : '';
 
-    return dollars + cents;
-  }
+        return dollars + cents;
+    }
 
-  switch(formatString.match(placeholderRegex)[1]) {
-    case 'amount':
-      value = formatWithDelimiters(cents, 2);
-      break;
-    case 'amount_no_decimals':
-      value = formatWithDelimiters(cents, 0);
-      break;
-    case 'amount_with_comma_separator':
-      value = formatWithDelimiters(cents, 2, '.', ',');
-      break;
-    case 'amount_no_decimals_with_comma_separator':
-      value = formatWithDelimiters(cents, 0, '.', ',');
-      break;
-  }
+    switch(formatString.match(placeholderRegex)[1]) {
+        case 'amount':
+            value = formatWithDelimiters(cents, 2);
+            break;
+        case 'amount_no_decimals':
+            value = formatWithDelimiters(cents, 0);
+            break;
+        case 'amount_with_comma_separator':
+            value = formatWithDelimiters(cents, 2, '.', ',');
+            break;
+        case 'amount_no_decimals_with_comma_separator':
+            value = formatWithDelimiters(cents, 0, '.', ',');
+            break;
+    }
 
-  return formatString.replace(placeholderRegex, value);
+    return formatString.replace(placeholderRegex, value);
 };
 
 document.addEventListener('DOMContentLoaded', function() {
-    const cartForm = document.getElementById('cart-form');
-    
-    // Función para actualizar la cantidad
-    function updateQuantity(buttonOrInput, isIncrease, manual = false) {
-        const key = buttonOrInput.getAttribute('data-key');
-        const stock = buttonOrInput.getAttribute('data-stock');
-        const input = document.querySelector(`input[name="updates[${key}]"]`);
-        let quantity = parseInt(input.value);
+    const forms = document.querySelectorAll('#cart-form, #cart-drawer-form');
+    let isUpdating = false;
+    const updateQueue = [];
 
-        if (manual) {
-            if (stock !== null && stock !== '' && stock !== undefined && !isNaN(parseInt(stock))) {
-                const stockValue = parseInt(stock);
-                if (quantity > stockValue) {
-                    quantity = stockValue;
-                }
+    forms.forEach(form => {
+        const updateQuantity = function(buttonOrInput, isIncrease, manual = false) {
+            if (isUpdating) {
+                // Si ya hay una actualización en progreso, agregamos esta a la cola
+                updateQueue.push(() => updateQuantity(buttonOrInput, isIncrease, manual));
+                return;
             }
-        } else {
-            // Verifica si el producto tiene seguimiento de stock
-            if (stock === null || stock === '' || stock === undefined || isNaN(parseInt(stock))) {
-                // No tiene seguimiento de stock, permite incrementar sin límite
-                if (isIncrease) {
-                    quantity++;
-                } else if (!isIncrease && quantity > 1) {
-                    quantity--;
+
+            isUpdating = true;
+            const key = buttonOrInput.getAttribute('data-key');
+            const stock = buttonOrInput.getAttribute('data-stock');
+            const input = form.querySelector(`input[name="updates[${key}]"]`);
+            let quantity = parseInt(input.value);
+
+            if (manual) {
+                if (stock !== null && stock !== '' && stock !== undefined && !isNaN(parseInt(stock))) {
+                    const stockValue = parseInt(stock);
+                    if (quantity > stockValue) {
+                        quantity = stockValue;
+                    }
                 }
             } else {
-                // Tiene seguimiento de stock
-                const stockValue = parseInt(stock);
-                if (isIncrease) {
-                    if (quantity < stockValue) {
+                if (stock === null || stock === '' || stock === undefined || isNaN(parseInt(stock))) {
+                    if (isIncrease) {
                         quantity++;
+                    } else if (!isIncrease && quantity > 1) {
+                        quantity--;
                     }
-                } else if (!isIncrease && quantity > 1) {
-                    quantity--;
-                }
-
-                // Verificar si la cantidad ingresada supera el stock
-                if (quantity > stockValue) {
-                    quantity = stockValue;
+                } else {
+                    const stockValue = parseInt(stock);
+                    if (isIncrease && quantity < stockValue) {
+                        quantity++;
+                    } else if (!isIncrease && quantity > 1) {
+                        quantity--;
+                    }
                 }
             }
-        }
 
-        // Actualizar el valor del input
-        input.value = quantity;
+            // Deshabilitar temporalmente los botones y el input
+            const buttons = form.querySelectorAll(`button[data-key="${key}"]`);
+            buttons.forEach(button => button.disabled = true);
+            input.disabled = true;
 
-        // Enviar actualización al servidor
-        updateCart(key, quantity);
-    }
+            updateCart(key, quantity, () => {
+                // Reactivar los botones y el input después de la actualización
+                buttons.forEach(button => button.disabled = false);
+                input.disabled = false;
+                isUpdating = false;
 
-    // Función para enviar la actualización del carrito al servidor
-    function updateCart(key, quantity) {
-        axios.post('/cart/change.js', {
-            id: key,
-            quantity: quantity
-        })
-        .then(response => {
-            const data = response.data;
-            // Actualizar el subtotal y otros elementos del carrito
-            updateCartUI(data);
-            updateItemSubtotal(key, data);
-        })
-        .catch(error => console.error('Error:', error));
-    }
+                // Procesar la siguiente actualización en la cola, si existe
+                if (updateQueue.length > 0) {
+                    const nextUpdate = updateQueue.shift();
+                    nextUpdate();
+                }
+            });
+        };
 
-    // Función para actualizar la interfaz de usuario del carrito
-    function updateCartUI(cart) {
-        // Obtener el formato de moneda desde el elemento data-attribute
-        const moneyFormat = document.querySelector('[data-money-format]').getAttribute('data-money-format');
-        
-        // Si el carrito está vacío
-        if (cart.item_count === 0) {
-            document.querySelector('.max-w-7xl').innerHTML = `
-                <div class="text-center">
-                    <h2 class="text-2xl font-semibold">Your cart is empty</h2>
-                    <a href="/" class="inline-block bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 mt-4">Continue shopping</a>
-                    <p class="mt-4">Have an account? <a href="/account/login" class="text-green-600 hover:text-green-700 underline">Log in to check out faster.</a></p>
-                </div>
-            `;
-        } else {
-            // Actualizar el subtotal formateado con la función de Shopify
-            const formattedTotal = Shopify.formatMoney(cart.total_price, moneyFormat);
-            document.getElementById('cart-subtotal').textContent = formattedTotal;
-        }
-    }
+        const updateCart = function(key, quantity, callback) {
+            axios.post('/cart/change.js', {
+                id: key,
+                quantity: quantity
+            })
+            .then(response => {
+                const data = response.data;
+                updateCartUI(data);
+                updateItemSubtotal(key, data);
+                synchronizeQuantityInputs(key, quantity);
+                if (callback) callback();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                if (callback) callback();
+            });
+        };
 
-    // Función para actualizar el subtotal de un ítem
-    function updateItemSubtotal(key, cartData) {
-        const item = cartData.items.find(item => item.key === key);
-        if (item) {
-            const subtotalElement = document.querySelector(`.item-subtotal[data-key="${key}"]`);
+        const synchronizeQuantityInputs = function(key, quantity) {
+            const inputs = document.querySelectorAll(`input[name="updates[${key}]"]`);
+            inputs.forEach(input => {
+                input.value = quantity;
+            });
+        };
+
+        const updateCartUI = function(cart) {
             const moneyFormat = document.querySelector('[data-money-format]').getAttribute('data-money-format');
-            const formattedSubtotal = Shopify.formatMoney(item.line_price, moneyFormat);
-            subtotalElement.textContent = formattedSubtotal;
-        }
-    }
+            const formattedTotal = Shopify.formatMoney(cart.total_price, moneyFormat);
 
-    // Asignar eventos a los botones de decremento
-    document.querySelectorAll('.btn-decrease').forEach(button => {
-        button.addEventListener('click', function() {
-            updateQuantity(this, false);
+            const cartSubtotal = document.getElementById('cart-subtotal');
+            const cartDrawerTotal = document.getElementById('cart-drawer-total');
+
+            if (cartSubtotal) {
+                cartSubtotal.textContent = formattedTotal;
+            }
+            if (cartDrawerTotal) {
+                cartDrawerTotal.textContent = formattedTotal;
+            }
+
+            cart.items.forEach(item => {
+                const subtotalElement = document.querySelectorAll(`.item-subtotal[data-key="${item.key}"]`);
+                subtotalElement.forEach(element => {
+                    const formattedSubtotal = Shopify.formatMoney(item.line_price, moneyFormat);
+                    element.textContent = formattedSubtotal;
+                });
+            });
+
+            checkIfCartIsEmpty(cart.item_count);
+        };
+
+        const updateItemSubtotal = function(key, cartData) {
+            const item = cartData.items.find(item => item.key === key);
+            if (item) {
+                const subtotalElement = document.querySelectorAll(`.item-subtotal[data-key="${key}"]`);
+                const moneyFormat = document.querySelector('[data-money-format]').getAttribute('data-money-format');
+                const formattedSubtotal = Shopify.formatMoney(item.line_price, moneyFormat);
+                subtotalElement.forEach(element => {
+                    if (element) {
+                        element.textContent = formattedSubtotal;
+                    }
+                });
+            }
+        };
+
+        const checkIfCartIsEmpty = function(itemCount) {
+            if (itemCount === 0) {
+                document.querySelector('.max-w-7xl').innerHTML = `
+                    <div class="text-center">
+                        <h2 class="text-2xl font-semibold">Your cart is empty</h2>
+                        <a href="/" class="inline-block bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 mt-4">Continue shopping</a>
+                        <p class="mt-4">Have an account? <a href="/account/login" class="text-green-600 hover:text-green-700 underline">Log in to check out faster.</a></p>
+                    </div>`;
+
+                const drawerElement = document.querySelector('.fixed.h-full.overflow-hidden');
+                if (drawerElement) {
+                    drawerElement.innerHTML = `
+                        <div class="p-5 flex justify-between items-center bg-[#1D495B] text-white">
+                            <h2 class="text-lg font-semibold">Your cart</h2>
+                            <button @click="openCart = false" class="text-white hover:text-gray-300">
+                                {% render 'icon-close' %}
+                            </button>
+                        </div>
+                        <div class="p-5">
+                            <p class="text-center">Your cart is empty.</p>
+                        </div>`;
+                }
+            }
+        };
+
+        form.querySelectorAll('.btn-decrease, .btn-increase').forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevenir comportamiento por defecto
+                const isIncrease = this.classList.contains('btn-increase');
+                updateQuantity(this, isIncrease);
+            });
+        });
+
+        form.querySelectorAll('.item-quantity').forEach(input => {
+            input.addEventListener('change', function(event) {
+                event.preventDefault(); // Prevenir comportamiento por defecto
+                updateQuantity(this, false, true);
+            });
+        });
+
+        form.querySelectorAll('.btn-remove').forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevenir comportamiento por defecto
+                const key = this.getAttribute('data-key');
+                updateCart(key, 0, () => {
+                    const rows = document.querySelectorAll(`tr[data-key="${key}"]`);
+                    rows.forEach(row => row.remove());
+                });
+            });
         });
     });
-
-    // Asignar eventos a los botones de incremento
-    document.querySelectorAll('.btn-increase').forEach(button => {
-        button.addEventListener('click', function() {
-            updateQuantity(this, true);
-        });
-    });
-
-    // Asignar evento al input de cantidad para actualizar directamente desde el input
-    document.querySelectorAll('.item-quantity').forEach(input => {
-        input.addEventListener('change', function() {
-            updateQuantity(this, false, true); // Marcamos como manual el cambio
-        });
-    });
-
-    // Asignar evento al botón de eliminar
-    document.querySelectorAll('.btn-remove').forEach(button => {
-        button.addEventListener('click', function() {
-            const key = this.getAttribute('data-key');
-            updateCart(key, 0); // Enviar una cantidad de 0 para eliminar el producto
-            document.querySelector(`tr[data-key="${key}"]`).remove(); // Eliminar la fila de la tabla
-            checkIfCartIsEmpty();
-        });
-    });
-
-    // Función para verificar si el carrito está vacío después de eliminar un ítem
-    function checkIfCartIsEmpty() {
-        const remainingItems = document.querySelectorAll('tbody tr').length;
-        if (remainingItems === 0) {
-            updateCartUI({ item_count: 0 });
-        }
-    }
 });

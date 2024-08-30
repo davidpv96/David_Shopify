@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
-            // Actualizar el subtotal y otros elementos del carrito
+            // Actualizar la UI del carrito con los nuevos datos
             updateCartUI(data);
         })
         .catch(error => console.error('Error:', error));
@@ -50,8 +50,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         } else {
-            // Actualizar el subtotal usando el valor preformateado en Liquid
-            document.getElementById('cart-subtotal').textContent = document.getElementById('cart-subtotal').getAttribute('data-subtotal');
+            // Actualizar el subtotal usando el valor formateado en Liquid
+            document.getElementById('cart-subtotal').textContent = cart.total_price.toLocaleString('en-US', {
+                style: 'currency',
+                currency: cart.currency
+            });
         }
     }
 

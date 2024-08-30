@@ -40,6 +40,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para actualizar la interfaz de usuario del carrito
     function updateCartUI(cart) {
+        // Obtener el formato de moneda desde el elemento data-attribute
+        const moneyFormat = document.getElementById('cart-subtotal').getAttribute('data-money-format');
+    
         // Si el carrito está vacío
         if (cart.item_count === 0) {
             document.querySelector('.max-w-7xl').innerHTML = `
@@ -50,13 +53,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         } else {
-            // Actualizar el subtotal
-            document.getElementById('cart-subtotal').textContent = `S/. ${(cart.total_price / 100).toFixed(2)}`;
-            
+            // Actualizar el subtotal usando el formato dinámico
+            const formattedTotal = moneyFormat.replace('{{amount}}', (cart.total_price / 100).toFixed(2));
+            document.getElementById('cart-subtotal').textContent = formattedTotal;
+    
             // Puedes actualizar otras partes del carrito como la cantidad total de ítems, etc.
         }
     }
-
     // Asignar eventos a los botones de decremento
     document.querySelectorAll('.btn-decrease').forEach(button => {
         button.addEventListener('click', function() {

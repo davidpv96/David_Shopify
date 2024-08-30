@@ -34,33 +34,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateCartUI(cart) {
-        const moneyFormat = document.getElementById('cart-subtotal').getAttribute('data-money-format');
+        // Formatear el total de acuerdo con la configuración de Shopify
+        const formattedTotal = Shopify.formatMoney(cart.total_price, "{{ amount }}");
 
-        if (cart.item_count === 0) {
-            document.querySelector('.max-w-7xl').innerHTML = `
-                <div class="text-center">
-                    <h2 class="text-2xl font-semibold">Your cart is empty</h2>
-                    <a href="/" class="inline-block bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 mt-4">Continue shopping</a>
-                    <p class="mt-4">Have an account? <a href="/account/login" class="text-green-600 hover:text-green-700 underline">Log in to check out faster.</a></p>
-                </div>
-            `;
-        } else {
-            const formattedTotal = moneyFormat
-                .replace(/{{amount_with_comma_separator}}/g, (cart.total_price / 100).toLocaleString())
-                .replace(/{{amount}}/g, (cart.total_price / 100).toFixed(2));
+        document.getElementById('cart-subtotal').textContent = formattedTotal;
 
-            document.getElementById('cart-subtotal').textContent = formattedTotal;
-
-            cart.items.forEach(item => {
-                const itemElement = document.querySelector(`tr[data-key="${item.key}"] .item-price`);
-                if (itemElement) {
-                    const itemPrice = moneyFormat
-                        .replace(/{{amount_with_comma_separator}}/g, (item.line_price / 100).toLocaleString())
-                        .replace(/{{amount}}/g, (item.line_price / 100).toFixed(2));
-                    itemElement.textContent = itemPrice;
-                }
-            });
-        }
+        cart.items.forEach(item => {
+            const itemElement = document.querySelector(`tr[data-key="${item.key}"] .item-price`);
+            if (itemElement) {
+                const itemPrice = Shopify.formatMoney(item.line_price, "{{ amount }}");
+                itemElement.textContent = itemPrice;
+            }
+        });
     }
 
     document.querySelectorAll('.btn-decrease').forEach(button => {

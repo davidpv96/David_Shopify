@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para actualizar la interfaz de usuario del carrito
     function updateCartUI(cart) {
-        // Obtener el formato de moneda desde el elemento data-attribute
+        // Obtener el formato de moneda desde el elemento data-attributeS
         const moneyFormat = document.getElementById('cart-subtotal').getAttribute('data-money-format');
         
         // Si el carrito está vacío

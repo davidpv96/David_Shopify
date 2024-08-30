@@ -1,4 +1,4 @@
-<div class="max-w-7xl mx-auto p-6">
+<div class="max-w-7xl mx-auto p-6" data-money-format="{{ shop.money_format }}">
   {% if cart.item_count > 0 %}
     <!-- Mostrar contenido del carrito si hay items -->
     <div class="flex justify-between items-center mb-6">
@@ -83,5 +83,4 @@
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-{{ 'cart.js' | asset_url | script_tag  }}
-
+{{ 'cart.js' | asset_url | script_tag }}

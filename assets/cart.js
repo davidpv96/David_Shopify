@@ -1,3 +1,53 @@
+var Shopify = Shopify || {};
+
+// ---------------------------------------------------------------------------
+// Money format handler
+// ---------------------------------------------------------------------------
+Shopify.money_format = "${{amount}}";
+Shopify.formatMoney = function(cents, format) {
+  if (typeof cents == 'string') { cents = cents.replace('.',''); }
+  var value = '';
+  var placeholderRegex = /\{\{\s*(\w+)\s*\}\}/;
+  var formatString = (format || this.money_format);
+
+  function defaultOption(opt, def) {
+     return (typeof opt == 'undefined' ? def : opt);
+  }
+
+  function formatWithDelimiters(number, precision, thousands, decimal) {
+    precision = defaultOption(precision, 2);
+    thousands = defaultOption(thousands, ',');
+    decimal   = defaultOption(decimal, '.');
+
+    if (isNaN(number) || number == null) { return 0; }
+
+    number = (number/100.0).toFixed(precision);
+
+    var parts   = number.split('.'),
+        dollars = parts[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1' + thousands),
+        cents   = parts[1] ? (decimal + parts[1]) : '';
+
+    return dollars + cents;
+  }
+
+  switch(formatString.match(placeholderRegex)[1]) {
+    case 'amount':
+      value = formatWithDelimiters(cents, 2);
+      break;
+    case 'amount_no_decimals':
+      value = formatWithDelimiters(cents, 0);
+      break;
+    case 'amount_with_comma_separator':
+      value = formatWithDelimiters(cents, 2, '.', ',');
+      break;
+    case 'amount_no_decimals_with_comma_separator':
+      value = formatWithDelimiters(cents, 0, '.', ',');
+      break;
+  }
+
+  return formatString.replace(placeholderRegex, value);
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     const cartForm = document.getElementById('cart-form');
     
@@ -24,14 +74,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para enviar la actualización del carrito al servidor
     function updateCart(key, quantity) {
-        const formData = new FormData(cartForm);
-
-        fetch('/cart/update.js', {
-            method: 'POST',
-            body: formData
+        axios.post('/cart/change.js', {
+            id: key,
+            quantity: quantity
         })
-        .then(response => response.json())
-        .then(data => {
+        .then(response => {
+            const data = response.data;
             // Actualizar el subtotal y otros elementos del carrito
             updateCartUI(data);
         })
@@ -39,32 +87,28 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Función para actualizar la interfaz de usuario del carrito
-   function updateCartUI(cart) {
-    // Obtener el formato de moneda desde el elemento data-attribute
-    const moneyFormat = document.getElementById('cart-subtotal').getAttribute('data-money-format');
-    
-    // Si el carrito está vacío
-    if (cart.item_count === 0) {
-        document.querySelector('.max-w-7xl').innerHTML = `
-            <div class="text-center">
-                <h2 class="text-2xl font-semibold">Your cart is empty</h2>
-                <a href="/" class="inline-block bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 mt-4">Continue shopping</a>
-                <p class="mt-4">Have an account? <a href="/account/login" class="text-green-600 hover:text-green-700 underline">Log in to check out faster.</a></p>
-            </div>
-        `;
-    } else {
-        // Reemplazar el marcador {{amount}} o cualquier formato similar en el formato de moneda
-        const formattedTotal = moneyFormat
-            .replace(/{{amount_with_comma_separator}}/g, (cart.total_price / 100).toLocaleString())
-            .replace(/{{amount}}/g, (cart.total_price / 100).toFixed(2));
+    function updateCartUI(cart) {
+        // Obtener el formato de moneda desde el elemento data-attribute
+        const moneyFormat = document.querySelector('[data-money-format]').getAttribute('data-money-format');
+        
+        // Si el carrito está vacío
+        if (cart.item_count === 0) {
+            document.querySelector('.max-w-7xl').innerHTML = `
+                <div class="text-center">
+                    <h2 class="text-2xl font-semibold">Your cart is empty</h2>
+                    <a href="/" class="inline-block bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 mt-4">Continue shopping</a>
+                    <p class="mt-4">Have an account? <a href="/account/login" class="text-green-600 hover:text-green-700 underline">Log in to check out faster.</a></p>
+                </div>
+            `;
+        } else {
+            // Actualizar el subtotal formateado con la función de Shopify
+            const formattedTotal = Shopify.formatMoney(cart.total_price, moneyFormat);
+            document.getElementById('cart-subtotal').textContent = formattedTotal;
 
-        document.getElementById('cart-subtotal').textContent = formattedTotal;
-
-        // Puedes actualizar otras partes del carrito como la cantidad total de ítems, etc.
+            // Actualizar otras partes del carrito como la cantidad total de ítems, etc.
+        }
     }
-}
 
-    
     // Asignar eventos a los botones de decremento
     document.querySelectorAll('.btn-decrease').forEach(button => {
         button.addEventListener('click', function() {

@@ -41,7 +41,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const formattedTotal = Shopify.formatMoney(cart.total_price, theme.moneyFormat);
     
         // Actualizar el subtotal en el DOM
-        document.getElementById('cart-subtotal').textContent = formattedTotal;
+        const subtotalElement = document.getElementById('cart-subtotal');
+        if (subtotalElement) {
+            subtotalElement.textContent = formattedTotal;
+            console.log('Subtotal actualizado:', formattedTotal);
+        } else {
+            console.error('Elemento cart-subtotal no encontrado');
+        }
     
         // Actualizar el precio de cada artículo en el carrito
         cart.items.forEach(item => {
@@ -52,15 +58,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (itemPriceElement) {
                     const itemPrice = Shopify.formatMoney(item.final_line_price, theme.moneyFormat);
                     itemPriceElement.textContent = itemPrice;
+                    console.log('Precio del artículo actualizado:', itemPrice);
                 }
                 if (itemQuantityElement) {
                     itemQuantityElement.value = item.quantity;
+                    console.log('Cantidad del artículo actualizada:', item.quantity);
                 }
+            } else {
+                console.error(`Elemento con key ${item.key} no encontrado`);
             }
         });
-
+    
         checkIfCartIsEmpty();
     }
+    
 
     document.querySelectorAll('.btn-decrease, .btn-increase').forEach(button => {
         button.addEventListener('click', function() {

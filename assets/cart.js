@@ -19,12 +19,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateCart(key, quantity) {
-        const formData = new FormData();
-        formData.append(`updates[${key}]`, quantity);
-
-        fetch('/cart/update.js', {
+        fetch('/cart/change.js', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id: key,
+                quantity: quantity
+            })
         })
         .then(response => response.json())
         .then(data => {
@@ -35,30 +38,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateCartUI(cart) {
         // Formatear el total de acuerdo con la configuración de Shopify
-        const formattedTotal = Shopify.formatMoney(cart.total_price, "{{ amount }}");
+        const formattedTotal = Shopify.formatMoney(cart.total_price, theme.moneyFormat);
     
         // Actualizar el subtotal en el DOM
         document.getElementById('cart-subtotal').textContent = formattedTotal;
     
         // Actualizar el precio de cada artículo en el carrito
         cart.items.forEach(item => {
-            const itemElement = document.querySelector(`tr[data-key="${item.key}"] .item-price`);
+            const itemElement = document.querySelector(`tr[data-key="${item.key}"]`);
             if (itemElement) {
-                const itemPrice = Shopify.formatMoney(item.line_price, "{{ amount }}");
-                itemElement.textContent = itemPrice;
+                const itemPriceElement = itemElement.querySelector('.item-price');
+                const itemQuantityElement = itemElement.querySelector('.item-quantity');
+                if (itemPriceElement) {
+                    const itemPrice = Shopify.formatMoney(item.final_line_price, theme.moneyFormat);
+                    itemPriceElement.textContent = itemPrice;
+                }
+                if (itemQuantityElement) {
+                    itemQuantityElement.value = item.quantity;
+                }
             }
         });
+
+        checkIfCartIsEmpty();
     }
 
-    document.querySelectorAll('.btn-decrease').forEach(button => {
+    document.querySelectorAll('.btn-decrease, .btn-increase').forEach(button => {
         button.addEventListener('click', function() {
-            updateQuantity(this, false);
-        });
-    });
-
-    document.querySelectorAll('.btn-increase').forEach(button => {
-        button.addEventListener('click', function() {
-            updateQuantity(this, true);
+            updateQuantity(this, this.classList.contains('btn-increase'));
         });
     });
 
@@ -66,15 +72,21 @@ document.addEventListener('DOMContentLoaded', function() {
         button.addEventListener('click', function() {
             const key = this.getAttribute('data-key');
             updateCart(key, 0);
-            document.querySelector(`tr[data-key="${key}"]`).remove();
-            checkIfCartIsEmpty();
+        });
+    });
+
+    document.querySelectorAll('.item-quantity').forEach(input => {
+        input.addEventListener('change', function() {
+            const key = this.getAttribute('data-key');
+            const quantity = parseInt(this.value);
+            updateCart(key, quantity);
         });
     });
 
     function checkIfCartIsEmpty() {
         const remainingItems = document.querySelectorAll('tbody tr').length;
         if (remainingItems === 0) {
-            updateCartUI({ item_count: 0 });
+            location.reload(); // Recargar la página si el carrito está vacío
         }
     }
 });

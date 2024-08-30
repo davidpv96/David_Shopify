@@ -1,0 +1,192 @@
+  {% comment %} <!-- Carrito deslizante desde la derecha -->
+  <div 
+  x-show="openCart" 
+  x-cloak
+  @click.away="openCart = false" 
+  x-transition:enter="transition ease-out duration-300 transform"
+  x-transition:enter-start="translate-x-full"
+  x-transition:enter-end="translate-x-0"
+  x-transition:leave="transition ease-in duration-300 transform"
+  x-transition:leave-start="translate-x-0"
+  x-transition:leave-end="translate-x-full"
+  class="fixed top-0 right-0 w-80 md:w-96 bg-white shadow-lg z-[100] h-full overflow-hidden"
+>
+  <div class="p-5 flex justify-between items-center bg-[#1D495B] text-white">
+    <h2 class="text-lg font-semibold">Your cart</h2>
+    <button @click="openCart = false" class="text-white hover:text-gray-300">
+      {% render 'icon-close' %}
+    </button>
+  </div>
+  
+  <!-- Contenido del carrito -->
+  <div class="p-5">
+    <p class="text-sm text-yellow-500">You are eligible for free shipping!</p>
+    <div class="mt-4">
+      <p>Total: <strong>€296,85 EUR</strong></p>
+      <label class="block mt-2">
+        <input type="checkbox" class="mr-2"> I have read and agree to the <a href="#" class="text-blue-500">Privacy Policy</a>.
+      </label>
+      <div class="flex mt-4">
+        <button class="bg-yellow-500 text-white px-6 py-2 rounded mr-2 w-full">View cart</button>
+        <button class="bg-green-500 text-white px-6 py-2 rounded w-full">Check out</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de productos en el carrito con scroll -->
+  <div class="overflow-y-auto p-5 h-[calc(100vh-20rem)]">
+    <div class="flex items-center mb-4">
+      <img src="path-to-image.jpg" class="w-16 h-16 mr-4" alt="Product Image">
+      <div class="flex-grow">
+        <p class="text-sm">LED lamp for DIY projects</p>
+        <p class="text-sm">€0,85</p>
+        <div class="flex items-center mt-2">
+          <button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-700">-</button>
+          <input type="number" value="1" class="w-10 text-center mx-2">
+          <button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-700">+</button>
+          <button class="ml-4 text-red-500">Remove</button>
+        </div>
+      </div>
+    </div>
+    <!-- Repite para otros productos -->
+    <div class="flex items-center mb-4">
+        <img src="path-to-image.jpg" class="w-16 h-16 mr-4" alt="Product Image">
+        <div class="flex-grow">
+          <p class="text-sm">LED lamp for DIY projects</p>
+          <p class="text-sm">€0,85</p>
+          <div class="flex items-center mt-2">
+            <button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-700">-</button>
+            <input type="number" value="1" class="w-10 text-center mx-2">
+            <button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-700">+</button>
+            <button class="ml-4 text-red-500">Remove</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center mb-4">
+        <img src="path-to-image.jpg" class="w-16 h-16 mr-4" alt="Product Image">
+        <div class="flex-grow">
+          <p class="text-sm">LED lamp for DIY projects</p>
+          <p class="text-sm">€0,85</p>
+          <div class="flex items-center mt-2">
+            <button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-700">-</button>
+            <input type="number" value="1" class="w-10 text-center mx-2">
+            <button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-700">+</button>
+            <button class="ml-4 text-red-500">Remove</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center mb-4">
+        <img src="path-to-image.jpg" class="w-16 h-16 mr-4" alt="Product Image">
+        <div class="flex-grow">
+          <p class="text-sm">LED lamp for DIY projects</p>
+          <p class="text-sm">€0,85</p>
+          <div class="flex items-center mt-2">
+            <button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-700">-</button>
+            <input type="number" value="1" class="w-10 text-center mx-2">
+            <button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-700">+</button>
+            <button class="ml-4 text-red-500">Remove</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center mb-4">
+        <img src="path-to-image.jpg" class="w-16 h-16 mr-4" alt="Product Image">
+        <div class="flex-grow">
+          <p class="text-sm">LED lamp for DIY projects</p>
+          <p class="text-sm">€0,85</p>
+          <div class="flex items-center mt-2">
+            <button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-700">-</button>
+            <input type="number" value="1" class="w-10 text-center mx-2">
+            <button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-700">+</button>
+            <button class="ml-4 text-red-500">Remove</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center mb-4">
+        <img src="path-to-image.jpg" class="w-16 h-16 mr-4" alt="Product Image">
+        <div class="flex-grow">
+          <p class="text-sm">LED lamp for DIY projects</p>
+          <p class="text-sm">€0,85</p>
+          <div class="flex items-center mt-2">
+            <button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-700">-</button>
+            <input type="number" value="1" class="w-10 text-center mx-2">
+            <button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-700">+</button>
+            <button class="ml-4 text-red-500">Remove</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center mb-4">
+        <img src="path-to-image.jpg" class="w-16 h-16 mr-4" alt="Product Image">
+        <div class="flex-grow">
+          <p class="text-sm">LED lamp for DIY projects</p>
+          <p class="text-sm">€0,85</p>
+          <div class="flex items-center mt-2">
+            <button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-700">-</button>
+            <input type="number" value="1" class="w-10 text-center mx-2">
+            <button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-700">+</button>
+            <button class="ml-4 text-red-500">Remove</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center mb-4">
+        <img src="path-to-image.jpg" class="w-16 h-16 mr-4" alt="Product Image">
+        <div class="flex-grow">
+          <p class="text-sm">LED lamp for DIY projects</p>
+          <p class="text-sm">€0,85</p>
+          <div class="flex items-center mt-2">
+            <button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-700">-</button>
+            <input type="number" value="1" class="w-10 text-center mx-2">
+            <button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-700">+</button>
+            <button class="ml-4 text-red-500">Remove</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center mb-4">
+        <img src="path-to-image.jpg" class="w-16 h-16 mr-4" alt="Product Image">
+        <div class="flex-grow">
+          <p class="text-sm">LED lamp for DIY projects</p>
+          <p class="text-sm">€0,85</p>
+          <div class="flex items-center mt-2">
+            <button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-700">-</button>
+            <input type="number" value="1" class="w-10 text-center mx-2">
+            <button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-700">+</button>
+            <button class="ml-4 text-red-500">Remove</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center mb-4">
+        <img src="path-to-image.jpg" class="w-16 h-16 mr-4" alt="Product Image">
+        <div class="flex-grow">
+          <p class="text-sm">LED lamp for DIY projects</p>
+          <p class="text-sm">€0,85</p>
+          <div class="flex items-center mt-2">
+            <button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-700">-</button>
+            <input type="number" value="1" class="w-10 text-center mx-2">
+            <button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-700">+</button>
+            <button class="ml-4 text-red-500">Remove</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center mb-4">
+        <img src="path-to-image.jpg" class="w-16 h-16 mr-4" alt="Product Image">
+        <div class="flex-grow">
+          <p class="text-sm">LED lamp for DIY projects</p>
+          <p class="text-sm">€0,85</p>
+          <div class="flex items-center mt-2">
+            <button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-700">-</button>
+            <input type="number" value="1" class="w-10 text-center mx-2">
+            <button class="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 text-gray-700">+</button>
+            <button class="ml-4 text-red-500">Remove</button>
+          </div>
+        </div>
+      </div>
+  </div>
+</div> {% endcomment %}

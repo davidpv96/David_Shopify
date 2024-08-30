@@ -1,87 +1,59 @@
-<div class="max-w-7xl mx-auto p-6">
-  {% if cart.item_count > 0 %}
-    <!-- Mostrar contenido del carrito si hay items -->
-    <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl font-semibold">Your cart</h2>
-      <a href="/" class="text-green-600 hover:text-green-700 underline">Continue shopping</a>
-    </div>
-    
-    <!-- Formulario del carrito -->
-    <form action="/cart" method="post" class="grid grid-cols-1 lg:grid-cols-3 gap-6" id="cart-form">
-      <!-- Tabla de productos del carrito -->
-      <div class="lg:col-span-2 overflow-x-auto">
-        <table class="min-w-full bg-white border rounded-lg">
-          <tbody>
-            <!-- Iterar sobre los items del carrito -->
-            {% for item in cart.items %}
-            <tr class="border-b last:border-none" data-key="{{ item.key }}">
-              <!-- Columna del producto -->
-              <td class="py-4">
-                <div class="flex items-center space-x-4">
-                  <img src="{{ item.image | img_url: 'medium' }}" alt="{{ item.title }}" class="w-24 h-24 object-cover">
-                  <div>
-                    <h3 class="text-lg font-semibold">{{ item.product.title }}</h3>
-                    <p class="text-sm text-gray-500">{{ item.variant.title }}</p>
-                    <p class="text-xs text-gray-400">Model: {{ item.sku }}</p>
-                    <p class="text-sm font-semibold mt-2 item-price">{{ item.final_line_price | money }}</p>
-                  </div>
-                </div>
-              </td>
-              <!-- Columna de la cantidad -->
-              <td class="py-4 text-center">
-                <div class="flex items-center justify-center space-x-2">
-                  <button type="button" class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full text-gray-500 hover:bg-gray-200 focus:outline-none btn-decrease" data-key="{{ item.key }}" data-stock="{{ item.variant.inventory_quantity }}">
-                    <span class="text-lg font-bold leading-none">-</span>
-                  </button>
-                  <input type="number" name="updates[{{ item.key }}]" value="{{ item.quantity }}" min="0" max="{{ item.variant.inventory_quantity }}" class="w-12 h-10 text-center border border-gray-300 rounded outline-none focus:ring focus:ring-gray-300 item-quantity" data-key="{{ item.key }}" data-stock="{{ item.variant.inventory_quantity }}">
-                  <button type="button" class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full text-gray-500 hover:bg-gray-200 focus:outline-none btn-increase" data-key="{{ item.key }}" data-stock="{{ item.variant.inventory_quantity }}">
-                    <span class="text-lg font-bold leading-none">+</span>
-                  </button>
-                </div>
-              </td>
-              <!-- Columna para eliminar el producto -->
-              <td class="py-4 text-center">
-                <button type="button" class="text-gray-500 hover:text-red-700 btn-remove" data-key="{{ item.key }}">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                  </svg>
-                </button>
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+<div class="cart">
+  <div class="width">
 
-      <!-- Resumen del pedido y área de instrucciones -->
-      <div class="lg:col-span-1 p-6 border rounded-lg bg-gray-50">
-        <textarea name="note" class="w-full p-2 border rounded-md mb-4" placeholder="Order special instructions"></textarea>
-        <div class="flex justify-between mb-4">
-          <p>Subtotal</p>
-          <p class="font-semibold" id="cart-subtotal" data-money-format="{{ shop.money_format }}">{{ cart.total_price | money }}</p>
+    {% form 'cart', cart %}
+
+      <h1>Cart</h1>
+
+      {% if cart.empty? %}
+        <div class="cart-empty">
+          <p>Your cart is empty.</p>
+          <a class="button" href="/">Keep shopping</a>
         </div>
-        <p class="text-sm text-gray-500 mb-4">Tax included and shipping calculated at checkout</p>
-        {% if cart.total_price >= 10000 %}
-          <p class="text-sm text-green-500 mb-4">You are eligible for free shipping!</p>
-        {% endif %}
-        <label class="flex items-center mb-4">
-          <input type="checkbox" class="form-checkbox h-4 w-4 text-green-500" required>
-          <span class="ml-2 text-sm">I have read and agree to the <a href="/policies/privacy-policy" class="text-green-500 underline">Privacy Policy</a>.</span>
-        </label>
-        <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700">Check out</button>
-      </div>
-    </form>
-  {% else %}
-    <!-- Mostrar mensaje cuando el carrito está vacío -->
-    <div class="text-center">
-      <h2 class="text-2xl font-semibold">Your cart is empty</h2>
-      <a href="/" class="inline-block bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 mt-4">Continue shopping</a>
-      <p class="mt-4">Have an account? <a href="/account/login" class="text-green-600 hover:text-green-700 underline">Log in to check out faster.</a></p>
-    </div>
-  {% endif %}
+      {% else %}
+        {% for item in cart.items %}
+          {% render 'cart-item', item: item %}
+        {% endfor %}
+
+        <div class="cart-notes">
+          <textarea name="note" placeholder="Add special instructions">{{ cart.note }}</textarea>
+        </div>
+
+        <div class="cart-totals">
+          <p>Discounts: <strong>{{ cart.total_discounts | money }}</strong></p>
+          <p>Total: <strong>{{ cart.total_price | money }}</strong></p>
+        </div>
+
+        <div class="cart-buttons">
+          <button type="submit" name="update" class="button update full">
+            Update
+          </button>
+
+          <button type="submit" name="checkout" class="button full">
+            Checkout
+          </button>
+        </div>
+
+      {% endif %}
+
+    {% endform %}
+
+  </div>
 </div>
 
 {{ 'cart.js' | asset_url | script_tag }}
+
+{% schema %}
+{
+  "name": "Cart",
+  "presets": [
+    {
+      "name": "Cart"
+    }
+  ]
+}
+{% endschema %}
+
 
 
 

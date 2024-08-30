@@ -58,10 +58,20 @@ document.addEventListener('DOMContentLoaded', function() {
             cart.items.forEach(item => {
                 const priceElement = document.querySelector(`.item-price[data-key="${item.key}"]`);
                 if (priceElement) {
-                    priceElement.textContent = item.line_price.toLocaleString('en-US', {
+                    // Actualiza el precio total del artículo
+                    priceElement.textContent = `Total: ${item.line_price.toLocaleString('en-US', {
                         style: 'currency',
                         currency: cart.currency
-                    });
+                    })}`;
+                    
+                    // Si quieres actualizar también el precio por unidad (si está visible en la UI)
+                    const unitPriceElement = priceElement.previousElementSibling;
+                    if (unitPriceElement) {
+                        unitPriceElement.textContent = `Unit price: ${item.price.toLocaleString('en-US', {
+                            style: 'currency',
+                            currency: cart.currency
+                        })}`;
+                    }
                 }
             });
         }

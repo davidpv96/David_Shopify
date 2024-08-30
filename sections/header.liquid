@@ -126,10 +126,10 @@
 </div>
 
 
-
+{% render 'cart-drawer' %}
 
     <!-- Carrito deslizante desde la derecha -->
-    <div 
+    {% comment %} <div 
       x-show="openCart" 
       x-cloak
       @click.away="openCart = false" 
@@ -319,7 +319,7 @@
             </div>
           </div>
       </div>
-    </div>
+    </div> {% endcomment %}
   </div>
 </header>
 

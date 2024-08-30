@@ -58,19 +58,13 @@ document.addEventListener('DOMContentLoaded', function() {
             cart.items.forEach(item => {
                 const priceElement = document.querySelector(`.item-price[data-key="${item.key}"]`);
                 if (priceElement) {
-                    // Actualiza el precio total del artículo
-                    priceElement.textContent = `Total: ${item.line_price.toLocaleString('en-US', {
-                        style: 'currency',
-                        currency: cart.currency
-                    })}`;
+                    // Actualiza el precio total del artículo con el valor formateado desde Shopify
+                    priceElement.textContent = `Total: ${item.line_price}`;
                     
-                    // Si quieres actualizar también el precio por unidad (si está visible en la UI)
-                    const unitPriceElement = priceElement.previousElementSibling;
+                    // Actualizar también el precio por unidad si está visible
+                    const unitPriceElement = document.querySelector(`.unit-price[data-key="${item.key}"]`);
                     if (unitPriceElement) {
-                        unitPriceElement.textContent = `Unit price: ${item.price.toLocaleString('en-US', {
-                            style: 'currency',
-                            currency: cart.currency
-                        })}`;
+                        unitPriceElement.textContent = `Unit price: ${item.price}`;
                     }
                 }
             });

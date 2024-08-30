@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const cartForm = document.getElementById('cart-form');
     
-    // Función para enviar la actualización del carrito al servidor
     function updateCart(key, quantity) {
         const formData = new FormData();
         formData.append('updates[' + key + ']', quantity);
@@ -12,36 +11,36 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
-            // Actualizar el subtotal y otros elementos del carrito
+            // Actualizar la UI del carrito con los nuevos datos
             updateCartUI(data);
         })
         .catch(error => console.error('Error:', error));
     }
 
-    // Función para actualizar la cantidad
     function updateQuantity(button, isIncrease) {
         const key = button.getAttribute('data-key');
-        const stock = parseInt(button.getAttribute('data-stock'));
+        const price = parseFloat(button.getAttribute('data-price'));
         const input = document.querySelector(`input[name="updates[${key}]"]`);
         let quantity = parseInt(input.value);
 
-        // Aumentar o disminuir la cantidad
-        if (isIncrease && quantity < stock) {
+        if (isIncrease) {
             quantity++;
-        } else if (!isIncrease && quantity > 1) {
+        } else if (quantity > 1) {
             quantity--;
         }
 
-        // Actualizar el valor del input
         input.value = quantity;
 
-        // Enviar actualización al servidor
+        // Actualizar subtotal del ítem en la interfaz
+        const itemSubtotalElement = document.querySelector(`tr[data-key="${key}"] .item-subtotal`);
+        const newSubtotal = (price * quantity).toFixed(2);
+        itemSubtotalElement.textContent = `€${newSubtotal}`;
+
+        // Enviar la actualización al servidor
         updateCart(key, quantity);
     }
 
-    // Función para actualizar la interfaz de usuario del carrito
     function updateCartUI(cart) {
-        // Si el carrito está vacío
         if (cart.item_count === 0) {
             document.querySelector('.max-w-7xl').innerHTML = `
                 <div class="text-center">
@@ -51,38 +50,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         } else {
-            // Actualizar el subtotal
-            document.getElementById('cart-subtotal').textContent = `$${(cart.total_price / 100).toFixed(2)}`;
-            
-            // Puedes actualizar otras partes del carrito como la cantidad total de ítems, etc.
+            // Actualizar el subtotal general del carrito
+            document.getElementById('cart-subtotal').textContent = `€${(cart.total_price / 100).toFixed(2)}`;
         }
     }
 
-    // Asignar eventos a los botones de decremento
     document.querySelectorAll('.btn-decrease').forEach(button => {
         button.addEventListener('click', function() {
             updateQuantity(this, false);
         });
     });
 
-    // Asignar eventos a los botones de incremento
     document.querySelectorAll('.btn-increase').forEach(button => {
         button.addEventListener('click', function() {
             updateQuantity(this, true);
         });
     });
 
-    // Asignar evento al botón de eliminar
     document.querySelectorAll('.btn-remove').forEach(button => {
         button.addEventListener('click', function() {
             const key = this.getAttribute('data-key');
-            updateCart(key, 0); // Enviar una cantidad de 0 para eliminar el producto
-            document.querySelector(`tr[data-key="${key}"]`).remove(); // Eliminar la fila de la tabla
+            updateCart(key, 0);
+            document.querySelector(`tr[data-key="${key}"]`).remove();
             checkIfCartIsEmpty();
         });
     });
 
-    // Función para verificar si el carrito está vacío después de eliminar un ítem
     function checkIfCartIsEmpty() {
         const remainingItems = document.querySelectorAll('tbody tr').length;
         if (remainingItems === 0) {

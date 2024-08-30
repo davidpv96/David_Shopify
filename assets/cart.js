@@ -53,13 +53,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         } else {
-            // Actualizar el subtotal usando el formato dinámico
-            const formattedTotal = moneyFormat.replace('{{amount}}', (cart.total_price / 100).toFixed(2));
+            // Actualizar el subtotal con el formato correcto
+            const formattedTotal = moneyFormat.replace(cart.total_price / 100, '');
             document.getElementById('cart-subtotal').textContent = formattedTotal;
     
             // Puedes actualizar otras partes del carrito como la cantidad total de ítems, etc.
         }
     }
+    
     // Asignar eventos a los botones de decremento
     document.querySelectorAll('.btn-decrease').forEach(button => {
         button.addEventListener('click', function() {

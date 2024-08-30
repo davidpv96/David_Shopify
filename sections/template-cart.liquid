@@ -3,15 +3,16 @@
     <h2 class="text-2xl font-semibold">Your cart</h2>
     <a href="/" class="text-green-600 hover:text-green-700 underline">Continue shopping</a>
   </div>
-
+  
   <!-- Formulario del carrito -->
   <form action="/cart" method="post" class="grid grid-cols-1 lg:grid-cols-3 gap-6" id="cart-form">
     <!-- Tabla de productos del carrito -->
     <div class="lg:col-span-2 overflow-x-auto">
       <table class="min-w-full bg-white border rounded-lg">
         <tbody>
+          <!-- Iterar sobre los items del carrito -->
           {% for item in cart.items %}
-          <tr class="border-b last:border-none cart-item" data-key="{{ item.key }}">
+          <tr class="border-b last:border-none" data-key="{{ item.key }}">
             <!-- Columna del producto -->
             <td class="py-4">
               <div class="flex items-center space-x-4">
@@ -20,18 +21,18 @@
                   <h3 class="text-lg font-semibold">{{ item.product.title }}</h3>
                   <p class="text-sm text-gray-500">{{ item.variant.title }}</p>
                   <p class="text-xs text-gray-400">Model: {{ item.sku }}</p>
-                  <p class="text-sm font-semibold mt-2 line-item-price">{{ item.final_line_price | money }}</p>
+                  <p class="text-sm font-semibold mt-2 item-price">{{ item.line_price | money }}</p>
                 </div>
               </div>
             </td>
             <!-- Columna de la cantidad -->
             <td class="py-4 text-center">
-              <div class="flex items-center justify-center space-x-2 cart-quantity-selector">
-                <button type="button" class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full text-gray-500 hover:bg-gray-200 focus:outline-none minus" data-key="{{ item.key }}" data-stock="{{ item.variant.inventory_quantity }}">
+              <div class="flex items-center justify-center space-x-2">
+                <button type="button" class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full text-gray-500 hover:bg-gray-200 focus:outline-none btn-decrease" data-key="{{ item.key }}" data-stock="{{ item.variant.inventory_quantity }}">
                   <span class="text-lg font-bold leading-none">-</span>
                 </button>
                 <input type="number" name="updates[{{ item.key }}]" value="{{ item.quantity }}" min="0" max="{{ item.variant.inventory_quantity }}" class="w-12 h-10 text-center border border-gray-300 rounded outline-none focus:ring focus:ring-gray-300 item-quantity" data-key="{{ item.key }}" data-stock="{{ item.variant.inventory_quantity }}">
-                <button type="button" class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full text-gray-500 hover:bg-gray-200 focus:outline-none plus" data-key="{{ item.key }}" data-stock="{{ item.variant.inventory_quantity }}">
+                <button type="button" class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full text-gray-500 hover:bg-gray-200 focus:outline-none btn-increase" data-key="{{ item.key }}" data-stock="{{ item.variant.inventory_quantity }}">
                   <span class="text-lg font-bold leading-none">+</span>
                 </button>
               </div>
@@ -55,7 +56,7 @@
       <textarea name="note" class="w-full p-2 border rounded-md mb-4" placeholder="Order special instructions"></textarea>
       <div class="flex justify-between mb-4">
         <p>Subtotal</p>
-        <p class="font-semibold" id="total-price">{{ cart.total_price | money }}</p>
+        <p class="font-semibold" id="cart-subtotal">{{ cart.total_price | money }}</p>
       </div>
       <p class="text-sm text-gray-500 mb-4">Tax included and shipping calculated at checkout</p>
       {% if cart.total_price >= 10000 %}
@@ -69,5 +70,4 @@
     </div>
   </form>
 </div>
-
 

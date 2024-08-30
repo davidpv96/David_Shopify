@@ -51,34 +51,43 @@ document.addEventListener('DOMContentLoaded', function() {
     const cartForm = document.getElementById('cart-form');
     
     // Función para actualizar la cantidad
-    function updateQuantity(buttonOrInput, isIncrease) {
+    function updateQuantity(buttonOrInput, isIncrease, manual = false) {
         const key = buttonOrInput.getAttribute('data-key');
         const stock = buttonOrInput.getAttribute('data-stock');
         const input = document.querySelector(`input[name="updates[${key}]"]`);
         let quantity = parseInt(input.value);
 
-        // Verifica si el producto tiene seguimiento de stock
-        if (stock === null || stock === '' || stock === undefined || isNaN(parseInt(stock))) {
-            // No tiene seguimiento de stock, permite incrementar sin límite
-            if (isIncrease) {
-                quantity++;
-            } else if (!isIncrease && quantity > 1) {
-                quantity--;
+        if (manual) {
+            if (stock !== null && stock !== '' && stock !== undefined && !isNaN(parseInt(stock))) {
+                const stockValue = parseInt(stock);
+                if (quantity > stockValue) {
+                    quantity = stockValue;
+                }
             }
         } else {
-            // Tiene seguimiento de stock
-            const stockValue = parseInt(stock);
-            if (isIncrease) {
-                if (quantity < stockValue) {
+            // Verifica si el producto tiene seguimiento de stock
+            if (stock === null || stock === '' || stock === undefined || isNaN(parseInt(stock))) {
+                // No tiene seguimiento de stock, permite incrementar sin límite
+                if (isIncrease) {
                     quantity++;
+                } else if (!isIncrease && quantity > 1) {
+                    quantity--;
                 }
-            } else if (!isIncrease && quantity > 1) {
-                quantity--;
-            }
+            } else {
+                // Tiene seguimiento de stock
+                const stockValue = parseInt(stock);
+                if (isIncrease) {
+                    if (quantity < stockValue) {
+                        quantity++;
+                    }
+                } else if (!isIncrease && quantity > 1) {
+                    quantity--;
+                }
 
-            // Verificar si la cantidad ingresada supera el stock
-            if (quantity > stockValue) {
-                quantity = stockValue;
+                // Verificar si la cantidad ingresada supera el stock
+                if (quantity > stockValue) {
+                    quantity = stockValue;
+                }
             }
         }
 
@@ -153,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Asignar evento al input de cantidad para actualizar directamente desde el input
     document.querySelectorAll('.item-quantity').forEach(input => {
         input.addEventListener('change', function() {
-            updateQuantity(this, false); // No se usa isIncrease ya que el valor se asigna directamente desde el input
+            updateQuantity(this, false, true); // Marcamos como manual el cambio
         });
     });
 

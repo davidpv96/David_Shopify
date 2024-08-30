@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para actualizar la interfaz de usuario del carrito
     function updateCartUI(cart) {
-        // Si el carrito está vacío
         if (cart.item_count === 0) {
             document.querySelector('.max-w-7xl').innerHTML = `
                 <div class="text-center">
@@ -51,10 +50,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         } else {
-            // Actualizar el subtotal
-            document.getElementById('cart-subtotal').textContent = `$${(cart.total_price / 100).toFixed(2)}`;
-            
-            // Puedes actualizar otras partes del carrito como la cantidad total de ítems, etc.
+            // Actualizar el subtotal usando el valor preformateado en Liquid
+            document.getElementById('cart-subtotal').textContent = document.getElementById('cart-subtotal').getAttribute('data-subtotal');
         }
     }
 

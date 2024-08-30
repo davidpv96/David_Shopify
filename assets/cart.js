@@ -1,6 +1,49 @@
 document.addEventListener('DOMContentLoaded', function() {
-  
     const cartForm = document.getElementById('cart-form');
+
+    function formatMoney(cents, format) {
+        if (typeof cents == 'string') { cents = cents.replace('.',''); }
+        var value = '';
+        var placeholderRegex = /\{\{\s*(\w+)\s*\}\}/;
+        var formatString = (format || '{{ amount }}');
+
+        function defaultOption(opt, def) {
+           return (typeof opt == 'undefined' ? def : opt);
+        }
+
+        function formatWithDelimiters(number, precision, thousands, decimal) {
+            precision = defaultOption(precision, 2);
+            thousands = defaultOption(thousands, ',');
+            decimal   = defaultOption(decimal, '.');
+
+            if (isNaN(number) || number == null) { return 0; }
+
+            number = (number/100.0).toFixed(precision);
+
+            var parts   = number.split('.'),
+                dollars = parts[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1' + thousands),
+                cents   = parts[1] ? (decimal + parts[1]) : '';
+
+            return dollars + cents;
+        }
+
+        switch(formatString.match(placeholderRegex)[1]) {
+            case 'amount':
+                value = formatWithDelimiters(cents, 2);
+                break;
+            case 'amount_no_decimals':
+                value = formatWithDelimiters(cents, 0);
+                break;
+            case 'amount_with_comma_separator':
+                value = formatWithDelimiters(cents, 2, '.', ',');
+                break;
+            case 'amount_no_decimals_with_comma_separator':
+                value = formatWithDelimiters(cents, 0, '.', ',');
+                break;
+        }
+
+        return formatString.replace(placeholderRegex, value);
+    }
 
     function updateQuantity(button, isIncrease) {
         const key = button.getAttribute('data-key');
@@ -39,16 +82,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateCartUI(cart) {
         // Formatear el total de acuerdo con la configuración de Shopify
-        const formattedTotal = Shopify.formatMoney(cart.total_price, theme.moneyFormat);
+        const formattedTotal = formatMoney(cart.total_price, shopifyMoneyFormat);
     
         // Actualizar el subtotal en el DOM
-        const subtotalElement = document.getElementById('cart-subtotal');
-        if (subtotalElement) {
-            subtotalElement.textContent = formattedTotal;
-            console.log('Subtotal actualizado:', formattedTotal);
-        } else {
-            console.error('Elemento cart-subtotal no encontrado');
-        }
+        document.getElementById('cart-subtotal').textContent = formattedTotal;
     
         // Actualizar el precio de cada artículo en el carrito
         cart.items.forEach(item => {
@@ -57,22 +94,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 const itemPriceElement = itemElement.querySelector('.item-price');
                 const itemQuantityElement = itemElement.querySelector('.item-quantity');
                 if (itemPriceElement) {
-                    const itemPrice = Shopify.formatMoney(item.final_line_price, theme.moneyFormat);
+                    const itemPrice = formatMoney(item.final_line_price, shopifyMoneyFormat);
                     itemPriceElement.textContent = itemPrice;
-                    console.log('Precio del artículo actualizado:', itemPrice);
                 }
                 if (itemQuantityElement) {
                     itemQuantityElement.value = item.quantity;
-                    console.log('Cantidad del artículo actualizada:', item.quantity);
                 }
-            } else {
-                console.error(`Elemento con key ${item.key} no encontrado`);
             }
         });
-    
+
         checkIfCartIsEmpty();
     }
-    
 
     document.querySelectorAll('.btn-decrease, .btn-increase').forEach(button => {
         button.addEventListener('click', function() {

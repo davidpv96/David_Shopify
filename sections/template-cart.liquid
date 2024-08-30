@@ -17,9 +17,9 @@
             <tr class="border-b last:border-none" data-key="{{ item.key }}">
               <!-- Columna del producto -->
               <td class="py-4">
-                <div class="flex items-center space-x-4">
+                <div class="flex flex-col sm:flex-row items-center sm:space-x-4 space-y-4 sm:space-y-0">
                   <img src="{{ item.image | img_url: 'medium' }}" alt="{{ item.title }}" class="w-24 h-24 object-cover">
-                  <div>
+                  <div class="text-center sm:text-left">
                     <h3 class="text-lg font-semibold">{{ item.product.title }}</h3>
                     <p class="text-sm text-gray-500">{{ item.variant.title }}</p>
                     <p class="text-xs text-gray-400">Model: {{ item.sku }}</p>
@@ -31,7 +31,7 @@
               <td class="py-4 text-center">
                 <div class="flex items-center justify-center space-x-2">
                   <button type="button" 
-                          class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full text-gray-500 hover:bg-gray-200 focus:outline-none btn-decrease" 
+                          class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-full text-gray-500 hover:bg-gray-200 focus:outline-none btn-decrease" 
                           data-key="{{ item.key }}" 
                           data-stock="{% if item.variant.inventory_management %}{{ item.variant.inventory_quantity }}{% else %}''{% endif %}">
                     <span class="text-lg font-bold leading-none">-</span>
@@ -41,11 +41,11 @@
                          value="{{ item.quantity }}" 
                          min="0" 
                          max="{% if item.variant.inventory_management %}{{ item.variant.inventory_quantity }}{% else %}''{% endif %}" 
-                         class="w-12 h-10 text-center border border-gray-300 rounded outline-none focus:ring focus:ring-gray-300 item-quantity" 
+                         class="w-12 h-8 text-center border border-gray-300 rounded outline-none focus:ring focus:ring-gray-300 item-quantity" 
                          data-key="{{ item.key }}" 
                          data-stock="{% if item.variant.inventory_management %}{{ item.variant.inventory_quantity }}{% else %}''{% endif %}">
                   <button type="button" 
-                          class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full text-gray-500 hover:bg-gray-200 focus:outline-none btn-increase" 
+                          class="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-full text-gray-500 hover:bg-gray-200 focus:outline-none btn-increase" 
                           data-key="{{ item.key }}" 
                           data-stock="{% if item.variant.inventory_management %}{{ item.variant.inventory_quantity }}{% else %}''{% endif %}">
                     <span class="text-lg font-bold leading-none">+</span>
@@ -53,8 +53,8 @@
                 </div>
               </td>
               <!-- Columna para eliminar el producto y mostrar subtotal -->
-              <td class="py-4">
-                <div class="flex justify-between mr-3">
+              <td class="py-4 text-center sm:text-right">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center space-y-4 sm:space-y-0 sm:space-x-3">
                   <button type="button" class="text-gray-500 hover:text-red-700 btn-remove" data-key="{{ item.key }}">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>

@@ -36,9 +36,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateCartUI(cart) {
         // Formatear el total de acuerdo con la configuración de Shopify
         const formattedTotal = Shopify.formatMoney(cart.total_price, "{{ amount }}");
-
+    
+        // Actualizar el subtotal en el DOM
         document.getElementById('cart-subtotal').textContent = formattedTotal;
-
+    
+        // Actualizar el precio de cada artículo en el carrito
         cart.items.forEach(item => {
             const itemElement = document.querySelector(`tr[data-key="${item.key}"] .item-price`);
             if (itemElement) {

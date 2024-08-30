@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
         } else {
             // Actualizar el subtotal
-            document.getElementById('cart-subtotal').textContent = `$${(cart.total_price / 100).toFixed(2)}`;
+            document.getElementById('cart-subtotal').textContent = `S/. ${(cart.total_price / 100).toFixed(2)}`;
             
             // Puedes actualizar otras partes del carrito como la cantidad total de ítems, etc.
         }

@@ -82,7 +82,10 @@
 </div>
 
 
-
-
+<script>
+  theme = {
+    moneyFormat: {{ shop.money_format | json }}
+  }
+</script>
 {{ 'cart.js' | asset_url | script_tag }}
 

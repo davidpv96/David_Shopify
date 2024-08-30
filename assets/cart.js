@@ -51,9 +51,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const cartForm = document.getElementById('cart-form');
     
     // Función para actualizar la cantidad
-    function updateQuantity(button, isIncrease) {
-        const key = button.getAttribute('data-key');
-        const stock = button.getAttribute('data-stock');
+    function updateQuantity(buttonOrInput, isIncrease) {
+        const key = buttonOrInput.getAttribute('data-key');
+        const stock = buttonOrInput.getAttribute('data-stock');
         const input = document.querySelector(`input[name="updates[${key}]"]`);
         let quantity = parseInt(input.value);
 
@@ -68,10 +68,17 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             // Tiene seguimiento de stock
             const stockValue = parseInt(stock);
-            if (isIncrease && quantity < stockValue) {
-                quantity++;
+            if (isIncrease) {
+                if (quantity < stockValue) {
+                    quantity++;
+                }
             } else if (!isIncrease && quantity > 1) {
                 quantity--;
+            }
+
+            // Verificar si la cantidad ingresada supera el stock
+            if (quantity > stockValue) {
+                quantity = stockValue;
             }
         }
 
@@ -140,6 +147,13 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.btn-increase').forEach(button => {
         button.addEventListener('click', function() {
             updateQuantity(this, true);
+        });
+    });
+
+    // Asignar evento al input de cantidad para actualizar directamente desde el input
+    document.querySelectorAll('.item-quantity').forEach(input => {
+        input.addEventListener('change', function() {
+            updateQuantity(this, false); // No se usa isIncrease ya que el valor se asigna directamente desde el input
         });
     });
 

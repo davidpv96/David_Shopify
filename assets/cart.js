@@ -1,6 +1,23 @@
 document.addEventListener('DOMContentLoaded', function() {
     const cartForm = document.getElementById('cart-form');
     
+    // Función para enviar la actualización del carrito al servidor
+    function updateCart(key, quantity) {
+        const formData = new FormData();
+        formData.append('updates[' + key + ']', quantity);
+
+        fetch('/cart/update.js', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Actualizar el subtotal y otros elementos del carrito
+            updateCartUI(data);
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
     // Función para actualizar la cantidad
     function updateQuantity(button, isIncrease) {
         const key = button.getAttribute('data-key');
@@ -20,22 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Enviar actualización al servidor
         updateCart(key, quantity);
-    }
-
-    // Función para enviar la actualización del carrito al servidor
-    function updateCart(key, quantity) {
-        const formData = new FormData(cartForm);
-
-        fetch('/cart/update.js', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Actualizar el subtotal y otros elementos del carrito
-            updateCartUI(data);
-        })
-        .catch(error => console.error('Error:', error));
     }
 
     // Función para actualizar la interfaz de usuario del carrito

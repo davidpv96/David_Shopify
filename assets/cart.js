@@ -1,6 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const cartForm = document.getElementById('cart-form');
-    
     // Función para enviar la actualización del carrito al servidor
     function updateCart(key, quantity) {
         const formData = new FormData();
@@ -54,6 +52,17 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('cart-subtotal').textContent = cart.total_price.toLocaleString('en-US', {
                 style: 'currency',
                 currency: cart.currency
+            });
+
+            // Actualizar cada línea del carrito
+            cart.items.forEach(item => {
+                const priceElement = document.querySelector(`.item-price[data-key="${item.key}"]`);
+                if (priceElement) {
+                    priceElement.textContent = item.line_price.toLocaleString('en-US', {
+                        style: 'currency',
+                        currency: cart.currency
+                    });
+                }
             });
         }
     }

@@ -39,27 +39,32 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Función para actualizar la interfaz de usuario del carrito
-    function updateCartUI(cart) {
-        // Obtener el formato de moneda desde el elemento data-attribute
-        const moneyFormat = document.getElementById('cart-subtotal').getAttribute('data-money-format');
+   function updateCartUI(cart) {
+    // Obtener el formato de moneda desde el elemento data-attribute
+    const moneyFormat = document.getElementById('cart-subtotal').getAttribute('data-money-format');
     
-        // Si el carrito está vacío
-        if (cart.item_count === 0) {
-            document.querySelector('.max-w-7xl').innerHTML = `
-                <div class="text-center">
-                    <h2 class="text-2xl font-semibold">Your cart is empty</h2>
-                    <a href="/" class="inline-block bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 mt-4">Continue shopping</a>
-                    <p class="mt-4">Have an account? <a href="/account/login" class="text-green-600 hover:text-green-700 underline">Log in to check out faster.</a></p>
-                </div>
-            `;
-        } else {
-            // Actualizar el subtotal usando el formato dinámico
-            const formattedTotal = moneyFormat.replace('{{amount}}', (cart.total_price / 100).toFixed(2));
-            document.getElementById('cart-subtotal').textContent = formattedTotal;
-    
-            // Puedes actualizar otras partes del carrito como la cantidad total de ítems, etc.
-        }
+    // Si el carrito está vacío
+    if (cart.item_count === 0) {
+        document.querySelector('.max-w-7xl').innerHTML = `
+            <div class="text-center">
+                <h2 class="text-2xl font-semibold">Your cart is empty</h2>
+                <a href="/" class="inline-block bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 mt-4">Continue shopping</a>
+                <p class="mt-4">Have an account? <a href="/account/login" class="text-green-600 hover:text-green-700 underline">Log in to check out faster.</a></p>
+            </div>
+        `;
+    } else {
+        // Reemplazar el marcador {{amount}} o cualquier formato similar en el formato de moneda
+        const formattedTotal = moneyFormat
+            .replace(/{{amount_with_comma_separator}}/g, (cart.total_price / 100).toLocaleString())
+            .replace(/{{amount}}/g, (cart.total_price / 100).toFixed(2));
+
+        document.getElementById('cart-subtotal').textContent = formattedTotal;
+
+        // Puedes actualizar otras partes del carrito como la cantidad total de ítems, etc.
     }
+}
+
+    
     // Asignar eventos a los botones de decremento
     document.querySelectorAll('.btn-decrease').forEach(button => {
         button.addEventListener('click', function() {

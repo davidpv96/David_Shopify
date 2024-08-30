@@ -53,21 +53,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // Función para actualizar la cantidad
     function updateQuantity(button, isIncrease) {
         const key = button.getAttribute('data-key');
-        const stock = parseInt(button.getAttribute('data-stock'));
+        const stock = button.getAttribute('data-stock');
         const input = document.querySelector(`input[name="updates[${key}]"]`);
         let quantity = parseInt(input.value);
 
-        // Verifica si el producto tiene seguimiento de stock (stock >= 0)
-        if (isNaN(stock) || stock >= 0) {
-            // Aumentar o disminuir la cantidad
-            if (isIncrease && (isNaN(stock) || quantity < stock)) {
+        // Verifica si el producto tiene seguimiento de stock
+        if (!stock || isNaN(parseInt(stock))) {
+            // No tiene seguimiento de stock
+            if (isIncrease) {
                 quantity++;
             } else if (!isIncrease && quantity > 1) {
                 quantity--;
             }
         } else {
-            // Si no tiene seguimiento de stock, permite siempre aumentar o disminuir
-            if (isIncrease) {
+            // Tiene seguimiento de stock
+            const stockValue = parseInt(stock);
+            if (isIncrease && quantity < stockValue) {
                 quantity++;
             } else if (!isIncrease && quantity > 1) {
                 quantity--;

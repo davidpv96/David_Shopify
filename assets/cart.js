@@ -58,8 +58,8 @@ document.addEventListener('DOMContentLoaded', function() {
         let quantity = parseInt(input.value);
 
         // Verifica si el producto tiene seguimiento de stock
-        if (!stock || isNaN(parseInt(stock))) {
-            // No tiene seguimiento de stock
+        if (stock === null || stock === '' || stock === undefined || isNaN(parseInt(stock))) {
+            // No tiene seguimiento de stock, permite incrementar sin límite
             if (isIncrease) {
                 quantity++;
             } else if (!isIncrease && quantity > 1) {

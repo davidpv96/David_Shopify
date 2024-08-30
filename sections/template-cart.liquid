@@ -30,11 +30,24 @@
               <!-- Columna de la cantidad -->
               <td class="py-4 text-center">
                 <div class="flex items-center justify-center space-x-2">
-                  <button type="button" class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full text-gray-500 hover:bg-gray-200 focus:outline-none btn-decrease" data-key="{{ item.key }}" data-stock="{{ item.variant.inventory_quantity }}">
+                  <button type="button" 
+                          class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full text-gray-500 hover:bg-gray-200 focus:outline-none btn-decrease" 
+                          data-key="{{ item.key }}" 
+                          data-stock="{% if item.variant.inventory_management %}{{ item.variant.inventory_quantity }}{% else %}''{% endif %}">
                     <span class="text-lg font-bold leading-none">-</span>
                   </button>
-                  <input type="number" name="updates[{{ item.key }}]" value="{{ item.quantity }}" min="0" max="{{ item.variant.inventory_quantity }}" class="w-12 h-10 text-center border border-gray-300 rounded outline-none focus:ring focus:ring-gray-300 item-quantity" data-key="{{ item.key }}" data-stock="{{ item.variant.inventory_quantity }}">
-                  <button type="button" class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full text-gray-500 hover:bg-gray-200 focus:outline-none btn-increase" data-key="{{ item.key }}" data-stock="{{ item.variant.inventory_quantity }}">
+                  <input type="number" 
+                         name="updates[{{ item.key }}]" 
+                         value="{{ item.quantity }}" 
+                         min="0" 
+                         max="{% if item.variant.inventory_management %}{{ item.variant.inventory_quantity }}{% else %}''{% endif %}" 
+                         class="w-12 h-10 text-center border border-gray-300 rounded outline-none focus:ring focus:ring-gray-300 item-quantity" 
+                         data-key="{{ item.key }}" 
+                         data-stock="{% if item.variant.inventory_management %}{{ item.variant.inventory_quantity }}{% else %}''{% endif %}">
+                  <button type="button" 
+                          class="w-10 h-10 flex items-center justify-center border border-gray-300 rounded-full text-gray-500 hover:bg-gray-200 focus:outline-none btn-increase" 
+                          data-key="{{ item.key }}" 
+                          data-stock="{% if item.variant.inventory_management %}{{ item.variant.inventory_quantity }}{% else %}''{% endif %}">
                     <span class="text-lg font-bold leading-none">+</span>
                   </button>
                 </div>

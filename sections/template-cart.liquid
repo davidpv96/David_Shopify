@@ -23,7 +23,7 @@
                     <h3 class="text-lg font-semibold">{{ item.product.title }}</h3>
                     <p class="text-sm text-gray-500">{{ item.variant.title }}</p>
                     <p class="text-xs text-gray-400">Model: {{ item.sku }}</p>
-                    <p class="text-sm font-semibold mt-2 item-price">{{ item.line_price | money }}</p>
+                    <p class="text-sm font-semibold mt-2 item-price">{{ item.final_line_price | money }}</p>
                   </div>
                 </div>
               </td>
@@ -58,7 +58,7 @@
         <textarea name="note" class="w-full p-2 border rounded-md mb-4" placeholder="Order special instructions"></textarea>
         <div class="flex justify-between mb-4">
           <p>Subtotal</p>
-          <p class="font-semibold" id="cart-subtotal">{{ cart.total_price | money }}</p>
+          <p class="font-semibold" id="cart-subtotal" data-money-format="{{ shop.money_format }}">{{ cart.total_price | money }}</p>
         </div>
         <p class="text-sm text-gray-500 mb-4">Tax included and shipping calculated at checkout</p>
         {% if cart.total_price >= 10000 %}
@@ -81,11 +81,7 @@
   {% endif %}
 </div>
 
-
-<script>
-  theme = {
-    moneyFormat: {{ shop.money_format | json }}
-  }
-</script>
 {{ 'cart.js' | asset_url | script_tag }}
+
+
 

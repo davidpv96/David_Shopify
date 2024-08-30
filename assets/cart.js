@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const cartForm = document.getElementById('cart-form');
-    
+
     // Función para actualizar la cantidad
     function updateQuantity(button, isIncrease) {
         const key = button.getAttribute('data-key');
@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para actualizar la interfaz de usuario del carrito
     function updateCartUI(cart) {
-        // Obtener el formato de moneda desde el elemento data-attributeS
+        // Obtener el formato de moneda desde el elemento data-attribute
         const moneyFormat = document.getElementById('cart-subtotal').getAttribute('data-money-format');
         
         // Si el carrito está vacío
@@ -57,14 +57,22 @@ document.addEventListener('DOMContentLoaded', function() {
             const formattedTotal = moneyFormat
                 .replace(/{{amount_with_comma_separator}}/g, (cart.total_price / 100).toLocaleString())
                 .replace(/{{amount}}/g, (cart.total_price / 100).toFixed(2));
-    
+
             document.getElementById('cart-subtotal').textContent = formattedTotal;
-    
-            // Puedes actualizar otras partes del carrito como la cantidad total de ítems, etc.
+
+            // Actualizar el precio de cada artículo individual
+            cart.items.forEach(item => {
+                const itemElement = document.querySelector(`tr[data-key="${item.key}"] .item-price`);
+                if (itemElement) {
+                    const itemPrice = moneyFormat
+                        .replace(/{{amount_with_comma_separator}}/g, (item.line_price / 100).toLocaleString())
+                        .replace(/{{amount}}/g, (item.line_price / 100).toFixed(2));
+                    itemElement.textContent = itemPrice;
+                }
+            });
         }
     }
-    
-    
+
     // Asignar eventos a los botones de decremento
     document.querySelectorAll('.btn-decrease').forEach(button => {
         button.addEventListener('click', function() {

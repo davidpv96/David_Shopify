@@ -118,66 +118,58 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-   // Función para actualizar la cantidad y el carrito
-   function updateCart(key, quantity) {
-    fetch(`/cart/change.js`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      body: JSON.stringify({
-        id: key,
-        quantity: quantity
-      })
+  // Función para actualizar la cantidad y el carrito utilizando axios
+  function updateCart(key, quantity) {
+    axios.post('/cart/change.js', {
+      id: key,
+      quantity: quantity
     })
-    .then(response => response.json())
-    .then(data => {
-      console.log("Cart updated:", data);
+    .then(res => {
+      const format = document.querySelector("[data-money-format]").getAttribute("data-money-format");
+      const totalPrice = res.data.total_price;
+      const item = res.data.items.find(item => item.key === key);
+      const itemPrice = Shopify.formatMoney(item.final_line_price, format);
 
-      // Si la cantidad es 0, eliminamos la fila correspondiente
-      if (quantity <= 0) {
-        document.querySelector(`tr[data-key="${key}"]`).remove();
-      } else {
-        // Actualizamos la cantidad y el precio del ítem
-        document.querySelector(`input[data-key="${key}"]`).value = quantity;
-        document.querySelector(`tr[data-key="${key}"] .item-price`).textContent = Shopify.formatMoney(data.items.find(item => item.key === key).line_price);
-      }
+      // Actualizar el subtotal y el total
+      document.querySelector("#total-price").textContent = Shopify.formatMoney(totalPrice, format);
 
-      // Actualizar el subtotal
-      document.getElementById("cart-subtotal").textContent = Shopify.formatMoney(data.total_price);
-      console.log("Subtotal updated:", data.total_price);
+      // Actualizar el precio del item
+      document.querySelector(`[data-key="${key}"] .line-item-price`).textContent = itemPrice;
+      
+      console.log("Carrito actualizado:", res.data);
     })
-    .catch(error => console.error("Error updating cart:", error));
+    .catch(error => console.error("Error al actualizar el carrito:", error));
   }
 
   // Decrease quantity
-  document.querySelectorAll(".btn-decrease").forEach(button => {
+  document.querySelectorAll(".minus").forEach(button => {
     button.addEventListener("click", function() {
       let key = this.getAttribute("data-key");
       let stock = this.getAttribute("data-stock");
-      stock = (stock !== null && stock !== "" && !isNaN(stock)) ? parseInt(stock) : Infinity; // Manejar stock ilimitado
+      stock = stock && !isNaN(stock) ? parseInt(stock) : Infinity; // Manejar stock ilimitado
       let quantityInput = document.querySelector(`input[data-key="${key}"]`);
       let currentQuantity = parseInt(quantityInput.value);
       let newQuantity = currentQuantity - 1;
 
       if (newQuantity >= 0) {
+        quantityInput.value = newQuantity;
         updateCart(key, newQuantity);
       }
     });
   });
 
   // Increase quantity
-  document.querySelectorAll(".btn-increase").forEach(button => {
+  document.querySelectorAll(".plus").forEach(button => {
     button.addEventListener("click", function() {
       let key = this.getAttribute("data-key");
       let stock = this.getAttribute("data-stock");
-      stock = (stock !== null && stock !== "" && !isNaN(stock)) ? parseInt(stock) : Infinity; // Manejar stock ilimitado
+      stock = stock && !isNaN(stock) ? parseInt(stock) : Infinity; // Manejar stock ilimitado
       let quantityInput = document.querySelector(`input[data-key="${key}"]`);
       let currentQuantity = parseInt(quantityInput.value);
       let newQuantity = currentQuantity + 1;
 
       if (newQuantity <= stock) {
+        quantityInput.value = newQuantity;
         updateCart(key, newQuantity);
       } else {
         alert(`Sorry, only ${stock} items in stock.`);
@@ -190,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
     input.addEventListener("change", function() {
       let key = this.getAttribute("data-key");
       let stock = this.getAttribute("data-stock");
-      stock = (stock !== null && stock !== "" && !isNaN(stock)) ? parseInt(stock) : Infinity; // Manejar stock ilimitado
+      stock = stock && !isNaN(stock) ? parseInt(stock) : Infinity; // Manejar stock ilimitado
       let newQuantity = parseInt(this.value);
 
       if (newQuantity > stock) {
@@ -219,4 +211,57 @@ document.addEventListener('DOMContentLoaded', function () {
   function removeItemFromCart(key) {
     updateCart(key, 0);
   }
+
+
+
+
+  var Shopify = Shopify || {};
+
+// Configuración del formato de dinero
+Shopify.money_format = "${{amount}}";
+
+// Función para formatear dinero
+Shopify.formatMoney = function(cents, format) {
+  if (typeof cents == 'string') { cents = cents.replace('.',''); }
+  var value = '';
+  var placeholderRegex = /\{\{\s*(\w+)\s*\}\}/;
+  var formatString = (format || this.money_format);
+
+  function defaultOption(opt, def) {
+     return (typeof opt == 'undefined' ? def : opt);
+  }
+
+  function formatWithDelimiters(number, precision, thousands, decimal) {
+    precision = defaultOption(precision, 2);
+    thousands = defaultOption(thousands, ',');
+    decimal   = defaultOption(decimal, '.');
+
+    if (isNaN(number) || number == null) { return 0; }
+
+    number = (number / 100.0).toFixed(precision);
+
+    var parts = number.split('.'),
+        dollars = parts[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1' + thousands),
+        cents = parts[1] ? (decimal + parts[1]) : '';
+
+    return dollars + cents;
+  }
+
+  switch(formatString.match(placeholderRegex)[1]) {
+    case 'amount':
+      value = formatWithDelimiters(cents, 2);
+      break;
+    case 'amount_no_decimals':
+      value = formatWithDelimiters(cents, 0);
+      break;
+    case 'amount_with_comma_separator':
+      value = formatWithDelimiters(cents, 2, '.', ',');
+      break;
+    case 'amount_no_decimals_with_comma_separator':
+      value = formatWithDelimiters(cents, 0, '.', ',');
+      break;
+  }
+
+  return formatString.replace(placeholderRegex, value);
+};
 });

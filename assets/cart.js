@@ -1,5 +1,4 @@
 var Shopify = Shopify || {};
-
 // ---------------------------------------------------------------------------
 // Money format handler
 // ---------------------------------------------------------------------------
@@ -82,6 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = response.data;
             // Actualizar el subtotal y otros elementos del carrito
             updateCartUI(data);
+            updateItemSubtotal(key, data);
         })
         .catch(error => console.error('Error:', error));
     }
@@ -104,8 +104,17 @@ document.addEventListener('DOMContentLoaded', function() {
             // Actualizar el subtotal formateado con la función de Shopify
             const formattedTotal = Shopify.formatMoney(cart.total_price, moneyFormat);
             document.getElementById('cart-subtotal').textContent = formattedTotal;
+        }
+    }
 
-            // Actualizar otras partes del carrito como la cantidad total de ítems, etc.
+    // Función para actualizar el subtotal de un ítem
+    function updateItemSubtotal(key, cartData) {
+        const item = cartData.items.find(item => item.key === key);
+        if (item) {
+            const subtotalElement = document.querySelector(`.item-subtotal[data-key="${key}"]`);
+            const moneyFormat = document.querySelector('[data-money-format]').getAttribute('data-money-format');
+            const formattedSubtotal = Shopify.formatMoney(item.line_price, moneyFormat);
+            subtotalElement.textContent = formattedSubtotal;
         }
     }
 

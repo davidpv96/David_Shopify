@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
-            // Deshabilitar temporalmente los botones y el input
+            // Deshabilitar temporalmente los botones y el inputS
             const buttons = form.querySelectorAll(`button[data-key="${key}"]`);
             buttons.forEach(button => button.disabled = true);
             input.disabled = true;

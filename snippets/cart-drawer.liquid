@@ -34,9 +34,9 @@
     </div>
 
     <!-- Lista de productos en el carrito con scroll -->
-    <form action="/cart" method="post" class="grid grid-cols-1 lg:grid-cols-3 gap-6" id="cart-form">
+    <form action="/cart" method="post" class="grid grid-cols-1 gap-6" id="cart-form">
       <!-- Tabla de productos del carrito -->
-      <div class="lg:col-span-2 overflow-x-auto">
+      <div class="overflow-y-auto">
         <table class="min-w-full bg-white border rounded-lg">
           <tbody>
             <!-- Iterar sobre los items del carrito -->
@@ -44,13 +44,15 @@
             <tr class="border-b last:border-none" data-key="{{ item.key }}">
               <!-- Columna del producto -->
               <td class="py-4">
-                <div class="flex flex-col sm:flex-row items-center sm:space-x-4 space-y-4 sm:space-y-0">
-                  <img src="{{ item.image | img_url: 'medium' }}" alt="{{ item.title }}" class="w-24 h-24 object-cover">
-                  <div class="text-center sm:text-left">
+                <div class="flex items-center">
+                  <img src="{{ item.image | img_url: 'medium' }}" alt="{{ item.title }}" class="w-24 h-24 object-cover rounded-md shadow-md">
+                  <div class="ml-4">
                     <h3 class="text-lg font-semibold">{{ item.product.title }}</h3>
                     <p class="text-sm text-gray-500">{{ item.variant.title }}</p>
                     <p class="text-xs text-gray-400">Model: {{ item.sku }}</p>
                     <p class="text-sm font-semibold mt-2 item-price">{{ item.price | money }}</p>
+                    <!-- Subtotal por producto -->
+                    <p class="text-sm text-gray-500 mt-2">Subtotal: <span class="item-subtotal" data-key="{{ item.key }}">{{ item.line_price | money }}</span></p>
                   </div>
                 </div>
               </td>
@@ -87,7 +89,6 @@
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                   </button>
-                  <span class="item-subtotal" data-key="{{ item.key }}">{{ item.line_price | money }}</span>
                 </div>
               </td>
             </tr>
@@ -95,7 +96,6 @@
           </tbody>
         </table>
       </div>
-
     </form>
 </div>
 

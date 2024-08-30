@@ -50,6 +50,8 @@ Shopify.formatMoney = function(cents, format) {
 
 document.addEventListener('DOMContentLoaded', function() {
     const forms = document.querySelectorAll('#cart-form, #cart-drawer-form');
+    
+    const cartItemCount = document.getElementById('cart-item-count');
     let isUpdating = false;
     const updateQueue = [];
 
@@ -120,12 +122,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 updateCartUI(data);
                 updateItemSubtotal(key, data);
                 synchronizeQuantityInputs(key, quantity);
+                updateCartItemCount(data.item_count); 
                 if (callback) callback();
             })
             .catch(error => {
                 console.error('Error:', error);
                 if (callback) callback();
             });
+        };
+
+        const updateCartItemCount = function(itemCount) {
+            if (cartItemCount) {
+                cartItemCount.textContent = itemCount;
+            }
         };
 
         const synchronizeQuantityInputs = function(key, quantity) {

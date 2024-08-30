@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+  
     const cartForm = document.getElementById('cart-form');
 
     function updateQuantity(button, isIncrease) {

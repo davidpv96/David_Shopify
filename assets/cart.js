@@ -1,21 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Función para enviar la actualización del carrito al servidor
-    function updateCart(key, quantity) {
-        const formData = new FormData();
-        formData.append('updates[' + key + ']', quantity);
-
-        fetch('/cart/update.js', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Actualizar la UI del carrito con los nuevos datos
-            updateCartUI(data);
-        })
-        .catch(error => console.error('Error:', error));
-    }
-
+    const cartForm = document.getElementById('cart-form');
+    
     // Función para actualizar la cantidad
     function updateQuantity(button, isIncrease) {
         const key = button.getAttribute('data-key');
@@ -37,8 +22,25 @@ document.addEventListener('DOMContentLoaded', function() {
         updateCart(key, quantity);
     }
 
+    // Función para enviar la actualización del carrito al servidor
+    function updateCart(key, quantity) {
+        const formData = new FormData(cartForm);
+
+        fetch('/cart/update.js', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Actualizar el subtotal y otros elementos del carrito
+            updateCartUI(data);
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
     // Función para actualizar la interfaz de usuario del carrito
     function updateCartUI(cart) {
+        // Si el carrito está vacío
         if (cart.item_count === 0) {
             document.querySelector('.max-w-7xl').innerHTML = `
                 <div class="text-center">
@@ -48,26 +50,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         } else {
-            // Actualizar el subtotal usando el valor formateado en Liquid
-            document.getElementById('cart-subtotal').textContent = cart.total_price.toLocaleString('en-US', {
-                style: 'currency',
-                currency: cart.currency
-            });
-
-            // Actualizar cada línea del carrito
-            cart.items.forEach(item => {
-                const priceElement = document.querySelector(`.item-price[data-key="${item.key}"]`);
-                if (priceElement) {
-                    // Actualiza el precio total del artículo con el valor formateado desde Shopify
-                    priceElement.textContent = `Total: ${item.line_price}`;
-                    
-                    // Actualizar también el precio por unidad si está visible
-                    const unitPriceElement = document.querySelector(`.unit-price[data-key="${item.key}"]`);
-                    if (unitPriceElement) {
-                        unitPriceElement.textContent = `Unit price: ${item.price}`;
-                    }
-                }
-            });
+            // Actualizar el subtotal
+            document.getElementById('cart-subtotal').textContent = `$${(cart.total_price / 100).toFixed(2)}`;
+            
+            // Puedes actualizar otras partes del carrito como la cantidad total de ítems, etc.
         }
     }
 

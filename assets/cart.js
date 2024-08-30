@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const cartForm = document.getElementById('cart-form');
-    
+
     function updateCart(key, quantity) {
         const formData = new FormData();
         formData.append('updates[' + key + ']', quantity);
@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
-            // Actualizar la UI del carrito con los nuevos datos
             updateCartUI(data);
         })
         .catch(error => console.error('Error:', error));
@@ -19,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateQuantity(button, isIncrease) {
         const key = button.getAttribute('data-key');
-        const price = parseFloat(button.getAttribute('data-price'));
+        const price = parseFloat(button.getAttribute('data-price')) * 100;
         const input = document.querySelector(`input[name="updates[${key}]"]`);
         let quantity = parseInt(input.value);
 
@@ -31,10 +30,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         input.value = quantity;
 
-        // Actualizar subtotal del ítem en la interfaz
+        // Calcular el nuevo subtotal del ítem y actualizar en la interfaz
         const itemSubtotalElement = document.querySelector(`tr[data-key="${key}"] .item-subtotal`);
-        const newSubtotal = (price * quantity).toFixed(2);
-        itemSubtotalElement.textContent = `€${newSubtotal}`;
+        const newSubtotal = price * quantity;
+        itemSubtotalElement.textContent = Shopify.formatMoney(newSubtotal, Shopify.money_format);
 
         // Enviar la actualización al servidor
         updateCart(key, quantity);
@@ -51,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
         } else {
             // Actualizar el subtotal general del carrito
-            document.getElementById('cart-subtotal').textContent = `€${(cart.total_price / 100).toFixed(2)}`;
+            document.getElementById('cart-subtotal').textContent = Shopify.formatMoney(cart.total_price, Shopify.money_format);
         }
     }
 

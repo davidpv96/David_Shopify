@@ -102,27 +102,3 @@
 {{ 'cart.js' | asset_url | script_tag }}
 
 
-{% schema %}
-  {
-    "name": "Cart Page",
-    "settings": [
-      {
-        "type": "select",
-        "id": "order_checkout_subtotal",
-        "label": "Ordenar elementos",
-        "options": [
-          {
-            "value": "subtotal_first",
-            "label": "Subtotal primero"
-          },
-          {
-            "value": "checkout_first",
-            "label": "Check out primero"
-          }
-        ],
-        "default": "subtotal_first"
-      }
-    ]
-  }
-  {% endschema %}
-  

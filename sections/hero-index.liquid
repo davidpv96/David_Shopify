@@ -12,7 +12,7 @@
 </div>
 
 {% comment %} Portada de video y descripción {% endcomment %}
-<section class="relative h-[500px] overflow-hidden">
+{% comment %} <section class="relative h-[500px] overflow-hidden">
   <!-- Video de fondo -->
   {% if section.settings.background_video_url %}
     <video class="absolute inset-0 w-full h-full object-cover" autoplay muted loop playsinline>
@@ -34,7 +34,7 @@
       {% endif %}
     </div>
   </div>
-</section>
+</section> {% endcomment %}
 
 <!-- Carrusel Swiper -->
 

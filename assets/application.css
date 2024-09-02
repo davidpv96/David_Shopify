@@ -661,6 +661,10 @@ video {
   z-index: 50;
 }
 
+.z-\[300\] {
+  z-index: 300;
+}
+
 .order-1 {
   order: 1;
 }
@@ -1617,6 +1621,10 @@ video {
 
 .opacity-100 {
   opacity: 1;
+}
+
+.opacity-50 {
+  opacity: 0.5;
 }
 
 .shadow {

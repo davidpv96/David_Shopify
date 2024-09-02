@@ -46,16 +46,19 @@
         {{ collection.products_count }} Productos
       </div>
       <div>
-        <label for="sort-by" class="text-gray-600 font-medium mr-2">Ordenar por:</label>
-        <select id="sort-by" name="sort_by" onchange="this.form.submit()" class="border-gray-300 rounded">
-          <option value="best-selling" {% if collection.sort_by == "best-selling" %}selected{% endif %}>Más vendidos</option>
-          <option value="title-ascending" {% if collection.sort_by == "title-ascending" %}selected{% endif %}>A-Z</option>
-          <option value="title-descending" {% if collection.sort_by == "title-descending" %}selected{% endif %}>Z-A</option>
-          <option value="price-ascending" {% if collection.sort_by == "price-ascending" %}selected{% endif %}>Precio: Menor a mayor</option>
-          <option value="price-descending" {% if collection.sort_by == "price-descending" %}selected{% endif %}>Precio: Mayor a menor</option>
-          <option value="created-descending" {% if collection.sort_by == "created-descending" %}selected{% endif %}>Nuevos a antiguos</option>
-          <option value="created-ascending" {% if collection.sort_by == "created-ascending" %}selected{% endif %}>Antiguos a nuevos</option>
-        </select>
+        <!-- Formulario para ordenar productos -->
+        <form id="sort_by_form" action="" method="get">
+          <label for="sort-by" class="text-gray-600 font-medium mr-2">Ordenar por:</label>
+          <select id="sort-by" name="sort_by" onchange="this.form.submit()" class="border-gray-300 rounded">
+            <option value="best-selling" {% if collection.sort_by == "best-selling" %}selected{% endif %}>Más vendidos</option>
+            <option value="title-ascending" {% if collection.sort_by == "title-ascending" %}selected{% endif %}>A-Z</option>
+            <option value="title-descending" {% if collection.sort_by == "title-descending" %}selected{% endif %}>Z-A</option>
+            <option value="price-ascending" {% if collection.sort_by == "price-ascending" %}selected{% endif %}>Precio: Menor a mayor</option>
+            <option value="price-descending" {% if collection.sort_by == "price-descending" %}selected{% endif %}>Precio: Mayor a menor</option>
+            <option value="created-descending" {% if collection.sort_by == "created-descending" %}selected{% endif %}>Nuevos a antiguos</option>
+            <option value="created-ascending" {% if collection.sort_by == "created-ascending" %}selected{% endif %}>Antiguos a nuevos</option>
+          </select>
+        </form>
       </div>
     </div>
 

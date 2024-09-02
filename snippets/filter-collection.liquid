@@ -1,4 +1,53 @@
 <form class="space-y-4">
+
+  <!-- Contenedor para "Filtros:" y "Remover todo" -->
+  <div class="pb-4 border-b border-gray-200 mb-8 flex justify-between items-center">
+    <span class="text-gray-600 font-semibold">Filtros:</span>
+
+    {%- assign has_active_filters = false -%}
+    {%- for filter in collection.filters -%}
+      {%- if filter.active_values.size > 0 -%}
+        {%- assign has_active_filters = true -%}
+      {%- endif -%}
+      {%- if filter.type == "price_range" -%}
+        {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+          {%- assign has_active_filters = true -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if has_active_filters -%}
+      <!-- Enlace "Remover todo" -->
+      <a href="{{ collection.url }}?sort_by={{ collection.sort_by }}" class="text-[#52A1BF] underline hover:no-underline cursor-pointer">Remover todo</a>
+    {%- endif -%}
+  </div>
+
+  <!-- Filtros Aplicados -->
+  {%- if has_active_filters -%}
+    <div class="flex flex-wrap space-x-2 mb-4">
+      {%- for filter in collection.filters -%}
+        {%- if filter.type == "price_range" -%}
+          {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+            <div class="inline-flex items-center bg-[#1D495B] text-white text-sm font-semibold px-2 py-1 rounded mr-2 mb-2">
+              <span>
+                {{ filter.min_value.value | money }} - {{ filter.max_value.value | money }}
+              </span>
+              <a href="{{ filter.url_to_remove }}" class="ml-2 text-white hover:text-gray-200 cursor-pointer">&times;</a>
+            </div>
+          {%- endif -%}
+        {%- else -%}
+          {%- for filter_value in filter.active_values -%}
+            <div class="inline-flex items-center bg-[#1D495B] text-white text-sm font-semibold px-2 py-1 rounded mr-2 mb-2">
+              <span>{{ filter.label }}: {{ filter_value.label }}</span>
+              <a href="{{ filter_value.url_to_remove }}" class="ml-2 text-white hover:text-gray-200 cursor-pointer">&times;</a>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  <!-- Resto de los filtros -->
   {%- for filter in collection.filters -%}
     <details class="border border-gray-200 rounded-lg">
       <summary class="bg-gray-100 p-4 cursor-pointer flex justify-between items-center">
@@ -12,7 +61,7 @@
         <div class="flex justify-between items-center text-sm">
           <p>{{ filter.active_values.size }} Seleccionados</p>
           {%- if filter.active_values.size > 0 -%}
-            <p><a href="{{ filter.url_to_remove }}" class="text-[#1D495B] hover:underline">Reiniciar</a></p>
+            <p><a href="{{ filter.url_to_remove }}" class="text-[#1D495B] hover:underline cursor-pointer">Reiniciar</a></p>
           {%- endif -%}
         </div>
 
@@ -47,7 +96,7 @@
               </li>
             </ul>
             <div class="pt-4">
-              <input type="submit" value="Aplicar" class="bg-[#1D495B] text-white px-4 py-2 rounded hover:bg-[#163D4D]">
+              <input type="submit" value="Aplicar" class="bg-[#1D495B] text-white px-4 py-2 rounded hover:bg-[#163D4D] cursor-pointer">
             </div>
 
           {%- when 'list' -%}
@@ -79,7 +128,7 @@
               {%- endfor -%}
             </ul>
             <div class="pt-4">
-              <input type="submit" value="Aplicar" class="bg-[#1D495B] text-white px-4 py-2 rounded hover:bg-[#163D4D]">
+              <input type="submit" value="Aplicar" class="bg-[#1D495B] text-white px-4 py-2 rounded hover:bg-[#163D4D] cursor-pointer">
             </div>
 
           {%- when 'price_range' -%}
@@ -116,36 +165,11 @@
               </div>
             </div>
             <div class="pt-4">
-              <input type="submit" value="Aplicar" class="bg-[#1D495B] text-white px-4 py-2 rounded hover:bg-[#163D4D]">
+              <input type="submit" value="Aplicar" class="bg-[#1D495B] text-white px-4 py-2 rounded hover:bg-[#163D4D] cursor-pointer">
             </div>
         {%- endcase -%}
       </div>
     </details>
   {%- endfor -%}
 
-  <div class="pt-4">
-    <p><a href="{{ collection.url }}?sort_by={{ collection.sort_by }}" class="text-red-600 hover:underline">Limpiar Todo</a></p>
-
-    {%- for filter in collection.filters -%}
-      {%- if filter.type == "price_range" -%}
-        {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
-          <p>
-            <a href="{{ filter.url_to_remove }}" class="text-[#1D495B] hover:underline">
-              {%- assign min_value = filter.min_value.value | default: 0 -%}
-              {%- assign max_value = filter.max_value.value | default: filter.range_max -%}
-              {{ min_value | money }} - {{ max_value | money }} X
-            </a>
-          </p>
-        {%- endif -%}
-      {%- else -%}
-        {%- for filter_value in filter.active_values -%}
-          <p>
-            <a href="{{ filter_value.url_to_remove }}" class="text-[#1D495B] hover:underline">
-              {{ filter.label }}: {{ filter_value.label }} X
-            </a>
-          </p>
-        {%- endfor -%}
-      {%- endif -%}
-    {%- endfor -%}
-  </div>
 </form>

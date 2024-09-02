@@ -13,53 +13,52 @@
     </button>
   </div>
 
-  <!-- Contenedor de Filtros con click.away envuelto -->
-  <div x-show="open" class="fixed inset-0 z-[300] lg:hidden">
-    <div @click="open = false" class="absolute inset-0 bg-black opacity-50"></div>
-    
-    <div @click.away="open = false" :class="{'block': open, 'hidden': !open}" class="relative bg-white w-64 h-full p-4 shadow-lg z-[300] overflow-y-auto">
-      <!-- Cerrar botón en móviles -->
-      <div class="flex justify-end lg:hidden mb-4">
-        <button @click="open = false" class="text-gray-700 hover:text-gray-900">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-          </svg>
-        </button>
-      </div>
-      
-      <h2 class="font-semibold mb-4 text-lg bg-gray-100 p-4 rounded-lg">Categorías</h2>
-      <ul class="space-y-2 mb-10">
-          {% for link in linklists.categorias.links %}
-            {% if link.links.size > 0 %}
-              <li class="border-b border-gray-200">
-                <details class="group">
-                  <summary class="cursor-pointer p-2 flex justify-between items-center text-gray-800 font-medium hover:bg-gray-100 rounded transition-colors duration-300">
-                    {{ link.title }}
-                    <span class="ml-2 transform transition-transform group-open:rotate-90 text-gray-500">
-                      &#x25B8; <!-- Flecha más delgada y discreta -->
-                    </span>
-                  </summary>
-                  <ul class="pl-4">
-                    {% for sublink in link.links %}
-                      <li class="py-2">
-                        <a href="{{ sublink.url }}" class="text-gray-600 hover:text-gray-800 transition-colors duration-300">{{ sublink.title }}</a>
-                      </li>
-                    {% endfor %}
-                  </ul>
-                </details>
-              </li>
-            {% else %}
-              <li class="border-b border-gray-200">
-                <a href="{{ link.url }}" class="block p-2 text-gray-800 font-medium hover:bg-gray-100 rounded transition-colors duration-300">
-                  {{ link.title }}
-                </a>
-              </li>
-            {% endif %}
-          {% endfor %}
-        </ul>
+  <!-- Overlay oscuro -->
+  <div x-show="open" @click="open = false" class="fixed inset-0 bg-black opacity-50 z-40 lg:hidden"></div>
 
-      {% render 'filter-collection' %}
+  <!-- Contenedor de Filtros -->
+  <div :class="{'block': open, 'hidden': !open}" class="fixed inset-y-0 right-0 w-64 bg-white p-4 shadow-lg z-50 transform lg:transform-none lg:relative lg:translate-x-0 lg:w-1/4 lg:bg-transparent lg:p-0 lg:shadow-none lg:block lg:static hidden overflow-y-auto">
+    <!-- Cerrar botón en móviles -->
+    <div class="flex justify-end lg:hidden mb-4">
+      <button @click="open = false" class="text-gray-700 hover:text-gray-900">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
     </div>
+    
+    <h2 class="font-semibold mb-4 text-lg bg-gray-100 p-4 rounded-lg">Categorías</h2>
+    <ul class="space-y-2 mb-10">
+        {% for link in linklists.categorias.links %}
+          {% if link.links.size > 0 %}
+            <li class="border-b border-gray-200">
+              <details class="group">
+                <summary class="cursor-pointer p-2 flex justify-between items-center text-gray-800 font-medium hover:bg-gray-100 rounded transition-colors duration-300">
+                  {{ link.title }}
+                  <span class="ml-2 transform transition-transform group-open:rotate-90 text-gray-500">
+                    &#x25B8; <!-- Flecha más delgada y discreta -->
+                  </span>
+                </summary>
+                <ul class="pl-4">
+                  {% for sublink in link.links %}
+                    <li class="py-2">
+                      <a href="{{ sublink.url }}" class="text-gray-600 hover:text-gray-800 transition-colors duration-300">{{ sublink.title }}</a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </details>
+            </li>
+          {% else %}
+            <li class="border-b border-gray-200">
+              <a href="{{ link.url }}" class="block p-2 text-gray-800 font-medium hover:bg-gray-100 rounded transition-colors duration-300">
+                {{ link.title }}
+              </a>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+
+    {% render 'filter-collection' %}
   </div>
 
   <!-- Contenedor de Productos -->

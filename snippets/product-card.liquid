@@ -1,4 +1,25 @@
-<div class="bg-white p-4 border border-gray-300 rounded-lg flex flex-col relative">
+<div class="bg-white p-4 border border-gray-300 rounded-lg flex flex-col relative h-full">
+  
+  <!-- Contenedor de Etiquetas en el Lado Izquierdo -->
+  <div class="absolute top-2 left-2 flex flex-col space-y-1">
+    {% if product.tags contains 'new-arrival' %}
+      <span class="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">New</span>
+    {% endif %}
+    {% if product.tags contains 'featured' %}
+      <span class="bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded">Featured</span>
+    {% endif %}
+    {% if product.tags contains 'best-seller' %}
+      <span class="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">Best Seller</span>
+    {% endif %}
+    {% if product.tags contains 'limited-edition' %}
+      <span class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">Limited Edition</span>
+    {% endif %}
+    {% if product.tags contains 'pre-order' %}
+      <span class="bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded">Pre-Order</span>
+    {% endif %}
+  </div>
+  
+  <!-- Etiqueta "Sale" en el Lado Derecho -->
   {% if product.compare_at_price > product.price %}
     <span class="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded">Sale</span>
   {% endif %}
@@ -6,15 +27,17 @@
   <a href="{{ product.url }}">
     <img src="{{ product | img_url: '400x400' }}" alt="{{ product.title }}" class="w-full h-auto mb-4">
   </a>
-  <div class="text-left">
+  
+  <!-- Contenedor de Información del Producto -->
+  <div class="flex-1 text-left">
     <div class="text-sm text-gray-700">{{ product.vendor }}</div>
     {% if product.available %}
       <div class="text-[#52A1BF] font-semibold">In stock</div>
     {% else %}
       <div class="text-red-500 font-semibold">Out of stock</div>
     {% endif %}
-    <h3 class="text-lg font-bold text-gray-800 mt-2">{{ product.title }}</h3>
-    <p class="text-sm text-gray-600 mt-2">{{ product.description | truncate: 100 }}</p>
+    <h3 class="text-base font-bold text-gray-800 mt-2">{{ product.title }}</h3> <!-- Ajuste de tamaño del título -->
+    <p class=" text-red-500 mt-2">{{ product.description | truncate: 80 }}</p> <!-- Ajuste de tamaño y color de la descripción -->
     <div class="flex items-center mt-4">
       {% if product.compare_at_price > product.price %}
         <span class="text-lg font-bold text-gray-900">{{ product.price | money }}</span>
@@ -25,16 +48,19 @@
     </div>
   </div>
 
-  {% if product.available %}
-    {% if product.has_only_default_variant %}
-      <form action="/cart/add" method="post" class="mt-4">
-        <input type="hidden" name="id" value="{{ product.variants.first.id }}">
-        <button type="submit" class="bg-[#1D495B] text-white py-2 px-4 rounded-full w-full">Add to cart</button>
-      </form>
+  <!-- Botón de Acción -->
+  <div class="mt-4">
+    {% if product.available %}
+      {% if product.has_only_default_variant %}
+        <form action="/cart/add" method="post">
+          <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+          <button type="submit" class="bg-[#1D495B] text-white py-2 px-4 rounded-full w-full">Add to cart</button>
+        </form>
+      {% else %}
+        <a href="{{ product.url }}" class="bg-[#1D495B] text-white py-2 px-4 rounded-full w-full text-center block">Select options</a>
+      {% endif %}
     {% else %}
-      <a href="{{ product.url }}" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center">Select options</a>
+      <button class="bg-gray-400 text-white py-2 px-4 rounded-full w-full cursor-not-allowed" disabled>Out of stock</button>
     {% endif %}
-  {% else %}
-    <button class="bg-gray-400 text-white py-2 px-4 rounded-full mt-4 w-full cursor-not-allowed" disabled>Out of stock</button>
-  {% endif %}
+  </div>
 </div>

@@ -1,0 +1,151 @@
+<form class="space-y-4">
+  {%- for filter in collection.filters -%}
+    <details class="border border-gray-200 rounded-lg">
+      <summary class="bg-gray-100 p-4 cursor-pointer flex justify-between items-center">
+        <span class="font-semibold">{{ filter.label }}</span>
+        {%- if filter.active_values.size > 0 -%}
+          <span class="text-gray-500">({{ filter.active_values.size }})</span>
+        {%- endif -%}
+      </summary>
+
+      <div class="p-4 space-y-2">
+        <div class="flex justify-between items-center text-sm">
+          <p>{{ filter.active_values.size }} selected</p>
+          {%- if filter.active_values.size > 0 -%}
+            <p><a href="{{ filter.url_to_remove }}" class="text-blue-600 hover:underline">Reset</a></p>
+          {%- endif -%}
+        </div>
+
+        {%- case filter.type -%}
+          {%- when 'boolean' -%}
+            <ul class="space-y-2">
+              <li>
+                <label class="flex items-center">
+                  <input type="checkbox"
+                    name="{{ filter.param_name }}"
+                    value="{{ filter.true_value.value }}"
+                    id="Filter-{{ filter.param_name }}"
+                    {% if filter.true_value.active -%}checked{%- endif %}
+                    {% if filter.true_value.count == 0 and filter.true_value.active == false -%}disabled{%- endif %}
+                    class="mr-2"
+                  >
+                  {{ filter.true_value.label }}
+                </label>
+              </li>
+              <li>
+                <label class="flex items-center">
+                  <input type="checkbox"
+                    name="{{ filter.param_name }}"
+                    value="{{ filter.false_value.value }}"
+                    id="Filter-{{ filter.param_name }}"
+                    {% if filter.false_value.active -%}checked{%- endif %}
+                    {% if filter.false_value.count == 0 and filter.false_value.active == false -%}disabled{%- endif %}
+                    class="mr-2"
+                  >
+                  {{ filter.false_value.label }}
+                </label>
+              </li>
+            </ul>
+            <div class="pt-4">
+              <input type="submit" value="Apply" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            </div>
+
+          {%- when 'list' -%}
+            <ul class="space-y-2">
+              {%- for filter_value in filter.values -%}
+                <li>
+                  <label class="flex items-center">
+                    <input type="checkbox"
+                      name="{{ filter_value.param_name }}"
+                      value="{{ filter_value.value }}"
+                      id="Filter-{{ filter.param_name }}-{{ forloop.index }}"
+                      {% if filter_value.active -%}checked{%- endif %}
+                      {% if filter_value.count == 0 and filter_value.active == false -%}disabled{%- endif %}
+                      class="mr-2"
+                    >
+                    <span class="inline-flex items-center">
+                      {%- case filter_value.display.type -%}
+                        {%- when 'colors' -%}
+                          <span style="background: {{ filter_value.display.value }}" class="w-4 h-4 rounded-full mr-2"></span>
+                        {%- when 'image' -%}
+                          {{ filter_value.display.value | image_url: width: 25 | image_tag: alt: filter_value.display.value.alt }}
+                        {%- else -%}
+                          <span class="visual-display__child mr-2"></span>
+                      {%- endcase -%}
+                    </span>
+                    {{ filter_value.label }}
+                  </label>
+                </li>
+              {%- endfor -%}
+            </ul>
+            <div class="pt-4">
+              <input type="submit" value="Apply" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            </div>
+
+          {%- when 'price_range' -%}
+            <div class="space-y-2">
+              <div class="flex items-center">
+                <span>{{ cart.currency.symbol }}</span>
+                <input name="{{ filter.min_value.param_name }}"
+                  id="Filter-{{ filter.min_value.param_name }}"
+                  {% if filter.min_value.value -%}
+                    value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                  {%- endif %}
+                  type="number"
+                  placeholder="0"
+                  min="0"
+                  max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                  class="ml-2 border border-gray-300 rounded p-1 w-full"
+                >
+                <label for="Filter-{{ filter.min_value.param_name }}" class="ml-2">From</label>
+              </div>
+              <div class="flex items-center">
+                <span>{{ cart.currency.symbol }}</span>
+                <input name="{{ filter.max_value.param_name }}"
+                  id="Filter-{{ filter.max_value.param_name }}"
+                  {% if filter.max_value.value -%}
+                    value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                  {%- endif %}
+                  type="number"
+                  placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                  min="0"
+                  max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                  class="ml-2 border border-gray-300 rounded p-1 w-full"
+                >
+                <label for="Filter-{{ filter.max_value.param_name }}" class="ml-2">To</label>
+              </div>
+            </div>
+            <div class="pt-4">
+              <input type="submit" value="Apply" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            </div>
+        {%- endcase -%}
+      </div>
+    </details>
+  {%- endfor -%}
+
+  <div class="pt-4">
+    <p><a href="{{ collection.url }}?sort_by={{ collection.sort_by }}" class="text-red-600 hover:underline">Clear all</a></p>
+
+    {%- for filter in collection.filters -%}
+      {%- if filter.type == "price_range" -%}
+        {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+          <p>
+            <a href="{{ filter.url_to_remove }}" class="text-blue-600 hover:underline">
+              {%- assign min_value = filter.min_value.value | default: 0 -%}
+              {%- assign max_value = filter.max_value.value | default: filter.range_max -%}
+              {{ min_value | money }} - {{ max_value | money }} X
+            </a>
+          </p>
+        {%- endif -%}
+      {%- else -%}
+        {%- for filter_value in filter.active_values -%}
+          <p>
+            <a href="{{ filter_value.url_to_remove }}" class="text-blue-600 hover:underline">
+              {{ filter.label }}: {{ filter_value.label }} X
+            </a>
+          </p>
+        {%- endfor -%}
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</form>

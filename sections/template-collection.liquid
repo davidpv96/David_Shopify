@@ -1,12 +1,24 @@
-<div class="px-4 py-8">
-  {% paginate collection.products by 6 %}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {% for product in collection.products %}
-        {% render 'product-card', product: product %}
-      {% else %}
-        <p>No hay productos en esta colección</p>
-      {% endfor %}
+<div class="container mx-auto flex flex-wrap lg:flex-nowrap gap-8">
+  
+  <!-- Contenedor de Filtros -->
+  <aside class="w-full lg:w-1/4 bg-white p-4 rounded-lg shadow">
+    {% render 'filter-collection' %}
+  </aside>
+
+  <!-- Contenedor de Productos -->
+  <div class="w-full lg:w-3/4">
+    <div class="px-4 py-8">
+      {% paginate collection.products by 12 %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {% for product in collection.products %}
+            {% render 'product-card', product: product %}
+          {% else %}
+            <p>No hay productos en esta colección</p>
+          {% endfor %}
+        </div>
+        {% render 'pagination', pagination: paginate %}
+      {% endpaginate %}
     </div>
-    {% render 'pagination', pagination: paginate %}
-  {% endpaginate %}
+  </div>
+
 </div>

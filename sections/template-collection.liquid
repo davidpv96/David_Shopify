@@ -1,3 +1,6 @@
+<!-- Incluir el encabezado de la colección -->
+{% render 'collection-header' %}
+
 <div class="container mx-auto flex flex-wrap lg:flex-nowrap gap-8">
   
   <!-- Contenedor de Filtros -->
@@ -8,22 +11,17 @@
         {% for link in linklists.categorias.links %}
           {% if link.links.size > 0 %}
             <li class="border-b border-gray-200">
-              <details x-data="{ open: {{ link.links contains request.path }} }" x-init="open = localStorage.getItem('{{ link.title }}') == 'true' || open" @toggle="localStorage.setItem('{{ link.title }}', $event.target.open)" :open="open" class="group">
+              <details class="group">
                 <summary class="cursor-pointer p-2 flex justify-between items-center text-gray-800 font-medium hover:bg-gray-100 rounded transition-colors duration-300">
                   {{ link.title }}
-                  <span class="ml-2 transform transition-transform" :class="{'rotate-90': open}">
-                    &#x25B8;
+                  <span class="ml-2 transform transition-transform group-open:rotate-90 text-gray-500">
+                    &#x25B8; <!-- Flecha más delgada y discreta -->
                   </span>
                 </summary>
                 <ul class="pl-4">
                   {% for sublink in link.links %}
                     <li class="py-2">
-                      <a href="{{ sublink.url }}" class="text-gray-600 hover:text-gray-800 transition-colors duration-300
-                        {% if sublink.url == request.path %}
-                          text-teal-600 font-semibold
-                        {% endif %}">
-                        {{ sublink.title }}
-                      </a>
+                      <a href="{{ sublink.url }}" class="text-gray-600 hover:text-gray-800 transition-colors duration-300">{{ sublink.title }}</a>
                     </li>
                   {% endfor %}
                 </ul>
@@ -31,20 +29,14 @@
             </li>
           {% else %}
             <li class="border-b border-gray-200">
-              <a href="{{ link.url }}" class="block p-2 text-gray-800 font-medium hover:bg-gray-100 rounded transition-colors duration-300
-                {% if link.url == request.path %}
-                  text-teal-600 font-semibold
-                {% endif %}">
+              <a href="{{ link.url }}" class="block p-2 text-gray-800 font-medium hover:bg-gray-100 rounded transition-colors duration-300">
                 {{ link.title }}
               </a>
             </li>
           {% endif %}
         {% endfor %}
       </ul>
-      
-      
-      
-  
+
     {% render 'filter-collection' %}
   </aside>
 
@@ -86,5 +78,4 @@
       {% endpaginate %}
     </div>
   </div>
-
 </div>

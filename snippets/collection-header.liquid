@@ -1,0 +1,16 @@
+<div class="bg-gray-100 p-8 rounded-lg shadow mb-8">
+  <!-- Imagen de la Colección -->
+  {% if collection.image %}
+    <div class="mb-6">
+      <img src="{{ collection.image | img_url: 'master' }}" alt="{{ collection.title }}" class="w-full rounded-lg">
+    </div>
+  {% endif %}
+
+  <!-- Nombre de la Colección -->
+  <h1 class="text-3xl font-bold text-gray-800 mb-4">{{ collection.title }}</h1>
+
+  <!-- Descripción de la Colección -->
+  {% if collection.description %}
+    <p class="text-gray-600 text-lg">{{ collection.description }}</p>
+  {% endif %}
+</div>

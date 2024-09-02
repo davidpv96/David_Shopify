@@ -12,7 +12,7 @@
         <div class="flex justify-between items-center text-sm">
           <p>{{ filter.active_values.size }} Seleccionados</p>
           {%- if filter.active_values.size > 0 -%}
-            <p><a href="{{ filter.url_to_remove }}" class="text-blue-600 hover:underline">Reiniciar</a></p>
+            <p><a href="{{ filter.url_to_remove }}" class="text-[#1D495B] hover:underline">Reiniciar</a></p>
           {%- endif -%}
         </div>
 
@@ -27,7 +27,7 @@
                     id="Filter-{{ filter.param_name }}"
                     {% if filter.true_value.active -%}checked{%- endif %}
                     {% if filter.true_value.count == 0 and filter.true_value.active == false -%}disabled{%- endif %}
-                    class="mr-2"
+                    class="mr-2 text-[#1D495B] focus:ring-[#1D495B] border-gray-300 rounded"
                   >
                   {{ filter.true_value.label }}
                 </label>
@@ -40,14 +40,14 @@
                     id="Filter-{{ filter.param_name }}"
                     {% if filter.false_value.active -%}checked{%- endif %}
                     {% if filter.false_value.count == 0 and filter.false_value.active == false -%}disabled{%- endif %}
-                    class="mr-2"
+                    class="mr-2 text-[#1D495B] focus:ring-[#1D495B] border-gray-300 rounded"
                   >
                   {{ filter.false_value.label }}
                 </label>
               </li>
             </ul>
             <div class="pt-4">
-              <input type="submit" value="Aplicar" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+              <input type="submit" value="Aplicar" class="bg-[#1D495B] text-white px-4 py-2 rounded hover:bg-[#163D4D]">
             </div>
 
           {%- when 'list' -%}
@@ -61,7 +61,7 @@
                       id="Filter-{{ filter.param_name }}-{{ forloop.index }}"
                       {% if filter_value.active -%}checked{%- endif %}
                       {% if filter_value.count == 0 and filter_value.active == false -%}disabled{%- endif %}
-                      class="mr-2"
+                      class="mr-2 text-[#1D495B] focus:ring-[#1D495B] border-gray-300 rounded"
                     >
                     <span class="inline-flex items-center">
                       {%- case filter_value.display.type -%}
@@ -79,7 +79,7 @@
               {%- endfor -%}
             </ul>
             <div class="pt-4">
-              <input type="submit" value="Aplicar" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+              <input type="submit" value="Aplicar" class="bg-[#1D495B] text-white px-4 py-2 rounded hover:bg-[#163D4D]">
             </div>
 
           {%- when 'price_range' -%}
@@ -116,7 +116,7 @@
               </div>
             </div>
             <div class="pt-4">
-              <input type="submit" value="Aplicar" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+              <input type="submit" value="Aplicar" class="bg-[#1D495B] text-white px-4 py-2 rounded hover:bg-[#163D4D]">
             </div>
         {%- endcase -%}
       </div>
@@ -130,7 +130,7 @@
       {%- if filter.type == "price_range" -%}
         {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
           <p>
-            <a href="{{ filter.url_to_remove }}" class="text-blue-600 hover:underline">
+            <a href="{{ filter.url_to_remove }}" class="text-[#1D495B] hover:underline">
               {%- assign min_value = filter.min_value.value | default: 0 -%}
               {%- assign max_value = filter.max_value.value | default: filter.range_max -%}
               {{ min_value | money }} - {{ max_value | money }} X
@@ -140,7 +140,7 @@
       {%- else -%}
         {%- for filter_value in filter.active_values -%}
           <p>
-            <a href="{{ filter_value.url_to_remove }}" class="text-blue-600 hover:underline">
+            <a href="{{ filter_value.url_to_remove }}" class="text-[#1D495B] hover:underline">
               {{ filter.label }}: {{ filter_value.label }} X
             </a>
           </p>

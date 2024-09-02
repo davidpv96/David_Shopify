@@ -2,8 +2,36 @@
   
   <!-- Contenedor de Filtros -->
   <aside class="w-full lg:w-1/4 bg-white p-4 rounded-lg shadow mb-8">
-  <h2 class="font-semibold mb-4 text-lg">Categoríaa</h2>
-
+  <h2 class="font-semibold mb-4 text-lg">Categorías</h2>
+  <ul class="space-y-2">
+  {% for link in linklists.categorias.links %}
+    {% if link.links.size > 0 %}
+      <li class="border-b border-gray-200">
+        <details class="group">
+          <summary class="cursor-pointer p-2 flex justify-between items-center text-gray-800 font-medium bg-red-500 hover:bg-gray-200 rounded transition-colors duration-300">
+            {{ link.title }}
+            <span class="ml-2 transform transition-transform group-open:rotate-90">
+              &#9654; <!-- Flecha hacia la derecha que rota -->
+            </span>
+          </summary>
+          <ul class="pl-4 pt-2">
+            {% for sublink in link.links %}
+              <li class="py-1">
+                <a href="{{ sublink.url }}" class="text-gray-600 hover:text-gray-800 transition-colors duration-300">{{ sublink.title }}</a>
+              </li>
+            {% endfor %}
+          </ul>
+        </details>
+      </li>
+    {% else %}
+      <li class="border-b border-gray-200">
+        <a href="{{ link.url }}" class="block p-2 text-gray-800 font-medium bg-gray-100 hover:bg-gray-200 rounded transition-colors duration-300">
+          {{ link.title }}
+        </a>
+      </li>
+    {% endif %}
+  {% endfor %}
+</ul>
 
   
     {% render 'filter-collection' %}

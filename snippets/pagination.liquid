@@ -1,32 +1,37 @@
 {% if pagination.pages > 1 %}
     <nav role="navigation" class="flex justify-center items-center my-8">
         {% if pagination.previous %}
-            <a href="{{ pagination.previous.url }}" class="text-gray-600 hover:text-gray-800 px-2 py-1 mx-1 rounded-full font-medium">
-                &larr;
+            <a href="{{ pagination.previous.url }}" class="border border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white px-8 py-3 mx-1 rounded-full font-medium">
+                Anterior
             </a>
         {% endif %}
 
         {% for part in pagination.parts %}
             {% if part.is_link %}
                 <a href="{{ part.url }}"
-                   class="px-3 py-2 mx-1 rounded-full font-medium
+                   class="border px-8 py-3 mx-1 rounded-full font-medium 
                    {% if pagination.current_page == part.title %}
-                     bg-yellow-500 text-white
+                     bg-yellow-500 text-white border-yellow-500
                    {% else %}
-                     text-gray-600 hover:text-gray-800
+                     text-gray-600 border-gray-600 hover:bg-gray-600 hover:text-white
                    {% endif %}">
                    {{ part.title }}
                 </a>
             {% else %}
-                <span class="px-3 py-2 mx-1 rounded-full font-medium text-gray-600">
+                <span class="border px-8 py-3 mx-1 rounded-full font-medium 
+                   {% if pagination.current_page == part.title %}
+                     bg-yellow-500 text-white border-yellow-500
+                   {% else %}
+                     text-gray-600 border-gray-600
+                   {% endif %}">
                    {{ part.title }}
                 </span>
             {% endif %}
         {% endfor %}
 
         {% if pagination.next %}
-            <a href="{{ pagination.next.url }}" class="text-gray-600 hover:text-gray-800 px-2 py-1 mx-1 rounded-full font-medium">
-                &rarr;
+            <a href="{{ pagination.next.url }}" class="border border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white px-8 py-3 mx-1 rounded-full font-medium">
+                Siguiente
             </a>
         {% endif %}
     </nav>

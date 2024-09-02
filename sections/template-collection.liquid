@@ -17,7 +17,7 @@
   <div x-show="open" @click="open = false" x-cloak class="fixed inset-0 bg-black opacity-50 z-40 lg:hidden"></div>
 
   <!-- Contenedor de Filtros -->
-  <div :class="{'block': open, 'hidden': !open}" class="fixed inset-y-0 right-0 w-64 bg-white shadow-lg z-[300] transform lg:transform-none lg:relative lg:translate-x-0 lg:w-1/4 lg:bg-transparent lg:shadow-none lg:block hidden flex flex-col">
+  <div :class="{'block': open, 'hidden': !open}" class="fixed inset-y-0 right-0 w-64 bg-white shadow-lg z-[300] lg:transform-none lg:relative lg:translate-x-0 lg:w-1/4 lg:bg-transparent lg:shadow-none lg:block hidden flex flex-col">
     
     <!-- Cerrar botón en móviles -->
     <div class="flex justify-end lg:hidden p-4">
@@ -39,7 +39,7 @@
                   <summary class="cursor-pointer p-2 flex justify-between items-center text-gray-800 font-medium hover:bg-gray-100 rounded transition-colors duration-300">
                     {{ link.title }}
                     <span class="ml-2 transform transition-transform group-open:rotate-90 text-gray-500">
-                      &#x25B8; <!-- Flecha más delgada y discreta -->
+                      &#x25B8;
                     </span>
                   </summary>
                   <ul class="pl-4">

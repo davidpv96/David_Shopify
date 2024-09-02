@@ -3,25 +3,25 @@
   <!-- Contenedor de Etiquetas en el Lado Izquierdo -->
   <div class="absolute top-2 left-2 flex flex-col space-y-1">
     {% if product.tags contains 'new-arrival' %}
-      <span class="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">New</span>
+      <span class="bg-green-500 text-white text-xs font-bold px-2 py-1 rounded">Nuevo</span>
     {% endif %}
     {% if product.tags contains 'featured' %}
-      <span class="bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded">Featured</span>
+      <span class="bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded">Destacado</span>
     {% endif %}
     {% if product.tags contains 'best-seller' %}
-      <span class="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">Best Seller</span>
+      <span class="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">Mejor vendido</span>
     {% endif %}
     {% if product.tags contains 'limited-edition' %}
-      <span class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">Limited Edition</span>
+      <span class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">Edición limitada</span>
     {% endif %}
     {% if product.tags contains 'pre-order' %}
-      <span class="bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded">Pre-Order</span>
+      <span class="bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded">Pre ordenar</span>
     {% endif %}
   </div>
   
   <!-- Etiqueta "Sale" en el Lado Derecho -->
   {% if product.compare_at_price > product.price %}
-    <span class="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded">Sale</span>
+    <span class="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded">Oferta</span>
   {% endif %}
   
   <a href="{{ product.url }}">
@@ -30,14 +30,13 @@
   
   <!-- Contenedor de Información del Producto -->
   <div class="flex-1 text-left">
-    <div class="text-sm text-gray-700">{{ product.vendor }}</div>
+  
     {% if product.available %}
-      <div class="text-[#52A1BF] font-semibold">In stock</div>
+      <div class="text-[#52A1BF] font-semibold">Stock disponible</div>
     {% else %}
-      <div class="text-red-500 font-semibold">Out of stock</div>
+      <div class="text-red-500 font-semibold">Sin existencias</div>
     {% endif %}
     <h3 class="text-base font-bold text-gray-800 mt-2">{{ product.title }}</h3> <!-- Ajuste de tamaño del título -->
-    <p class=" text-red-500 mt-2">{{ product.description | truncate: 80 }}</p> <!-- Ajuste de tamaño y color de la descripción -->
     <div class="flex items-center mt-4">
       {% if product.compare_at_price > product.price %}
         <span class="text-lg font-bold text-gray-900">{{ product.price | money }}</span>

@@ -10,9 +10,9 @@
 
       <div class="p-4 space-y-2">
         <div class="flex justify-between items-center text-sm">
-          <p>{{ filter.active_values.size }} selected</p>
+          <p>{{ filter.active_values.size }} Seleccionados</p>
           {%- if filter.active_values.size > 0 -%}
-            <p><a href="{{ filter.url_to_remove }}" class="text-blue-600 hover:underline">Reset</a></p>
+            <p><a href="{{ filter.url_to_remove }}" class="text-blue-600 hover:underline">Reiniciar</a></p>
           {%- endif -%}
         </div>
 
@@ -47,7 +47,7 @@
               </li>
             </ul>
             <div class="pt-4">
-              <input type="submit" value="Apply" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+              <input type="submit" value="Aplicar" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
             </div>
 
           {%- when 'list' -%}
@@ -79,7 +79,7 @@
               {%- endfor -%}
             </ul>
             <div class="pt-4">
-              <input type="submit" value="Apply" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+              <input type="submit" value="Aplicar" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
             </div>
 
           {%- when 'price_range' -%}
@@ -97,7 +97,7 @@
                   max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
                   class="ml-2 border border-gray-300 rounded p-1 w-full"
                 >
-                <label for="Filter-{{ filter.min_value.param_name }}" class="ml-2">From</label>
+                <label for="Filter-{{ filter.min_value.param_name }}" class="ml-2">De</label>
               </div>
               <div class="flex items-center">
                 <span>{{ cart.currency.symbol }}</span>
@@ -112,11 +112,11 @@
                   max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
                   class="ml-2 border border-gray-300 rounded p-1 w-full"
                 >
-                <label for="Filter-{{ filter.max_value.param_name }}" class="ml-2">To</label>
+                <label for="Filter-{{ filter.max_value.param_name }}" class="ml-2">a</label>
               </div>
             </div>
             <div class="pt-4">
-              <input type="submit" value="Apply" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+              <input type="submit" value="Aplicar" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
             </div>
         {%- endcase -%}
       </div>
@@ -124,7 +124,7 @@
   {%- endfor -%}
 
   <div class="pt-4">
-    <p><a href="{{ collection.url }}?sort_by={{ collection.sort_by }}" class="text-red-600 hover:underline">Clear all</a></p>
+    <p><a href="{{ collection.url }}?sort_by={{ collection.sort_by }}" class="text-red-600 hover:underline">Limpiar Todo</a></p>
 
     {%- for filter in collection.filters -%}
       {%- if filter.type == "price_range" -%}

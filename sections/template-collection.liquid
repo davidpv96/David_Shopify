@@ -3,28 +3,72 @@
 
 <div x-data="{ open: false }" x-init="$watch('open', value => document.body.classList.toggle('overflow-hidden', value))" class="container mx-auto px-4 md:px-20 flex flex-wrap lg:flex-nowrap gap-8">
   
-  <!-- Botón de Filtros para móviles y tabletas -->
-  <div class="w-full flex justify-between items-center lg:hidden mb-4">
-    <button @click="open = true" class="flex items-center px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-700 hover:bg-gray-100 focus:outline-none">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zM3 16a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" />
-      </svg>
-      Filters
-    </button>
+  <!-- Contenedor de Filtros y Ordenar para móviles y tabletas -->
+  <div class="w-full lg:hidden mb-4 bg-[#1D495B] p-4 rounded-lg">
+    <div class="flex justify-between items-center">
+      <button @click="open = true" class="flex items-center px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-700 hover:bg-gray-100 focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zM3 16a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" />
+        </svg>
+        Filters
+      </button>
 
-    <!-- Formulario para ordenar productos en móvil -->
-    <form id="sort_by_form_mobile" action="" method="get" class="flex items-center">
-      <label for="sort-by-mobile" class="sr-only">Ordenar por:</label>
-      <select id="sort-by-mobile" name="sort_by" onchange="this.form.submit()" class="border-gray-300 rounded">
-        <option value="best-selling" {% if collection.sort_by == "best-selling" %}selected{% endif %}>Best selling</option>
-        <option value="title-ascending" {% if collection.sort_by == "title-ascending" %}selected{% endif %}>A-Z</option>
-        <option value="title-descending" {% if collection.sort_by == "title-descending" %}selected{% endif %}>Z-A</option>
-        <option value="price-ascending" {% if collection.sort_by == "price-ascending" %}selected{% endif %}>Price: Low to High</option>
-        <option value="price-descending" {% if collection.sort_by == "price-descending" %}selected{% endif %}>Price: High to Low</option>
-        <option value="created-descending" {% if collection.sort_by == "created-descending" %}selected{% endif %}>Newest to Oldest</option>
-        <option value="created-ascending" {% if collection.sort_by == "created-ascending" %}selected{% endif %}>Oldest to Newest</option>
-      </select>
-    </form>
+      <!-- Formulario para ordenar productos en móvil -->
+      <form id="sort_by_form_mobile" action="" method="get" class="flex items-center">
+        <label for="sort-by-mobile" class="sr-only">Ordenar por:</label>
+        <select id="sort-by-mobile" name="sort_by" onchange="this.form.submit()" class="border-gray-300 rounded">
+          <option value="best-selling" {% if collection.sort_by == "best-selling" %}selected{% endif %}>Best selling</option>
+          <option value="title-ascending" {% if collection.sort_by == "title-ascending" %}selected{% endif %}>A-Z</option>
+          <option value="title-descending" {% if collection.sort_by == "title-descending" %}selected{% endif %}>Z-A</option>
+          <option value="price-ascending" {% if collection.sort_by == "price-ascending" %}selected{% endif %}>Price: Low to High</option>
+          <option value="price-descending" {% if collection.sort_by == "price-descending" %}selected{% endif %}>Price: High to Low</option>
+          <option value="created-descending" {% if collection.sort_by == "created-descending" %}selected{% endif %}>Newest to Oldest</option>
+          <option value="created-ascending" {% if collection.sort_by == "created-ascending" %}selected{% endif %}>Oldest to Newest</option>
+        </select>
+      </form>
+    </div>
+
+    <!-- Contenedor para mostrar filtros seleccionados en móviles dentro del mismo contenedor -->
+    {%- assign has_active_filters = false -%}
+    {%- for filter in collection.filters -%}
+      {%- if filter.active_values.size > 0 -%}
+        {%- assign has_active_filters = true -%}
+      {%- endif -%}
+      {%- if filter.type == "price_range" -%}
+        {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+          {%- assign has_active_filters = true -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if has_active_filters -%}
+      <div class="mt-4">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-white font-medium">Filtros:</span>
+          <a href="{{ collection.url }}?sort_by={{ collection.sort_by }}" class="text-[#52A1BF] underline hover:no-underline cursor-pointer">Remover todo</a>
+        </div>
+        <div class="space-y-2">
+          <!-- Filtros seleccionados -->
+          {%- for filter in collection.filters -%}
+            {%- if filter.type == "price_range" -%}
+              {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+                <div class="bg-white text-[#1D495B] px-4 py-2 rounded-lg flex justify-between items-center">
+                  <span>{{ filter.min_value.value | money }} - {{ filter.max_value.value | money }}</span>
+                  <a href="{{ filter.url_to_remove }}" class="ml-2 text-[#1D495B] hover:text-gray-500 cursor-pointer">&times;</a>
+                </div>
+              {%- endif -%}
+            {%- else -%}
+              {%- for filter_value in filter.active_values -%}
+                <div class="bg-white text-[#1D495B] px-4 py-2 rounded-lg flex justify-between items-center">
+                  <span>{{ filter.label }}: {{ filter_value.label }}</span>
+                  <a href="{{ filter_value.url_to_remove }}" class="ml-2 text-[#1D495B] hover:text-gray-500 cursor-pointer">&times;</a>
+                </div>
+              {%- endfor -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    {%- endif -%}
   </div>
 
   <!-- Overlay oscuro -->
@@ -43,7 +87,7 @@
     </div>
 
     <!-- Scrollable Filters -->
-    <div class="flex-1 overflow-y-auto p-4">
+    <div class="flex-1 overflow-y-auto p-4 border md:border-gray-200 md:rounded-lg  ">
       <h2 class="font-semibold mb-4 text-lg bg-gray-100 p-4 rounded-lg">Categorías</h2>
       <ul class="space-y-2 mb-10">
           {% for link in linklists.categorias.links %}
@@ -83,14 +127,14 @@
   <div class="w-full lg:w-3/4">
     
     <!-- Información de Productos y Orden solo para pantallas grandes -->
-    <div class="hidden lg:flex justify-between items-center mb-6 md:mx-auto">
-      <div class="text-gray-600 font-medium">
+    <div class="hidden lg:flex justify-between items-center mb-6 md:mx-auto bg-[#1D495B] p-5 rounded-lg">
+      <div class="text-white font-medium">
         {{ collection.products_count }} Productos
       </div>
       <div>
         <!-- Formulario para ordenar productos -->
         <form id="sort_by_form" action="" method="get">
-          <label for="sort-by" class="text-gray-600 font-medium mr-2">Ordenar por:</label>
+          <label for="sort-by" class="text-white font-medium mr-2">Ordenar por:</label>
           <select id="sort-by" name="sort_by" onchange="this.form.submit()" class="border-gray-300 rounded">
             <option value="best-selling" {% if collection.sort_by == "best-selling" %}selected{% endif %}>Más vendidos</option>
             <option value="title-ascending" {% if collection.sort_by == "title-ascending" %}selected{% endif %}>A-Z</option>

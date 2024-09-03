@@ -11,6 +11,20 @@
       </svg>
       Filters
     </button>
+
+    <!-- Formulario para ordenar productos en móvil -->
+    <form id="sort_by_form_mobile" action="" method="get" class="flex items-center">
+      <label for="sort-by-mobile" class="sr-only">Ordenar por:</label>
+      <select id="sort-by-mobile" name="sort_by" onchange="this.form.submit()" class="border-gray-300 rounded">
+        <option value="best-selling" {% if collection.sort_by == "best-selling" %}selected{% endif %}>Best selling</option>
+        <option value="title-ascending" {% if collection.sort_by == "title-ascending" %}selected{% endif %}>A-Z</option>
+        <option value="title-descending" {% if collection.sort_by == "title-descending" %}selected{% endif %}>Z-A</option>
+        <option value="price-ascending" {% if collection.sort_by == "price-ascending" %}selected{% endif %}>Price: Low to High</option>
+        <option value="price-descending" {% if collection.sort_by == "price-descending" %}selected{% endif %}>Price: High to Low</option>
+        <option value="created-descending" {% if collection.sort_by == "created-descending" %}selected{% endif %}>Newest to Oldest</option>
+        <option value="created-ascending" {% if collection.sort_by == "created-ascending" %}selected{% endif %}>Oldest to Newest</option>
+      </select>
+    </form>
   </div>
 
   <!-- Overlay oscuro -->
@@ -68,8 +82,8 @@
   <!-- Contenedor de Productos -->
   <div class="w-full lg:w-3/4">
     
-    <!-- Información de Productos y Orden -->
-    <div class="flex justify-between items-center mb-6 md:mx-auto">
+    <!-- Información de Productos y Orden solo para pantallas grandes -->
+    <div class="hidden lg:flex justify-between items-center mb-6 md:mx-auto">
       <div class="text-gray-600 font-medium">
         {{ collection.products_count }} Productos
       </div>

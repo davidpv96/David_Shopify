@@ -1,0 +1,70 @@
+<section 
+  x-data="searchComponent()" 
+  x-init="$watch('query', value => { searchShopify(); })"
+  class="relative"
+>
+  <form @submit.prevent="$refs.searchInput.value.length > 0 && $el.submit()" action="{{ routes.search_url }}" method="get" class="flex items-center relative">
+    <input 
+      x-ref="searchInput"
+      type="search" 
+      name="q" 
+      placeholder="Buscar Productos" 
+      class="w-full p-3 pr-10 text-gray-700 bg-white border border-gray-300 rounded-full focus:outline-none focus:border-blue-500" 
+      aria-label="Buscar" 
+      x-model="query" 
+      autocomplete="off"
+    >
+    <button type="submit" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+      {% render 'icon-search' %}
+    </button>
+  </form>
+
+  <!-- Resultados de búsqueda -->
+  <div 
+    x-show="open && query.length > 0"
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0 transform scale-95"
+    x-transition:enter-end="opacity-100 transform scale-100"
+    x-transition:leave="transition ease-in duration-100"
+    x-transition:leave-start="opacity-100 transform scale-100"
+    x-transition:leave-end="opacity-0 transform scale-95"
+    class="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-lg shadow-lg z-50 mt-2"
+    @click.away="open = false"
+  >
+    <div x-show="loading" class="p-4 text-gray-500">Cargando...</div>
+    
+    <div class="grid grid-cols-2" x-show="!loading">
+      <div class="p-4">
+        <h3 class="text-gray-700 font-bold mb-2">Sugerencias</h3>
+        <ul>
+          <template x-for="(suggestion, index) in suggestions" :key="index">
+            <li class="py-1">
+              <a :href="'/search?q=' + suggestion" class="block hover:bg-gray-100" x-text="suggestion"></a>
+            </li>
+          </template>
+        </ul>
+      </div>
+
+      <div class="p-4 border-l border-gray-200">
+        <h3 class="text-gray-700 font-bold mb-2">Productos</h3>
+        <ul>
+          <template x-for="product in products.slice(0, 5)" :key="product.id">
+            <li class="flex items-center space-x-2 py-1">
+              <img :src="product.image || '/path/to/placeholder-image.jpg'" class="w-10 h-10 object-cover rounded" alt="">
+              <div>
+                <a :href="product.url" class="block hover:underline" x-text="product.title"></a>
+              </div>
+            </li>
+          </template>
+        </ul>
+      </div>
+    </div>
+
+    <div class="p-4 border-t border-gray-200 flex items-center justify-between" x-show="!loading">
+      <span class="text-gray-600">Buscar "<span x-text="query"></span>"</span>
+      <a :href="'/search?q=' + query" class="text-blue-500 hover:text-blue-700">
+        {% render 'icon-arrow-right' %}
+      </a>
+    </div>
+  </div>
+</section>

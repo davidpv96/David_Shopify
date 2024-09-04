@@ -59,13 +59,8 @@
       </div>
     </section>
 
-    <!-- Barra de búsqueda -->
-    <section class="flex items-center justify-center bg-white rounded-full shadow-sm w-full border-2 border-solid border-[#e1e1e1]">
-      <input type="text" placeholder="Buscar Productos" class="flex-grow p-3 text-gray-700 bg-transparent focus:outline-none rounded-full ">
-      <button class="p-3 text-gray-500">
-        {% render 'icon-search' %}
-      </button>
-    </section>
+   <!-- Barra de búsqueda actualizada -->
+{% render 'search-bar-header' %}
 
     <!-- Menú desplegable como Modal -->
     <div 
@@ -170,5 +165,6 @@
   {% endschema %}
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+{{ 'search-bar.js' | asset_url | script_tag }}
 {{ 'cart.js' | asset_url | script_tag }}
 

@@ -1,0 +1,181 @@
+<form class="space-y-4">
+
+  <!-- Contenedor para "Filtros:" y "Remover todo" -->
+  <div class="pb-4 border-b border-gray-200 mb-8 flex justify-between items-center">
+    <span class="text-gray-600 font-semibold">Filtros:</span>
+
+    {%- assign has_active_filters = false -%}
+    {%- for filter in search.filters -%}
+      {%- if filter.active_values.size > 0 -%}
+        {%- assign has_active_filters = true -%}
+      {%- endif -%}
+      {%- if filter.type == "price_range" -%}
+        {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+          {%- assign has_active_filters = true -%}
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if has_active_filters -%}
+      <!-- Enlace "Remover todo" -->
+      <a href="{{ routes.search_url }}?q={{ search.terms | escape }}" class="text-[#52A1BF] underline hover:no-underline cursor-pointer">Remover todo</a>
+    {%- endif -%}
+  </div>
+
+  <!-- Filtros Aplicados -->
+  {%- if has_active_filters -%}
+    <div class="flex flex-wrap space-x-2 mb-4">
+      {%- for filter in search.filters -%}
+        {%- if filter.type == "price_range" -%}
+          {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+            <div class="inline-flex items-center bg-[#1D495B] text-white text-sm font-semibold px-2 py-1 rounded mr-2 mb-2">
+              <span>
+                {{ filter.min_value.value | money }} - {{ filter.max_value.value | money }}
+              </span>
+              <a href="{{ filter.url_to_remove }}" class="ml-2 text-white hover:text-gray-200 cursor-pointer">&times;</a>
+            </div>
+          {%- endif -%}
+        {%- else -%}
+          {%- for filter_value in filter.active_values -%}
+            <div class="inline-flex items-center bg-[#1D495B] text-white text-sm font-semibold px-2 py-1 rounded mr-2 mb-2">
+              <span>{{ filter.label }}: {{ filter_value.label }}</span>
+              <a href="{{ filter_value.url_to_remove }}" class="ml-2 text-white hover:text-gray-200 cursor-pointer">&times;</a>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  <!-- Resto de los filtros -->
+  {%- for filter in search.filters -%}
+    <details class="border border-gray-200 rounded-lg">
+      <summary class="bg-gray-100 p-4 cursor-pointer flex justify-between items-center">
+        <span class="font-semibold">{{ filter.label }}</span>
+        <span class="ml-2 transform transition-transform group-open:rotate-180 text-gray-500">
+          &#9662; <!-- Flecha hacia abajo -->
+        </span>
+      </summary>
+
+      <div class="p-4 space-y-2">
+        <div class="flex justify-between items-center text-sm">
+          <p>{{ filter.active_values.size }} Seleccionados</p>
+          {%- if filter.active_values.size > 0 -%}
+            <p><a href="{{ filter.url_to_remove }}" class="text-[#1D495B] hover:underline cursor-pointer">Reiniciar</a></p>
+          {%- endif -%}
+        </div>
+
+        {%- case filter.type -%}
+          {%- when 'boolean' -%}
+            <ul class="space-y-2">
+              <li>
+                <label class="flex items-center">
+                  <input type="checkbox"
+                    name="{{ filter.param_name }}"
+                    value="{{ filter.true_value.value }}"
+                    id="Filter-{{ filter.param_name }}"
+                    {% if filter.true_value.active -%}checked{%- endif %}
+                    {% if filter.true_value.count == 0 and filter.true_value.active == false -%}disabled{%- endif %}
+                    class="mr-2 text-[#1D495B] focus:ring-[#1D495B] border-gray-300 rounded"
+                  >
+                  {{ filter.true_value.label }}
+                </label>
+              </li>
+              <li>
+                <label class="flex items-center">
+                  <input type="checkbox"
+                    name="{{ filter.param_name }}"
+                    value="{{ filter.false_value.value }}"
+                    id="Filter-{{ filter.param_name }}"
+                    {% if filter.false_value.active -%}checked{%- endif %}
+                    {% if filter.false_value.count == 0 and filter.false_value.active == false -%}disabled{%- endif %}
+                    class="mr-2 text-[#1D495B] focus:ring-[#1D495B] border-gray-300 rounded"
+                  >
+                  {{ filter.false_value.label }}
+                </label>
+              </li>
+            </ul>
+            <div class="pt-4">
+              <input type="submit" value="Aplicar" class="bg-[#1D495B] text-white px-4 py-2 rounded hover:bg-[#163D4D] cursor-pointer">
+            </div>
+
+          {%- when 'list' -%}
+            <ul class="space-y-2">
+              {%- for filter_value in filter.values -%}
+                <li>
+                  <label class="flex items-center">
+                    <input type="checkbox"
+                      name="{{ filter_value.param_name }}"
+                      value="{{ filter_value.value }}"
+                      id="Filter-{{ filter.param_name }}-{{ forloop.index }}"
+                      {% if filter_value.active -%}checked{%- endif %}
+                      {% if filter_value.count == 0 and filter_value.active == false -%}disabled{%- endif %}
+                      class="mr-2 text-[#1D495B] focus:ring-[#1D495B] border-gray-300 rounded"
+                    >
+                    <span class="inline-flex items-center">
+                      {%- case filter_value.display.type -%}
+                        {%- when 'colors' -%}
+                          <span style="background: {{ filter_value.display.value }}" class="w-4 h-4 rounded-full mr-2"></span>
+                        {%- when 'image' -%}
+                          {{ filter_value.display.value | image_url: width: 25 | image_tag: alt: filter_value.display.value.alt }}
+                        {%- else -%}
+                          <span class="visual-display__child mr-2"></span>
+                      {%- endcase -%}
+                    </span>
+                    {{ filter_value.label }}
+                  </label>
+                </li>
+              {%- endfor -%}
+            </ul>
+            <div class="pt-4">
+              <input type="submit" value="Aplicar" class="bg-[#1D495B] text-white px-4 py-2 rounded hover:bg-[#163D4D] cursor-pointer">
+            </div>
+
+          {%- when 'price_range' -%}
+            <div class="space-y-2">
+              <div class="flex items-center">
+                <span>{{ cart.currency.symbol }}</span>
+                <input name="{{ filter.min_value.param_name }}"
+                  id="Filter-{{ filter.min_value.param_name }}"
+                  {% if filter.min_value.value -%}
+                    value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                  {%- endif %}
+                  type="number"
+                  placeholder="0"
+                  min="0"
+                  max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                  class="ml-2 border border-gray-300 rounded p-1 w-full"
+                >
+                <label for="Filter-{{ filter.min_value.param_name }}" class="ml-2">De</label>
+              </div>
+              <div class="flex items-center">
+                <span>{{ cart.currency.symbol }}</span>
+                <input name="{{ filter.max_value.param_name }}"
+                  id="Filter-{{ filter.max_value.param_name }}"
+                  {% if filter.max_value.value -%}
+                    value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                  {%- endif %}
+                  type="number"
+                  placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                  min="0"
+                  max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                  class="ml-2 border border-gray-300 rounded p-1 w-full"
+                >
+                <label for="Filter-{{ filter.max_value.param_name }}" class="ml-2">a</label>
+              </div>
+            </div>
+            <div class="pt-4">
+              <input type="submit" value="Aplicar" class="bg-[#1D495B] text-white px-4 py-2 rounded hover:bg-[#163D4D] cursor-pointer">
+            </div>
+        {%- endcase -%}
+      </div>
+    </details>
+  {%- endfor -%}
+
+  <!-- Campo oculto para mantener el término de búsqueda -->
+  <input type="hidden" name="q" value="{{ search.terms | escape }}">
+  
+  <!-- Campo oculto para mantener las opciones de búsqueda -->
+  <input type="hidden" name="options[prefix]" value="last">
+
+</form>

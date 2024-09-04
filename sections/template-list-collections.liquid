@@ -1,0 +1,107 @@
+<!-- Incluir el encabezado de la colección -->
+{% render 'collection-header' %}
+
+<div x-data="{ open: false }" x-init="$watch('open', value => document.body.classList.toggle('overflow-hidden', value))" class="container mx-auto px-4 md:px-20 flex flex-wrap lg:flex-nowrap gap-8">
+  
+  <!-- Contenedor de Filtros y Ordenar para móviles y tabletas -->
+  <div class="w-full lg:hidden mb-4 bg-[#1D495B] p-4 rounded-lg">
+    <div class="flex justify-between items-center">
+      <button @click="open = true" class="flex items-center px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-700 hover:bg-gray-100 focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2zM3 16a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" />
+        </svg>
+        Filters
+      </button>
+
+      <!-- Formulario para ordenar productos en móvil -->
+      <form id="sort_by_form_mobile" action="" method="get" class="flex items-center">
+        <label for="sort-by-mobile" class="sr-only">Ordenar por:</label>
+        <select id="sort-by-mobile" name="sort_by" onchange="this.form.submit()" class="border-gray-300 rounded">
+          <option value="best-selling" {% if collection.sort_by == "best-selling" %}selected{% endif %}>Más vendidos</option>
+          <option value="title-ascending" {% if collection.sort_by == "title-ascending" %}selected{% endif %}>A-Z</option>
+          <option value="title-descending" {% if collection.sort_by == "title-descending" %}selected{% endif %}>Z-A</option>
+          <option value="price-ascending" {% if collection.sort_by == "price-ascending" %}selected{% endif %}>Precio: Menor a mayor</option>
+          <option value="price-descending" {% if collection.sort_by == "price-descending" %}selected{% endif %}>Precio: Mayor a menor</option>
+          <option value="created-descending" {% if collection.sort_by == "created-descending" %}selected{% endif %}>Nuevos a antiguos</option>
+          <option value="created-ascending" {% if collection.sort_by == "created-ascending" %}selected{% endif %}>Antiguos a nuevos</option>
+        </select>
+      </form>
+    </div>
+  </div>
+
+  <!-- Contenedor de Filtros -->
+  <div :class="{'block': open, 'hidden': !open}" class="fixed inset-y-0 right-0 w-64 bg-white shadow-lg z-[300] lg:transform-none lg:relative lg:translate-x-0 lg:w-1/4 lg:bg-transparent lg:shadow-none lg:block hidden flex flex-col">
+    <!-- Filtros -->
+    <div class="flex-1 overflow-y-auto p-4 border md:border-gray-200 md:rounded-lg md:mb-20">
+      <h2 class="font-semibold mb-4 text-lg bg-gray-100 p-4 rounded-lg">Categorías</h2>
+      <ul class="space-y-2 mb-10">
+        {% assign links = linklists.categorias.links %}
+        {% for link in links %}
+          {% if link.links.size > 0 %}
+            <li class="border-b border-gray-200">
+              <details class="group">
+                <summary class="cursor-pointer p-2 flex justify-between items-center text-gray-800 font-medium hover:bg-gray-100 rounded transition-colors duration-300">
+                  {{ link.title }}
+                  <span class="ml-2 transform transition-transform group-open:rotate-90 text-gray-500">&#x25B8;</span>
+                </summary>
+                <ul class="pl-4">
+                  {% for sublink in link.links %}
+                    <li class="py-2">
+                      <a href="{{ sublink.url }}" class="text-gray-600 hover:text-gray-800 transition-colors duration-300">{{ sublink.title }}</a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              </details>
+            </li>
+          {% else %}
+            <li class="border-b border-gray-200">
+              <a href="{{ link.url }}" class="block p-2 text-gray-800 font-medium hover:bg-gray-100 rounded transition-colors duration-300">
+                {{ link.title }}
+              </a>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <!-- Contenedor de Productos -->
+  <div class="w-full lg:w-3/4">
+    
+    <!-- Información de Productos y Orden solo para pantallas grandes -->
+    <div class="hidden lg:flex justify-between items-center mb-6 md:mx-auto bg-[#1D495B] p-5 rounded-lg">
+      <div class="text-white font-medium">
+        Todos los productos
+      </div>
+      <div>
+        <!-- Formulario para ordenar productos -->
+        <form id="sort_by_form" action="" method="get">
+          <label for="sort-by" class="text-white font-medium mr-2">Ordenar por:</label>
+          <select id="sort-by" name="sort_by" onchange="this.form.submit()" class="border-gray-300 rounded">
+            <option value="best-selling" {% if collection.sort_by == "best-selling" %}selected{% endif %}>Más vendidos</option>
+            <option value="title-ascending" {% if collection.sort_by == "title-ascending" %}selected{% endif %}>A-Z</option>
+            <option value="title-descending" {% if collection.sort_by == "title-descending" %}selected{% endif %}>Z-A</option>
+            <option value="price-ascending" {% if collection.sort_by == "price-ascending" %}selected{% endif %}>Precio: Menor a mayor</option>
+            <option value="price-descending" {% if collection.sort_by == "price-descending" %}selected{% endif %}>Precio: Mayor a menor</option>
+            <option value="created-descending" {% if collection.sort_by == "created-descending" %}selected{% endif %}>Nuevos a antiguos</option>
+            <option value="created-ascending" {% if collection.sort_by == "created-ascending" %}selected{% endif %}>Antiguos a nuevos</option>
+          </select>
+        </form>
+      </div>
+    </div>
+
+    <!-- Listado de productos -->
+    <div class="px-4 md:px-0 py-8">
+      {% paginate all_products by 12 %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {% for product in all_products %}
+            {% render 'product-card', product: product %}
+          {% else %}
+            <p>No hay productos disponibles.</p>
+          {% endfor %}
+        </div>
+        {% render 'pagination', pagination: paginate %}
+      {% endpaginate %}
+    </div>
+  </div>
+</div>

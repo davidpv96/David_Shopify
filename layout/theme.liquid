@@ -14,6 +14,18 @@
     
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <!-- theme.liquid -->
+
+  <!-- Otros elementos del head -->
+  <script>
+    // Redirigir rápidamente si la ruta es /collections o /products
+    var currentPath = window.location.pathname;
+    if (currentPath === '/collections' || currentPath === '/products') {
+      window.location.replace('/collections/all');
+    }
+  </script>
+
+
 
     <!-- CSS principal del tema -->
     {{ 'application.css' | asset_url | stylesheet_tag }}
@@ -42,6 +54,8 @@
 
     <!-- Swiper JS -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    
 
     <!-- Inicialización de Swiper -->
      <script>

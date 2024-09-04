@@ -39,7 +39,7 @@
         <ul>
           <template x-for="(suggestion, index) in suggestions" :key="index">
             <li class="py-1">
-              <a :href="'/search?q=' + suggestion" class="block hover:bg-gray-100" x-text="suggestion"></a>
+              <a :href="suggestion.url" class="block hover:bg-gray-100" x-text="suggestion.text"></a>
             </li>
           </template>
         </ul>

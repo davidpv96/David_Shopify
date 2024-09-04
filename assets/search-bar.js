@@ -47,9 +47,9 @@ function searchComponent() {
       processSuggestions(results) {
         const queryLower = this.query.toLowerCase();
         let allSuggestions = [
-          ...(results.queries || []).map(q => ({ text: q.text, type: 'popular_query' })),
-          ...(results.products || []).map(p => ({ text: p.title, type: 'product' })),
-          ...(results.collections || []).map(c => ({ text: c.title, type: 'collection' }))
+          ...(results.queries || []).map(q => ({ text: q.text, type: 'popular_query', url: `/search?q=${q.text}` })),
+          ...(results.products || []).map(p => ({ text: p.title, type: 'product', url: `/products/${p.handle}` })),
+          ...(results.collections || []).map(c => ({ text: c.title, type: 'collection', url: `/collections/${c.handle}` }))
         ];
   
         // Filtrar y ordenar sugerencias
@@ -62,12 +62,11 @@ function searchComponent() {
             if (!aStarts && bStarts) return 1;
             return 0;
           })
-          .slice(0, 7)
-          .map(item => item.text);
+          .slice(0, 7);
   
         // Añadir una sugerencia genérica si hay espacio
         if (this.suggestions.length < 8) {
-          this.suggestions.push(`Buscar "${this.query}"`);
+          this.suggestions.push({ text: `Buscar "${this.query}"`, url: `/search?q=${this.query}`, type: 'generic_search' });
         }
   
         console.log('Sugerencias procesadas:', this.suggestions); // Para depuración
@@ -80,3 +79,4 @@ function searchComponent() {
       }
     };
   }
+  

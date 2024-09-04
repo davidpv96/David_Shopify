@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
     },
   });
 
-  // Nuevo slider (solo texto)
+  // Nuevo slider (solo textoS)
   initSwiper(".myTextSwiper", {
     slidesPerView: 1,
     spaceBetween: 10,

@@ -1,89 +1,6 @@
 {% assign selected_variant = product.selected_or_first_available_variant %}
 
 <style>
-
-.carousel {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    overflow: hidden;
-  }
-
-  .carousel-item {
-    display: none;
-    width: 100%;
-    height: 100%;
-  }
-
-  .carousel-item.active {
-    display: block;
-  }
-
-  .carousel-prev, .carousel-next {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(255, 255, 255, 0.5);
-    border: none;
-    font-size: 24px;
-    padding: 10px;
-    cursor: pointer;
-    z-index: 10;
-  }
-
-  .carousel-prev {
-    left: 10px;
-  }
-
-  .carousel-next {
-    right: 10px;
-  }
-
-  .quantity-selector {
-    display: flex;
-    align-items: center;
-    max-width: 150px;
-  }
-
-  .quantity-button {
-    background-color: #f3f4f6;
-    border: none;
-    padding: 8px 12px;
-    font-size: 18px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-
-  .quantity-button:hover {
-    background-color: #e5e7eb;
-  }
-
-  #quantity {
-    flex-grow: 1;
-    text-align: center;
-    border: none;
-    font-size: 18px;
-    padding: 8px 0;
-    -moz-appearance: textfield;
-  }
-
-  #quantity::-webkit-outer-spin-button,
-  #quantity::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
-  .thumbnail {
-    transition: all 0.2s;
-  }
-
-  .thumbnail:hover {
-    transform: scale(1.05);
-  }
-
-  .thumbnail.active {
-    border: 2px solid #4f46e5;
-  }
   .price-container {
     display: flex;
     align-items: center;
@@ -95,7 +12,7 @@
     background-color: #e53e3e;
     color: white;
     padding: 4px 8px;
-    font-size: 0.75rem; /* Aumenta el tamaño de la etiqueta */
+    font-size: 0.8rem; /* Aumenta el tamaño de la etiqueta */
     font-weight: bold;
     border-radius: 4px;
   }
@@ -200,41 +117,37 @@
   }
 </style>
 
-{% assign selected_variant = product.selected_or_first_available_variant %}
-
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
   <div class="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
     <!-- Image gallery -->
     <div class="flex flex-col">
-      <!-- Main image carousel -->
+      <!-- Main image -->
       <div class="w-full mb-4 zoom-container relative">
-        <div id="image-carousel" class="carousel">
-          {% for media in product.media %}
-            <div class="carousel-item{% if forloop.first %} active{% endif %}" data-media-id="{{ media.id }}">
-              {{ media | img_url: '800x800', crop: 'center' | img_tag: media.alt, 'w-full h-full object-contain rounded-lg' }}
-            </div>
-          {% endfor %}
+        {% if selected_variant.compare_at_price > selected_variant.price %}
+          <span class="sale-label">En Oferta</span>
+        {% endif %}
+        <div id="main-image" class="main-image active">
+          {{ product.featured_media | img_url: '800x800', crop: 'center' | img_tag: product.featured_media.alt, 'w-full h-full object-contain rounded-lg' }}
         </div>
         <button class="zoom-button" id="zoom-button">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
           </svg>
         </button>
-        <button class="carousel-prev">&#10094;</button>
-        <button class="carousel-next">&#10095;</button>
       </div>
       
-      <!-- Thumbnail navigation -->
-      <div class="mt-4 flex space-x-4 overflow-x-auto p-2">
+      <!-- Image selector -->
+      <div class="mt-4 grid grid-cols-4 gap-4">
         {% for media in product.media %}
           <button 
-            class="thumbnail flex-shrink-0 w-20 h-20 bg-white rounded-md flex items-center justify-center text-sm font-medium uppercase text-gray-900 cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring focus:ring-offset-4 focus:ring-opacity-50 {% if forloop.first %}ring-2 ring-indigo-500{% endif %}"
-            data-index="{{ forloop.index0 }}"
-            data-media-id="{{ media.id }}"
+            class="thumbnail relative w-full h-24 bg-white rounded-md flex items-center justify-center text-sm font-medium uppercase text-gray-900 cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring focus:ring-offset-4 focus:ring-opacity-50 {% if forloop.first %}ring-2 ring-indigo-500{% endif %}"
+            data-image-id="{{ media.id }}"
+            data-image-url="{{ media | img_url: '800x800', crop: 'center' }}"
+            data-image-alt="{{ media.alt | escape }}"
           >
             <span class="sr-only">{{ media.alt }}</span>
-            <span class="w-full h-full rounded-md overflow-hidden">
-              {{ media | img_url: '100x100', crop: 'center' | img_tag: media.alt, 'w-full h-full object-cover' }}
+            <span class="absolute inset-0 rounded-md overflow-hidden">
+              {{ media | img_url: '200x200', crop: 'center' | img_tag: media.alt, 'w-full h-full object-cover' }}
             </span>
           </button>
         {% endfor %}
@@ -255,7 +168,6 @@
           {% endif %}
         </div>
       </div>
-
       <!-- Short description -->
       <div class="mt-6">
         <h3 class="sr-only">Description</h3>
@@ -285,12 +197,8 @@
 
         <!-- Quantity selector -->
         <div class="mt-6">
-          <label for="quantity" class="block text-sm font-medium text-gray-700 mb-2">Cantidad</label>
-          <div class="quantity-selector flex items-center border border-gray-300 rounded-md overflow-hidden">
-            <button type="button" class="quantity-button minus px-4 py-2 bg-gray-100 text-gray-600 hover:bg-gray-200 focus:outline-none">-</button>
-            <input type="number" name="quantity" id="quantity" min="1" value="1" class="w-16 text-center border-none focus:ring-0 text-lg">
-            <button type="button" class="quantity-button plus px-4 py-2 bg-gray-100 text-gray-600 hover:bg-gray-200 focus:outline-none">+</button>
-          </div>
+          <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity</label>
+          <input type="number" name="quantity" id="quantity" min="1" value="1" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
         </div>
 
         <input type="hidden" name="id" value="{{ selected_variant.id }}">
@@ -322,111 +230,50 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const carousel = document.getElementById('image-carousel');
-    const carouselItems = carousel.querySelectorAll('.carousel-item');
+    const mainImageContainer = document.getElementById('main-image');
     const thumbnails = document.querySelectorAll('.thumbnail');
-    const prevButton = document.querySelector('.carousel-prev');
-    const nextButton = document.querySelector('.carousel-next');
     const zoomButton = document.getElementById('zoom-button');
     const zoomOverlay = document.getElementById('zoom-overlay');
     const zoomedImage = document.getElementById('zoomed-image');
     const closeZoomButton = document.getElementById('close-zoom');
-    const variantSelectors = document.querySelectorAll('select[name^="options["]');
-    const quantityInput = document.getElementById('quantity');
-    const minusButton = document.querySelector('.quantity-button.minus');
-    const plusButton = document.querySelector('.quantity-button.plus');
 
-    let currentIndex = 0;
+    function updateMainImage(imageUrl, imageAlt) {
+      const newImage = document.createElement('div');
+      newImage.className = 'main-image';
+      newImage.innerHTML = `<img src="${imageUrl}" alt="${imageAlt}" class="w-full h-full object-contain rounded-lg">`;
+      
+      mainImageContainer.appendChild(newImage);
+      
+      setTimeout(() => {
+        newImage.classList.add('active');
+        mainImageContainer.querySelector('.main-image.active:not(:last-child)').classList.remove('active');
+      }, 50);
 
-    function showSlide(index) {
-      carouselItems[currentIndex].classList.remove('active');
-      carouselItems[index].classList.add('active');
-      currentIndex = index;
-      updateThumbnails();
-    }
-
-    function updateThumbnails() {
-      thumbnails.forEach((thumbnail, index) => {
-        if (index === currentIndex) {
-          thumbnail.classList.add('active');
-        } else {
-          thumbnail.classList.remove('active');
+      setTimeout(() => {
+        while (mainImageContainer.children.length > 1) {
+          mainImageContainer.removeChild(mainImageContainer.firstChild);
         }
+      }, 350);
+    }
+
+    function setActiveThumbnail(thumbnail) {
+      thumbnails.forEach(t => t.classList.remove('ring-2', 'ring-indigo-500'));
+      thumbnail.classList.add('ring-2', 'ring-indigo-500');
+    }
+
+    thumbnails.forEach(thumbnail => {
+      thumbnail.addEventListener('click', function() {
+        const imageUrl = this.getAttribute('data-image-url');
+        const imageAlt = this.getAttribute('data-image-alt');
+        
+        updateMainImage(imageUrl, imageAlt);
+        setActiveThumbnail(this);
       });
-    }
-
-    prevButton.addEventListener('click', () => {
-      showSlide((currentIndex - 1 + carouselItems.length) % carouselItems.length);
-    });
-
-    nextButton.addEventListener('click', () => {
-      showSlide((currentIndex + 1) % carouselItems.length);
-    });
-
-    thumbnails.forEach((thumbnail, index) => {
-      thumbnail.addEventListener('click', () => {
-        showSlide(index);
-      });
-    });
-
-    // Variant change handler
-    function handleVariantChange() {
-      const selectedOptions = Array.from(variantSelectors).map(select => select.value);
-      const selectedVariant = {{ product.variants | json }}.find(variant => 
-        JSON.stringify(variant.options) === JSON.stringify(selectedOptions)
-      );
-
-      if (selectedVariant && selectedVariant.featured_image) {
-        const variantImageId = selectedVariant.featured_image.id;
-        const variantSlide = document.querySelector(`.carousel-item[data-media-id="${variantImageId}"]`);
-        if (variantSlide) {
-          const variantIndex = Array.from(carouselItems).indexOf(variantSlide);
-          showSlide(variantIndex);
-        }
-      }
-
-      // Update variant ID and price
-      document.querySelector('input[name="id"]').value = selectedVariant.id;
-      updatePrice(selectedVariant);
-    }
-
-    variantSelectors.forEach(selector => {
-      selector.addEventListener('change', handleVariantChange);
-    });
-
-    function updatePrice(variant) {
-      const priceContainer = document.querySelector('.price-container');
-      priceContainer.innerHTML = `
-        <span class="current-price">${formatMoney(variant.price)}</span>
-        ${variant.compare_at_price > variant.price 
-          ? `<span class="original-price">${formatMoney(variant.compare_at_price)}</span>
-             <span class="sale-label">En Oferta</span>`
-          : ''}
-      `;
-    }
-
-    function formatMoney(cents) {
-      return (cents / 100).toLocaleString('es-ES', {
-        style: 'currency',
-        currency: '{{ shop.currency }}',
-        minimumFractionDigits: 2
-      });
-    }
-
-    // Quantity selector
-    minusButton.addEventListener('click', () => {
-      if (quantityInput.value > 1) {
-        quantityInput.value = parseInt(quantityInput.value) - 1;
-      }
-    });
-
-    plusButton.addEventListener('click', () => {
-      quantityInput.value = parseInt(quantityInput.value) + 1;
     });
 
     // Zoom functionality
     function openZoom() {
-      const currentImage = carousel.querySelector('.carousel-item.active img');
+      const currentImage = mainImageContainer.querySelector('.main-image.active img');
       zoomedImage.src = currentImage.src;
       zoomedImage.alt = currentImage.alt;
       zoomOverlay.style.display = 'block';
@@ -443,8 +290,5 @@
         closeZoom();
       }
     });
-
-    // Initial variant selection
-    handleVariantChange();
   });
 </script>

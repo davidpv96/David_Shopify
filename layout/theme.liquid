@@ -20,7 +20,7 @@
   <script>
     // Redirigir rápidamente si la ruta es /collections o /products
     var currentPath = window.location.pathname;
-    if (currentPath === '/collections' || currentPath === '/products') {
+    if (currentPath === '/collections' || currentPath === '/products' || currentPath === '/collections/' || currentPath === '/products/') {
       window.location.replace('/collections/all');
     }
   </script>

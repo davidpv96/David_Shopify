@@ -18,6 +18,11 @@
           "tiktok_link": "https:\/\/www.instagram.com\/gabrielleclub\/",
           "header_menu": "main-menu"
         }
+      },
+      "footer": {
+        "type": "footer",
+        "settings": {
+        }
       }
     },
     "content_for_index": [
@@ -30,9 +35,15 @@
         "settings": {
         }
       },
+      "5182184951224911228": {
+        "type": "shopify:\/\/apps\/rapid-ai-search-bar-filter\/blocks\/script\/bd827795-feaa-41a8-9219-2b83f238aa7d",
+        "disabled": true,
+        "settings": {
+        }
+      },
       "3770645089152979137": {
         "type": "shopify:\/\/apps\/rapid-ai-search-bar-filter\/blocks\/csb\/bd827795-feaa-41a8-9219-2b83f238aa7d",
-        "disabled": false,
+        "disabled": true,
         "settings": {
           "picker_enabled": true,
           "icon_color": "#6F6F6F",

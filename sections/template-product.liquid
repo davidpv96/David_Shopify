@@ -52,32 +52,26 @@
     object-fit: contain;
   }
 
-  .carousel-button {
+  .carousel-pagination {
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgba(255, 255, 255, 0.8);
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
     display: flex;
-    align-items: center;
-    justify-content: center;
+    gap: 8px;
+  }
+
+  .carousel-pagination-bullet {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
     cursor: pointer;
-    z-index: 10;
+    transition: background-color 0.3s ease;
   }
 
-  .carousel-button:hover {
-    background-color: rgba(255, 255, 255, 1);
-  }
-
-  .carousel-button-prev {
-    left: 10px;
-  }
-
-  .carousel-button-next {
-    right: 10px;
+  .carousel-pagination-bullet.active {
+    background-color: white;
   }
 
   .thumbnail-carousel-container {
@@ -86,11 +80,17 @@
     overflow: hidden;
     height: 100px;
     margin-top: 20px;
+    touch-action: pan-x;
   }
 
   .thumbnail-carousel {
     display: flex;
     transition: transform 0.3s ease-in-out;
+    cursor: grab;
+  }
+
+  .thumbnail-carousel:active {
+    cursor: grabbing;
   }
 
   .thumbnail-item {
@@ -118,8 +118,8 @@
     background-color: rgba(255, 255, 255, 0.8);
     border: none;
     border-radius: 50%;
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -132,11 +132,11 @@
   }
 
   .thumbnail-button-prev {
-    left: 5px;
+    left: 10px;
   }
 
   .thumbnail-button-next {
-    right: 5px;
+    right: 10px;
   }
 
   .zoom-overlay {
@@ -213,16 +213,7 @@
             </div>
           {% endfor %}
         </div>
-        <button class="carousel-button carousel-button-prev" id="carousel-prev">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        <button class="carousel-button carousel-button-next" id="carousel-next">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
+        <div class="carousel-pagination" id="carousel-pagination"></div>
         <button class="zoom-button" id="zoom-button">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
@@ -230,8 +221,13 @@
         </button>
       </div>
       
-      <!-- Thumbnail carousel -->
+      <!-- Thumbnail carousel with navigation -->
       <div class="thumbnail-carousel-container">
+        <button class="thumbnail-button thumbnail-button-prev" id="thumbnail-prev">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
         <div class="thumbnail-carousel" id="thumbnail-carousel">
           {% for media in product.media %}
             <div class="thumbnail-item{% if forloop.first %} active{% endif %}" data-media-id="{{ media.id }}">
@@ -239,13 +235,8 @@
             </div>
           {% endfor %}
         </div>
-        <button class="thumbnail-button thumbnail-button-prev" id="thumbnail-prev">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
         <button class="thumbnail-button thumbnail-button-next" id="thumbnail-next">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
           </svg>
         </button>
@@ -331,8 +322,7 @@
   document.addEventListener('DOMContentLoaded', function() {
     const mainCarousel = document.getElementById('product-carousel');
     const mainCarouselItems = mainCarousel.querySelectorAll('.carousel-item');
-    const mainPrevButton = document.getElementById('carousel-prev');
-    const mainNextButton = document.getElementById('carousel-next');
+    const paginationContainer = document.getElementById('carousel-pagination');
     
     const thumbnailCarousel = document.getElementById('thumbnail-carousel');
     const thumbnailItems = thumbnailCarousel.querySelectorAll('.thumbnail-item');
@@ -352,15 +342,18 @@
     const moneyFormat = {{ shop.money_format | json }};
 
     let currentIndex = 0;
-    let thumbnailIndex = 0;
 
     function updateMainCarousel() {
       mainCarousel.style.transform = `translateX(-${currentIndex * 100}%)`;
+      updatePagination();
       updateThumbnails();
     }
 
-    function updateThumbnailCarousel() {
-      thumbnailCarousel.style.transform = `translateX(-${thumbnailIndex * 25}%)`;
+    function updatePagination() {
+      const bullets = paginationContainer.querySelectorAll('.carousel-pagination-bullet');
+      bullets.forEach((bullet, index) => {
+        bullet.classList.toggle('active', index === currentIndex);
+      });
     }
 
     function updateThumbnails() {
@@ -369,24 +362,83 @@
       });
     }
 
-    mainPrevButton.addEventListener('click', () => {
-      currentIndex = (currentIndex - 1 + mainCarouselItems.length) % mainCarouselItems.length;
-      updateMainCarousel();
-    });
+    function createPagination() {
+      mainCarouselItems.forEach((_, index) => {
+        const bullet = document.createElement('div');
+        bullet.classList.add('carousel-pagination-bullet');
+        bullet.addEventListener('click', () => {
+          currentIndex = index;
+          updateMainCarousel();
+        });
+        paginationContainer.appendChild(bullet);
+      });
+    }
 
-    mainNextButton.addEventListener('click', () => {
-      currentIndex = (currentIndex + 1) % mainCarouselItems.length;
-      updateMainCarousel();
-    });
+    createPagination();
+
+    // Thumbnail navigation
+    let thumbnailIndex = 0;
+
+    function updateThumbnailCarousel() {
+      const maxIndex = thumbnailItems.length - 4; // Muestra 4 thumbnails a la vez
+      thumbnailIndex = Math.max(0, Math.min(thumbnailIndex, maxIndex));
+      thumbnailCarousel.style.transform = `translateX(-${thumbnailIndex * 25}%)`;
+    }
 
     thumbnailPrevButton.addEventListener('click', () => {
-      thumbnailIndex = Math.max(0, thumbnailIndex - 1);
+      thumbnailIndex = Math.max(thumbnailIndex - 1, 0);
       updateThumbnailCarousel();
     });
 
     thumbnailNextButton.addEventListener('click', () => {
-      thumbnailIndex = Math.min(thumbnailItems.length - 4, thumbnailIndex + 1);
+      thumbnailIndex = Math.min(thumbnailIndex + 1, thumbnailItems.length - 4);
       updateThumbnailCarousel();
+    });
+
+    // Swipe functionality for thumbnail carousel
+    let startX;
+    let scrollLeft;
+    let isDown = false;
+
+    thumbnailCarousel.addEventListener('mousedown', (e) => {
+      isDown = true;
+      startX = e.pageX - thumbnailCarousel.offsetLeft;
+      scrollLeft = thumbnailCarousel.scrollLeft;
+    });
+
+    thumbnailCarousel.addEventListener('mouseleave', () => {
+      isDown = false;
+    });
+
+    thumbnailCarousel.addEventListener('mouseup', () => {
+      isDown = false;
+    });
+
+    thumbnailCarousel.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - thumbnailCarousel.offsetLeft;
+      const walk = (x - startX) * 2;
+      thumbnailCarousel.scrollLeft = scrollLeft - walk;
+    });
+
+    // Touch events for mobile devices
+    thumbnailCarousel.addEventListener('touchstart', (e) => {
+      isDown = true;
+      startX = e.touches[0].pageX - thumbnailCarousel.offsetLeft;
+      scrollLeft = thumbnailCarousel.scrollLeft;
+    });
+
+    thumbnailCarousel.addEventListener('touchend', () => {
+      isDown = false;
+    });
+
+    thumbnailCarousel.addEventListener('touchmove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.touches[0].pageX - thumbnailCarousel.offsetLeft;
+      const walk = (x - startX) * 2;
+      thumbnailCarousel.scrollLeft = scrollLeft - walk;
     });
 
     thumbnailItems.forEach((item, index) => {
@@ -455,6 +507,5 @@
 
     // Initialize carousels
     updateMainCarousel();
-    updateThumbnailCarousel();
   });
 </script>

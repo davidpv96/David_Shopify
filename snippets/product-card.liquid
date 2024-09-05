@@ -19,8 +19,16 @@
     {% endif %}
   </div>
   
-  <!-- Etiqueta "Sale" en el Lado Derecho -->
-  {% if product.compare_at_price > product.price %}
+  <!-- Verificar si alguna variación tiene oferta -->
+  {% assign has_sale = false %}
+  {% for variant in product.variants %}
+    {% if variant.compare_at_price > variant.price %}
+      {% assign has_sale = true %}
+    {% endif %}
+  {% endfor %}
+
+  <!-- Etiqueta "Sale" en el Lado Derecho si alguna variación está en oferta -->
+  {% if has_sale %}
     <span class="absolute top-2 right-2 bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded">Oferta</span>
   {% endif %}
   

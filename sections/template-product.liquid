@@ -12,7 +12,7 @@
     background-color: #e53e3e;
     color: white;
     padding: 4px 8px;
-    font-size: 0.8rem; /* Aumenta el tamaño de la etiqueta */
+    font-size: 0.8rem;
     font-weight: bold;
     border-radius: 4px;
   }
@@ -20,40 +20,123 @@
   .original-price {
     text-decoration: line-through;
     color: #718096;
-    font-size: 1rem; /* Vuelve al tamaño anterior del precio original */
+    font-size: 1rem;
   }
 
   .current-price {
     font-weight: bold;
-    font-size: 1.8rem; /* Vuelve al tamaño anterior del precio actual */
+    font-size: 1.8rem;
   }
 
-  .zoom-container {
+  .carousel-container {
     position: relative;
-    overflow: hidden;
-    /* Establecemos un aspect ratio fijo */
-    aspect-ratio: 1 / 1;
-    max-height: 600px; /* Ajusta este valor según tus necesidades */
-  }
-
-  .main-image {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    max-height: 600px;
   }
 
-  .main-image.active {
-    opacity: 1;
+  .carousel {
+    display: flex;
+    transition: transform 0.3s ease-in-out;
   }
 
-  .main-image img {
+  .carousel-item {
+    flex: 0 0 100%;
+    width: 100%;
+  }
+
+  .carousel-item img {
     width: 100%;
     height: 100%;
     object-fit: contain;
+  }
+
+  .carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.8);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+  }
+
+  .carousel-button:hover {
+    background-color: rgba(255, 255, 255, 1);
+  }
+
+  .carousel-button-prev {
+    left: 10px;
+  }
+
+  .carousel-button-next {
+    right: 10px;
+  }
+
+  .thumbnail-carousel-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    height: 100px;
+    margin-top: 20px;
+  }
+
+  .thumbnail-carousel {
+    display: flex;
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .thumbnail-item {
+    flex: 0 0 25%;
+    padding: 0 5px;
+    cursor: pointer;
+  }
+
+  .thumbnail-item img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border: 2px solid transparent;
+    border-radius: 4px;
+  }
+
+  .thumbnail-item.active img {
+    border-color: #4a5568;
+  }
+
+  .thumbnail-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.8);
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+  }
+
+  .thumbnail-button:hover {
+    background-color: rgba(255, 255, 255, 1);
+  }
+
+  .thumbnail-button-prev {
+    left: 5px;
+  }
+
+  .thumbnail-button-next {
+    right: 5px;
   }
 
   .zoom-overlay {
@@ -119,16 +202,27 @@
 
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
   <div class="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
-    <!-- Image gallery -->
+    <!-- Image carousels -->
     <div class="flex flex-col">
-      <!-- Main image -->
-      <div class="w-full mb-4 zoom-container relative">
-        {% if selected_variant.compare_at_price > selected_variant.price %}
-          <span class="sale-label">En Oferta</span>
-        {% endif %}
-        <div id="main-image" class="main-image active">
-          {{ product.featured_media | img_url: '800x800', crop: 'center' | img_tag: product.featured_media.alt, 'w-full h-full object-contain rounded-lg' }}
+      <!-- Main carousel -->
+      <div class="w-full mb-4 carousel-container">
+        <div class="carousel" id="product-carousel">
+          {% for media in product.media %}
+            <div class="carousel-item" data-media-id="{{ media.id }}">
+              <img src="{{ media | img_url: '800x800', crop: 'center' }}" alt="{{ media.alt | escape }}" class="w-full h-full object-contain rounded-lg" />
+            </div>
+          {% endfor %}
         </div>
+        <button class="carousel-button carousel-button-prev" id="carousel-prev">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button class="carousel-button carousel-button-next" id="carousel-next">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
         <button class="zoom-button" id="zoom-button">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
@@ -136,21 +230,25 @@
         </button>
       </div>
       
-      <!-- Image selector -->
-      <div class="mt-4 grid grid-cols-4 gap-4">
-        {% for media in product.media %}
-          <button 
-            class="thumbnail relative w-full h-24 bg-white rounded-md flex items-center justify-center text-sm font-medium uppercase text-gray-900 cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring focus:ring-offset-4 focus:ring-opacity-50 {% if forloop.first %}ring-2 ring-indigo-500{% endif %}"
-            data-image-id="{{ media.id }}"
-            data-image-url="{{ media | img_url: '800x800', crop: 'center' }}"
-            data-image-alt="{{ media.alt | escape }}"
-          >
-            <span class="sr-only">{{ media.alt }}</span>
-            <span class="absolute inset-0 rounded-md overflow-hidden">
-              {{ media | img_url: '200x200', crop: 'center' | img_tag: media.alt, 'w-full h-full object-cover' }}
-            </span>
-          </button>
-        {% endfor %}
+      <!-- Thumbnail carousel -->
+      <div class="thumbnail-carousel-container">
+        <div class="thumbnail-carousel" id="thumbnail-carousel">
+          {% for media in product.media %}
+            <div class="thumbnail-item{% if forloop.first %} active{% endif %}" data-media-id="{{ media.id }}">
+              <img src="{{ media | img_url: '200x200', crop: 'center' }}" alt="{{ media.alt | escape }}" />
+            </div>
+          {% endfor %}
+        </div>
+        <button class="thumbnail-button thumbnail-button-prev" id="thumbnail-prev">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button class="thumbnail-button thumbnail-button-next" id="thumbnail-next">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
       </div>
     </div>
 
@@ -168,6 +266,7 @@
           {% endif %}
         </div>
       </div>
+
       <!-- Short description -->
       <div class="mt-6">
         <h3 class="sr-only">Description</h3>
@@ -184,7 +283,7 @@
               <label for="option-{{ forloop.index }}" class="block text-sm font-medium text-gray-700">
                 {{ option.name }}
               </label>
-              <select id="option-{{ forloop.index }}" name="options[{{ option.name | escape }}]" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+              <select id="option-{{ forloop.index }}" name="options[{{ option.name | escape }}]" class="variant-selector mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                 {% for value in option.values %}
                   <option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>
                     {{ value }}
@@ -230,50 +329,113 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    const mainImageContainer = document.getElementById('main-image');
-    const thumbnails = document.querySelectorAll('.thumbnail');
+    const mainCarousel = document.getElementById('product-carousel');
+    const mainCarouselItems = mainCarousel.querySelectorAll('.carousel-item');
+    const mainPrevButton = document.getElementById('carousel-prev');
+    const mainNextButton = document.getElementById('carousel-next');
+    
+    const thumbnailCarousel = document.getElementById('thumbnail-carousel');
+    const thumbnailItems = thumbnailCarousel.querySelectorAll('.thumbnail-item');
+    const thumbnailPrevButton = document.getElementById('thumbnail-prev');
+    const thumbnailNextButton = document.getElementById('thumbnail-next');
+
+    const variantSelectors = document.querySelectorAll('.variant-selector');
+    const addToCartForm = document.querySelector('form[action="/cart/add"]');
+    const variantIdInput = document.querySelector('input[name="id"]');
+    const priceContainer = document.querySelector('.price-container');
     const zoomButton = document.getElementById('zoom-button');
     const zoomOverlay = document.getElementById('zoom-overlay');
     const zoomedImage = document.getElementById('zoomed-image');
     const closeZoomButton = document.getElementById('close-zoom');
 
-    function updateMainImage(imageUrl, imageAlt) {
-      const newImage = document.createElement('div');
-      newImage.className = 'main-image';
-      newImage.innerHTML = `<img src="${imageUrl}" alt="${imageAlt}" class="w-full h-full object-contain rounded-lg">`;
-      
-      mainImageContainer.appendChild(newImage);
-      
-      setTimeout(() => {
-        newImage.classList.add('active');
-        mainImageContainer.querySelector('.main-image.active:not(:last-child)').classList.remove('active');
-      }, 50);
+    const variants = {{ product.variants | json }};
+    const moneyFormat = {{ shop.money_format | json }};
 
-      setTimeout(() => {
-        while (mainImageContainer.children.length > 1) {
-          mainImageContainer.removeChild(mainImageContainer.firstChild);
-        }
-      }, 350);
+    let currentIndex = 0;
+    let thumbnailIndex = 0;
+
+    function updateMainCarousel() {
+      mainCarousel.style.transform = `translateX(-${currentIndex * 100}%)`;
+      updateThumbnails();
     }
 
-    function setActiveThumbnail(thumbnail) {
-      thumbnails.forEach(t => t.classList.remove('ring-2', 'ring-indigo-500'));
-      thumbnail.classList.add('ring-2', 'ring-indigo-500');
+    function updateThumbnailCarousel() {
+      thumbnailCarousel.style.transform = `translateX(-${thumbnailIndex * 25}%)`;
     }
 
-    thumbnails.forEach(thumbnail => {
-      thumbnail.addEventListener('click', function() {
-        const imageUrl = this.getAttribute('data-image-url');
-        const imageAlt = this.getAttribute('data-image-alt');
-        
-        updateMainImage(imageUrl, imageAlt);
-        setActiveThumbnail(this);
+    function updateThumbnails() {
+      thumbnailItems.forEach((item, index) => {
+        item.classList.toggle('active', index === currentIndex);
       });
+    }
+
+    mainPrevButton.addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + mainCarouselItems.length) % mainCarouselItems.length;
+      updateMainCarousel();
+    });
+
+    mainNextButton.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % mainCarouselItems.length;
+      updateMainCarousel();
+    });
+
+    thumbnailPrevButton.addEventListener('click', () => {
+      thumbnailIndex = Math.max(0, thumbnailIndex - 1);
+      updateThumbnailCarousel();
+    });
+
+    thumbnailNextButton.addEventListener('click', () => {
+      thumbnailIndex = Math.min(thumbnailItems.length - 4, thumbnailIndex + 1);
+      updateThumbnailCarousel();
+    });
+
+    thumbnailItems.forEach((item, index) => {
+      item.addEventListener('click', () => {
+        currentIndex = index;
+        updateMainCarousel();
+      });
+    });
+
+    function getSelectedVariant() {
+      const selectedOptions = Array.from(variantSelectors).map(select => select.value);
+      return variants.find(variant => 
+        JSON.stringify(variant.options) === JSON.stringify(selectedOptions)
+      );
+    }
+
+    function updateVariantInfo(variant) {
+      if (variant) {
+        variantIdInput.value = variant.id;
+        priceContainer.innerHTML = `
+          <span class="current-price">${Shopify.formatMoney(variant.price, moneyFormat)}</span>
+          ${variant.compare_at_price > variant.price 
+            ? `<span class="original-price">${Shopify.formatMoney(variant.compare_at_price, moneyFormat)}</span>
+               <span class="sale-label">En Oferta</span>`
+            : ''}
+        `;
+        if (variant.featured_image) {
+          const mediaId = variant.featured_media.id;
+          const mediaIndex = Array.from(mainCarouselItems).findIndex(item => item.dataset.mediaId == mediaId);
+          if (mediaIndex !== -1) {
+            currentIndex = mediaIndex;
+            updateMainCarousel();
+          }
+        }
+      }
+    }
+
+    function handleVariantChange() {
+      const selectedVariant = getSelectedVariant();
+      updateVariantInfo(selectedVariant);
+    }
+
+    variantSelectors.forEach(selector => {
+      selector.addEventListener('change', handleVariantChange);
     });
 
     // Zoom functionality
     function openZoom() {
-      const currentImage = mainImageContainer.querySelector('.main-image.active img');
+      const currentImage = mainCarouselItems[currentIndex].querySelector('img');
       zoomedImage.src = currentImage.src;
       zoomedImage.alt = currentImage.alt;
       zoomOverlay.style.display = 'block';
@@ -290,5 +452,9 @@
         closeZoom();
       }
     });
+
+    // Initialize carousels
+    updateMainCarousel();
+    updateThumbnailCarousel();
   });
 </script>

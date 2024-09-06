@@ -38,29 +38,39 @@
     object-fit: contain; /* Mantiene la imagen dentro de los límites sin distorsión */
   }
 
-  .swiper-pagination-bullet {
-    background-color: #2F855A; /* Color verde elegante para las paginaciones */
-  }
+/* Estilo para los bullets de paginación no activos */
+.swiper-pagination-bullet {
+  background-color: transparent; /* Sin relleno para los bullets no activos */
+  border: 2px solid #2F855A; /* Borde verde para los bullets no activos */
+  width: 12px;
+  height: 12px;
+  opacity: 1;
+}
 
+/* Estilo para el bullet activo */
+.swiper-pagination-bullet-active {
+  background-color: #2F855A; /* Relleno verde cuando el bullet está activo */
+  border-color: #2F855A; /* Mantiene el borde verde */
+}
   /* Ajustes para el Swiper de miniaturas */
   .thumb-swiper {
-    height: 100px;
-    overflow: hidden; /* Para asegurarte de que no se salga de los bordes */
-    position: relative;
-   
-  }
+  height: 100px;
+  overflow: hidden;
+  position: relative;
+  margin-top: 20px; /* Añadir espaciado entre main-swiper y thumbnails */
+}
 
-  .thumb-swiper .swiper-slide {
-    width: 100px;
-    height: 100px;
-    opacity: 0.7;
-    cursor: pointer;
-    transition: opacity 0.3s ease;
-    border-radius: 10px;
-    overflow: hidden;
-    border: 2px solid transparent; /* Borde invisible por defecto */
-    
-  }
+.thumb-swiper .swiper-slide {
+  width: 100px;
+  height: 100px;
+  opacity: 0.7;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  margin-right: 10px; /* Añadir espaciado entre las miniaturas */
+}
 
   /* Borde verde oscuro para la miniatura activa */
   .thumb-swiper .swiper-slide-thumb-active {
@@ -232,9 +242,10 @@
     updateStockLabel(initialVariant);
 
 // Inicializar Swiper
+// Inicializar Swiper
 var thumbSwiper = new Swiper('.thumb-swiper', {
   spaceBetween: 10,
-  slidesPerView: 4.5, // Configuración predeterminada para pantallas medianas (md)
+  slidesPerView: 3.5, // Configuración predeterminada para pantallas medianas y grandes
 
   breakpoints: {
     // Configuración para pantallas grandes (lg)
@@ -242,7 +253,7 @@ var thumbSwiper = new Swiper('.thumb-swiper', {
       slidesPerView: 4.5, // Mostrar 5.5 slides en pantallas grandes
     },
     // Configuración para pantallas pequeñas/móviles
-    768: {
+    767: {
       slidesPerView: 3.5, // Mostrar 3.5 slides en pantallas móviles
     }
   },
@@ -250,17 +261,19 @@ var thumbSwiper = new Swiper('.thumb-swiper', {
   watchSlidesVisibility: true,
   watchSlidesProgress: true,
 });
-    var mainSwiper = new Swiper('.main-swiper', {
-      slidesPerView: 1,
-      spaceBetween: 10,
-      loop: true,
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
-      },
-      thumbs: {
-        swiper: thumbSwiper,
-      },
-    });
+var mainSwiper = new Swiper('.main-swiper', {
+  slidesPerView: 1,
+  spaceBetween: 10,
+  loop: true,
+  pagination: {
+    el: '.swiper-pagination',
+    clickable: true,
+    bulletClass: 'swiper-pagination-bullet',
+    bulletActiveClass: 'swiper-pagination-bullet-active'
+  },
+  thumbs: {
+    swiper: thumbSwiper,
+  },
+});
   });
 </script>

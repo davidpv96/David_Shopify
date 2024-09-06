@@ -1,30 +1,133 @@
 {% assign current_variant = product.selected_or_first_available_variant %}
 
-
 <style>
-  .stock-label {
-    font-size: 1rem;
-    padding: 5px 10px;
-    border-radius: 4px;
-    display: inline-block;
-    margin-top: 10px;
-    font-weight: bold;
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
   }
-  .in-stock {
-    background-color: #C6F6D5;
+
+  .product-grid {
+    display: flex;
+    flex-wrap: wrap;
+    margin: -10px;
+  }
+
+  .product-images {
+    width: 50%;
+    padding: 10px;
+  }
+
+  .product-info {
+    width: 50%;
+    padding: 10px;
+  }
+
+  .product-form {
+    max-width: 400px;
+  }
+
+  .product-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .product-price {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+
+  .product-description {
+    margin-bottom: 20px;
+  }
+
+  .option-container {
+    margin-bottom: 15px;
+  }
+
+  .option-label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .single-option-selector {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+
+  .stock-label {
+    font-size: 0.875rem;
+    padding: 5px 0;
+    display: block;
+    margin-top: 10px;
+    font-weight: 600;
     color: #2F855A;
   }
-  .out-of-stock {
-    background-color: #FED7D7;
-    color: #9B2C2C;
+
+  .quantity-cart-container {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+  }
+
+  .quantity-selector {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .quantity-button {
+    width: 36px;
+    height: 36px;
+    background-color: #f0f0f0;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    font-size: 18px;
+  }
+
+  .quantity-input {
+    width: 40px;
+    height: 36px;
+    text-align: center;
+    border: none;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    font-size: 16px;
+  }
+
+  #AddToCart {
+    flex-grow: 1;
+    height: 36px;
+    font-size: 16px;
+    background-color: #ffc107;
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  #AddToCart:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
   .swiper-container {
     width: 100%;
   }
   
-
-  /* Ajuste para el Swiper principal */
   .main-swiper {
     height: 500px;
     margin-bottom: 10px;
@@ -35,47 +138,44 @@
   .main-swiper img {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* Mantiene la imagen dentro de los límites sin distorsión */
+    object-fit: contain;
   }
 
-/* Estilo para los bullets de paginación no activos */
-.swiper-pagination-bullet {
-  background-color: transparent; /* Sin relleno para los bullets no activos */
-  border: 2px solid #2F855A; /* Borde verde para los bullets no activos */
-  width: 12px;
-  height: 12px;
-  opacity: 1;
-}
+  .swiper-pagination-bullet {
+    background-color: transparent;
+    border: 2px solid #2F855A;
+    width: 12px;
+    height: 12px;
+    opacity: 1;
+  }
 
-/* Estilo para el bullet activo */
-.swiper-pagination-bullet-active {
-  background-color: #2F855A; /* Relleno verde cuando el bullet está activo */
-  border-color: #2F855A; /* Mantiene el borde verde */
-}
-  /* Ajustes para el Swiper de miniaturas */
+  .swiper-pagination-bullet-active {
+    background-color: #2F855A;
+    border-color: #2F855A;
+  }
+
   .thumb-swiper {
-  height: 100px;
-  overflow: hidden;
-  position: relative;
-  margin-top: 20px; /* Añadir espaciado entre main-swiper y thumbnails */
-}
+    height: 100px;
+    overflow: hidden;
+    position: relative;
+    margin-top: 20px;
+  }
 
-.thumb-swiper .swiper-slide {
-  width: 100px;
-  height: 100px;
-  opacity: 0.7;
-  cursor: pointer;
-  transition: opacity 0.3s ease;
-  border-radius: 10px;
-  overflow: hidden;
-  border: 2px solid transparent;
-  margin-right: 10px; /* Añadir espaciado entre las miniaturas */
-}
+  .thumb-swiper .swiper-slide {
+    width: 100px;
+    height: 100px;
+    opacity: 0.7;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    margin-right: 10px;
+  }
 
-  /* Borde verde oscuro para la miniatura activa */
   .thumb-swiper .swiper-slide-thumb-active {
     opacity: 1;
-    border-color: #22543D; /* Borde verde oscuro para la miniatura activa */
+    border-color: #22543D;
   }
 
   .thumb-swiper img {
@@ -85,7 +185,6 @@
     border-radius: 10px;
   }
 
-  /* Ajustes para los botones de navegación */
   .swiper-button-prev, .swiper-button-next {
     color: black;
     position: absolute;
@@ -101,17 +200,15 @@
   .swiper-button-next {
     right: 0;
   }
-
 </style>
 
-<div class="container mx-auto px-4 py-8">
-  <div class="flex flex-col md:flex-row -mx-4">
-    <!-- Carrusel de imágenes -->
-    <div class="md:w-1/2 px-4 mb-8 md:mb-0  py-5 rounded-lg ">
+<div class="container">
+  <div class="product-grid">
+    <div class="product-images">
       <div class="swiper-container main-swiper mb-4">
         <div class="swiper-wrapper">
           {% for image in product.images %}
-            <div class="swiper-slide">
+            <div class="swiper-slide" data-image-id="{{ image.id }}">
               <img src="{{ image | img_url: '600x' }}" alt="{{ image.alt | escape }}">
             </div>
           {% endfor %}
@@ -119,161 +216,241 @@
         <div class="swiper-pagination"></div>
       </div>
 
-      <!-- Swiper de miniaturas sin navegación ni paginación -->
       <div class="swiper-container thumb-swiper">
         <div class="swiper-wrapper">
           {% for image in product.images %}
-            <div class="swiper-slide">
+            <div class="swiper-slide" data-image-id="{{ image.id }}">
               <img src="{{ image | img_url: '100x100', crop: 'center' }}" alt="{{ image.alt | escape }}">
             </div>
           {% endfor %}
         </div>
       </div>
     </div>
+    <div class="product-info">
+      <div class="product-form">
+        <h1 class="product-title">{{ product.title }}</h1>
+        <p class="product-price" id="product-price">{{ current_variant.price | money }}</p>
+        <p class="product-description">{{ product.description }}</p>
 
-    <!-- Información del producto -->
-    <div class="md:w-1/2 px-4">
-      <h1 class="text-3xl font-bold mb-4">{{ product.title }}</h1>
-      <p id="product-price" class="text-2xl font-semibold mb-4">{{ current_variant.price | money }}</p>
-      <p class="mb-6">{{ product.description }}</p>
+        <form action="/cart/add" method="post" enctype="multipart/form-data" id="add-to-cart-form">
+          <input type="hidden" name="id" id="product-select" value="{{ current_variant.id }}">
+          
+          {% for option in product.options_with_values %}
+            <div class="option-container">
+              <label for="SingleOptionSelector-{{ forloop.index0 }}" class="option-label">
+                {{ option.name }}
+              </label>
+              <select
+                id="SingleOptionSelector-{{ forloop.index0 }}"
+                data-index="option{{ forloop.index }}"
+                class="single-option-selector"
+              >
+                <option value="" disabled selected>Selecciona un {{ option.name | downcase }}</option>
+                {% for value in option.values %}
+                  <option value="{{ value | escape }}">
+                    {{ value }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          {% endfor %}
 
-      <form action="/cart/add" method="post" enctype="multipart/form-data" id="add-to-cart-form">
-        <input type="hidden" name="id" id="product-select" value="{{ current_variant.id }}">
-        
-        <div class="mb-4">
-          <label for="quantity" class="block mb-2">Cantidad:</label>
-          <input type="number" id="quantity" name="quantity" value="1" min="1" class="w-20 px-2 py-1 border rounded">
-        </div>
+          <div id="stock-label" class="stock-label"></div>
 
-        {% for option in product.options_with_values %}
-          <div class="mb-4">
-            <label for="SingleOptionSelector-{{ forloop.index0 }}" class="block mb-2">
-              {{ option.name }}
-            </label>
-            <select
-              id="SingleOptionSelector-{{ forloop.index0 }}"
-              data-index="option{{ forloop.index }}"
-              class="single-option-selector w-full px-2 py-1 border rounded"
-            >
-              {% for value in option.values %}
-                <option
-                  value="{{ value | escape }}"
-                  {% if option.selected_value == value %}selected="selected"{% endif %}
-                >
-                  {{ value }}
-                </option>
-              {% endfor %}
-            </select>
+          <div class="quantity-cart-container">
+            <div class="quantity-selector">
+              <button type="button" class="quantity-button" id="decrease-quantity">-</button>
+              <input type="number" id="quantity" name="quantity" value="1" min="1" class="quantity-input" readonly>
+              <button type="button" class="quantity-button" id="increase-quantity">+</button>
+            </div>
+            <button type="submit" name="add" id="AddToCart" disabled>
+              <span id="AddToCartText">Select all options</span>
+            </button>
           </div>
-        {% endfor %}
-
-        <div id="stock-label" class="stock-label mb-4"></div>
-
-        <button type="submit" name="add" id="AddToCart" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200">
-          <span id="AddToCartText">Add to cart</span>
-        </button>
-      </form>
+        </form>
+      </div>
     </div>
   </div>
 </div>
 
-
 <script>
-  var variants = [
-    {% for variant in product.variants %}
-      {
-        id: {{ variant.id | json }},
-        title: {{ variant.title | json }},
-        options: {{ variant.options | json }},
-        available: {{ variant.available | json }},
-        inventory_quantity: {{ variant.inventory_quantity | json }},
-        inventory_management: {{ variant.inventory_management | json }}
-      }{% unless forloop.last %},{% endunless %}
-    {% endfor %}
-  ];
-
-  function updateStockLabel(variant) {
-    var stockLabel = document.getElementById('stock-label');
-    var addToCartButton = document.getElementById('AddToCart');
-    var addToCartText = document.getElementById('AddToCartText');
-
-    if (variant && variant.available) {
-      if (variant.inventory_management && variant.inventory_quantity > 0) {
-        stockLabel.innerHTML = '<span class="in-stock">Stock disponible: ' + variant.inventory_quantity + '</span>';
-      } else if (variant.inventory_management && variant.inventory_quantity <= 0 && variant.inventory_policy === 'continue') {
-        stockLabel.innerHTML = '<span class="in-stock">Sin stock, pero puedes continuar comprando</span>';
-      } else {
-        stockLabel.innerHTML = '<span class="in-stock">Disponible</span>';
+ var variants = [
+  {% for variant in product.variants %}
+    {
+      id: {{ variant.id | json }},
+      title: {{ variant.title | json }},
+      options: {{ variant.options | json }},
+      available: {{ variant.available | json }},
+      price: {{ variant.price | money | json }},
+      inventory_quantity: {{ variant.inventory_quantity | json }},
+      inventory_management: {{ variant.inventory_management | json }},
+      featured_image: {
+        id: {{ variant.featured_image.id | default: 'null' | json }},
+        position: {{ variant.featured_image.position | default: 'null' | json }},
+        product_id: {{ variant.featured_image.product_id | default: 'null' | json }}
       }
-      addToCartButton.disabled = false;
-      addToCartText.textContent = 'Add to cart';
+    }{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+];
+
+function updateStockLabel(variant) {
+  var stockLabel = document.getElementById('stock-label');
+  var addToCartButton = document.getElementById('AddToCart');
+  var addToCartText = document.getElementById('AddToCartText');
+
+  if (variant && variant.available) {
+    if (variant.inventory_management && variant.inventory_quantity > 0) {
+      stockLabel.textContent = 'Stock disponible: ' + variant.inventory_quantity;
+    } else if (variant.inventory_management && variant.inventory_quantity <= 0 && variant.inventory_policy === 'continue') {
+      stockLabel.textContent = 'Sin stock, pero puedes continuar comprando';
     } else {
-      stockLabel.innerHTML = '<span class="out-of-stock">Fuera de stock</span>';
-      addToCartButton.disabled = true;
-      addToCartText.textContent = 'Sold Out';
+      stockLabel.textContent = 'Disponible';
+    }
+    addToCartButton.disabled = false;
+    addToCartText.textContent = 'Add to cart';
+  } else if (variant) {
+    stockLabel.textContent = 'Fuera de stock';
+    addToCartButton.disabled = true;
+    addToCartText.textContent = 'Sold Out';
+  } else {
+    stockLabel.textContent = '';
+    addToCartButton.disabled = true;
+    addToCartText.textContent = 'Select all options';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var productSelect = document.getElementById('product-select');
+  var quantityInput = document.getElementById('quantity');
+  var decreaseQuantity = document.getElementById('decrease-quantity');
+  var increaseQuantity = document.getElementById('increase-quantity');
+  var singleOptionSelectors = document.querySelectorAll('.single-option-selector');
+  var priceElement = document.getElementById('product-price');
+  var mainSwiper, thumbSwiper;
+
+  function getSelectedVariant() {
+    var selectedOptions = Array.from(singleOptionSelectors).map(select => select.value);
+    return variants.find(variant => 
+      variant.options.every((option, index) => option === selectedOptions[index])
+    );
+  }
+
+  function updateQuantityButtons(variant) {
+    var currentQuantity = parseInt(quantityInput.value);
+    var maxQuantity = variant ? (variant.inventory_management ? variant.inventory_quantity : Infinity) : 0;
+
+    decreaseQuantity.disabled = currentQuantity <= 1;
+    increaseQuantity.disabled = currentQuantity >= maxQuantity;
+
+    quantityInput.max = maxQuantity;
+    if (currentQuantity > maxQuantity) {
+      quantityInput.value = maxQuantity;
     }
   }
 
-  document.addEventListener('DOMContentLoaded', function() {
-    var productSelect = document.getElementById('product-select');
-    var quantityInput = document.getElementById('quantity');
-    var singleOptionSelectors = document.querySelectorAll('.single-option-selector');
-
-    function getSelectedVariant() {
-      var selectedOptions = Array.from(singleOptionSelectors).map(select => select.value);
-      return variants.find(variant => 
-        variant.options.every(function(option, index) {
-          return option === selectedOptions[index];
-        })
+  function updateVariantImage(variant) {
+    if (variant && variant.featured_image && variant.featured_image.id) {
+      var slideIndex = Array.from(mainSwiper.slides).findIndex(slide => 
+        slide.getAttribute('data-image-id') == variant.featured_image.id
       );
+      if (slideIndex !== -1) {
+        mainSwiper.slideTo(slideIndex);
+      }
     }
+  }
 
-    singleOptionSelectors.forEach(function(selector) {
-      selector.addEventListener('change', function() {
-        var selectedVariant = getSelectedVariant();
-        if (selectedVariant) {
-          productSelect.value = selectedVariant.id;
-          updateStockLabel(selectedVariant);
-        }
-      });
+  function updateAddToCartButton(allSelected) {
+    var addToCartButton = document.getElementById('AddToCart');
+    var addToCartText = document.getElementById('AddToCartText');
+    
+    if (allSelected) {
+      var selectedVariant = getSelectedVariant();
+      if (selectedVariant && selectedVariant.available) {
+        addToCartButton.disabled = false;
+        addToCartText.textContent = 'Add to cart';
+      } else {
+        addToCartButton.disabled = true;
+        addToCartText.textContent = 'Sold Out';
+      }
+    } else {
+      addToCartButton.disabled = true;
+      addToCartText.textContent = 'Select all options';
+    }
+  }
+
+  singleOptionSelectors.forEach(function(selector) {
+    selector.addEventListener('change', function() {
+      var selectedVariant = getSelectedVariant();
+      var allSelected = Array.from(singleOptionSelectors).every(select => select.value !== '');
+      
+      if (selectedVariant) {
+        productSelect.value = selectedVariant.id;
+        updateStockLabel(selectedVariant);
+        updateVariantImage(selectedVariant);
+        updateQuantityButtons(selectedVariant);
+        priceElement.textContent = selectedVariant.price;
+      } else {
+        updateStockLabel(null);
+        updateQuantityButtons(null);
+      }
+      
+      updateAddToCartButton(allSelected);
     });
-
-    var initialVariant = getSelectedVariant();
-    updateStockLabel(initialVariant);
-
-// Inicializar Swiper
-// Inicializar Swiper
-var thumbSwiper = new Swiper('.thumb-swiper', {
-  spaceBetween: 10,
-  slidesPerView: 3.5, // Configuración predeterminada para pantallas medianas y grandes
-
-  breakpoints: {
-    // Configuración para pantallas grandes (lg)
-    1024: {
-      slidesPerView: 4.5, // Mostrar 5.5 slides en pantallas grandes
-    },
-    // Configuración para pantallas pequeñas/móviles
-    767: {
-      slidesPerView: 3.5, // Mostrar 3.5 slides en pantallas móviles
-    }
-  },
-  freeMode: true,
-  watchSlidesVisibility: true,
-  watchSlidesProgress: true,
-});
-var mainSwiper = new Swiper('.main-swiper', {
-  slidesPerView: 1,
-  spaceBetween: 10,
-  loop: true,
-  pagination: {
-    el: '.swiper-pagination',
-    clickable: true,
-    bulletClass: 'swiper-pagination-bullet',
-    bulletActiveClass: 'swiper-pagination-bullet-active'
-  },
-  thumbs: {
-    swiper: thumbSwiper,
-  },
-});
   });
-</script>
+
+  decreaseQuantity.addEventListener('click', function() {
+    var currentQuantity = parseInt(quantityInput.value);
+    if (currentQuantity > 1) {
+      quantityInput.value = currentQuantity - 1;
+      updateQuantityButtons(getSelectedVariant());
+    }
+  });
+
+  increaseQuantity.addEventListener('click', function() {
+    var currentQuantity = parseInt(quantityInput.value);
+    var selectedVariant = getSelectedVariant();
+    var maxQuantity = selectedVariant ? (selectedVariant.inventory_management ? selectedVariant.inventory_quantity : Infinity) : 0;
+    if (currentQuantity < maxQuantity) {
+      quantityInput.value = currentQuantity + 1;
+      updateQuantityButtons(selectedVariant);
+    }
+  });
+
+  // Inicializar Swiper
+  thumbSwiper = new Swiper('.thumb-swiper', {
+    spaceBetween: 10,
+    slidesPerView: 3.5,
+    breakpoints: {
+      1024: {
+        slidesPerView: 4.5,
+      },
+      767: {
+        slidesPerView: 3.5,
+      }
+    },
+    freeMode: true,
+    watchSlidesVisibility: true,
+    watchSlidesProgress: true,
+  });
+
+  mainSwiper = new Swiper('.main-swiper', {
+    slidesPerView: 1,
+    spaceBetween: 10,
+    loop: true,
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+      bulletClass: 'swiper-pagination-bullet',
+      bulletActiveClass: 'swiper-pagination-bullet-active'
+    },
+    thumbs: {
+      swiper: thumbSwiper,
+    },
+  });
+
+  // Inicializar con ninguna opción seleccionada
+  updateStockLabel(null);
+  updateAddToCartButton(false);
+  updateQuantityButtons(null);
+});
+</script> 

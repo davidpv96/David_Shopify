@@ -1,614 +1,266 @@
-{% assign selected_variant = product.selected_or_first_available_variant %}
+{% assign current_variant = product.selected_or_first_available_variant %}
+
 
 <style>
-  .price-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 20px;
-  }
-
-  .sale-label {
-    background-color: #e53e3e;
-    color: white;
-    padding: 4px 8px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    border-radius: 4px;
-  }
-
-  .original-price {
-    text-decoration: line-through;
-    color: #718096;
+  .stock-label {
     font-size: 1rem;
-  }
-
-  .current-price {
+    padding: 5px 10px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-top: 10px;
     font-weight: bold;
-    font-size: 1.8rem;
+  }
+  .in-stock {
+    background-color: #C6F6D5;
+    color: #2F855A;
+  }
+  .out-of-stock {
+    background-color: #FED7D7;
+    color: #9B2C2C;
   }
 
-  .carousel-container {
+  .swiper-container {
+    width: 100%;
+  }
+  
+
+  /* Ajuste para el Swiper principal */
+  .main-swiper {
+    height: 500px;
+    margin-bottom: 10px;
     position: relative;
-    width: 100%;
     overflow: hidden;
-    aspect-ratio: 1 / 1;
-    max-height: 600px;
   }
 
-  .carousel {
-    display: flex;
-    transition: transform 0.3s ease-in-out;
-  }
-
-  .carousel-item {
-    flex: 0 0 100%;
-    width: 100%;
-  }
-
-  .carousel-item img {
+  .main-swiper img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: contain; /* Mantiene la imagen dentro de los límites sin distorsión */
   }
 
-  .carousel-pagination {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 8px;
+  .swiper-pagination-bullet {
+    background-color: #2F855A; /* Color verde elegante para las paginaciones */
   }
 
-  .carousel-pagination-bullet {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.5);
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-
-  .carousel-pagination-bullet.active {
-    background-color: white;
-  }
-
-  .thumbnail-carousel-container {
+  /* Ajustes para el Swiper de miniaturas */
+  .thumb-swiper {
+    height: 100px;
+    overflow: hidden; /* Para asegurarte de que no se salga de los bordes */
     position: relative;
-    width: 100%;
-    overflow: hidden;
+   
+  }
+
+  .thumb-swiper .swiper-slide {
+    width: 100px;
     height: 100px;
-    margin-top: 20px;
-    touch-action: pan-x;
-  }
-
-  .thumbnail-carousel {
-    display: flex;
-    transition: transform 0.3s ease-in-out;
-    cursor: grab;
-  }
-
-  .thumbnail-carousel:active {
-    cursor: grabbing;
-  }
-
-  .thumbnail-item {
-    flex: 0 0 25%;
-    padding: 0 5px;
+    opacity: 0.7;
     cursor: pointer;
+    transition: opacity 0.3s ease;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid transparent; /* Borde invisible por defecto */
+    
   }
 
-  .thumbnail-item img {
+  /* Borde verde oscuro para la miniatura activa */
+  .thumb-swiper .swiper-slide-thumb-active {
+    opacity: 1;
+    border-color: #22543D; /* Borde verde oscuro para la miniatura activa */
+  }
+
+  .thumb-swiper img {
     width: 100%;
-    height: 100px;
+    height: 100%;
     object-fit: cover;
-    border: 2px solid transparent;
-    border-radius: 4px;
+    border-radius: 10px;
   }
 
-  .thumbnail-item.active img {
-    border-color: #4a5568;
-  }
-
-  .thumbnail-button {
+  /* Ajustes para los botones de navegación */
+  .swiper-button-prev, .swiper-button-next {
+    color: black;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background-color: rgba(255, 255, 255, 0.8);
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
     z-index: 10;
   }
 
-  .thumbnail-button:hover {
-    background-color: rgba(255, 255, 255, 1);
-  }
-
-  .thumbnail-button-prev {
-    left: 5px;
-  }
-
-  .thumbnail-button-next {
-    right: 5px;
-  }
-
-  .zoom-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
+  .swiper-button-prev {
     left: 0;
+  }
+
+  .swiper-button-next {
     right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.8);
-    z-index: 1000;
   }
 
-  .zoomed-image {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 90%;
-    max-height: 90%;
-  }
-
-  .zoom-button {
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
-    background-color: rgba(255, 255, 255, 0.8);
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 10;
-  }
-
-  .zoom-button:hover {
-    background-color: rgba(255, 255, 255, 1);
-  }
-
-  .close-button {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: rgba(255, 255, 255, 0.8);
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 1001;
-  }
-
-  .close-button:hover {
-    background-color: rgba(255, 255, 255, 1);
-  }
-
-  .stock-label {
-    font-size: 0.9rem;
-    color: #4a5568;
-    margin-bottom: 0.5rem;
-  }
-  
-  .out-of-stock {
-    color: #e53e3e;
-    font-weight: bold;
-  }
-
-  .in-stock {
-    color: #38a169;
-    font-weight: bold;
-  }
 </style>
 
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-  <div class="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
-    <!-- Image carousels -->
-    <div class="flex flex-col">
-      <!-- Main carousel -->
-      <div class="w-full mb-4 carousel-container">
-        <div class="carousel" id="product-carousel">
-          {% for media in product.media %}
-            <div class="carousel-item" data-media-id="{{ media.id }}">
-              <img src="{{ media | img_url: '800x800', crop: 'center' }}" alt="{{ media.alt | escape }}" class="w-full h-full object-contain rounded-lg" />
+<div class="container mx-auto px-4 py-8">
+  <div class="flex flex-col md:flex-row -mx-4">
+    <!-- Carrusel de imágenes -->
+    <div class="md:w-1/2 px-4 mb-8 md:mb-0  py-5 rounded-lg ">
+      <div class="swiper-container main-swiper mb-4">
+        <div class="swiper-wrapper">
+          {% for image in product.images %}
+            <div class="swiper-slide">
+              <img src="{{ image | img_url: '600x' }}" alt="{{ image.alt | escape }}">
             </div>
           {% endfor %}
         </div>
-        <div class="carousel-pagination" id="carousel-pagination"></div>
-        <button class="zoom-button" id="zoom-button">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-          </svg>
-        </button>
+        <div class="swiper-pagination"></div>
       </div>
-      
-      <!-- Thumbnail carousel with navigation -->
-      <div class="thumbnail-carousel-container">
-        <button class="thumbnail-button thumbnail-button-prev" id="thumbnail-prev">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
-        <div class="thumbnail-carousel" id="thumbnail-carousel">
-          {% for media in product.media %}
-            <div class="thumbnail-item{% if forloop.first %} active{% endif %}" data-media-id="{{ media.id }}">
-              <img src="{{ media | img_url: '200x200', crop: 'center' }}" alt="{{ media.alt | escape }}" />
+
+      <!-- Swiper de miniaturas sin navegación ni paginación -->
+      <div class="swiper-container thumb-swiper">
+        <div class="swiper-wrapper">
+          {% for image in product.images %}
+            <div class="swiper-slide">
+              <img src="{{ image | img_url: '100x100', crop: 'center' }}" alt="{{ image.alt | escape }}">
             </div>
           {% endfor %}
         </div>
-        <button class="thumbnail-button thumbnail-button-next" id="thumbnail-next">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
       </div>
     </div>
 
-    <!-- Product info -->
-    <div class="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
-      <h1 class="text-3xl font-extrabold tracking-tight text-gray-900">{{ product.title }}</h1>
+    <!-- Información del producto -->
+    <div class="md:w-1/2 px-4">
+      <h1 class="text-3xl font-bold mb-4">{{ product.title }}</h1>
+      <p id="product-price" class="text-2xl font-semibold mb-4">{{ current_variant.price | money }}</p>
+      <p class="mb-6">{{ product.description }}</p>
 
-      <div class="mt-3">
-        <h2 class="sr-only">Product information</h2>
-        <div class="price-container">
-          <span class="current-price">{{ selected_variant.price | money_without_trailing_zeros }}</span>
-          {% if selected_variant.compare_at_price > selected_variant.price %}
-            <span class="original-price">{{ selected_variant.compare_at_price | money_without_trailing_zeros }}</span>
-            <span class="sale-label">En Oferta</span>
-          {% endif %}
+      <form action="/cart/add" method="post" enctype="multipart/form-data" id="add-to-cart-form">
+        <input type="hidden" name="id" id="product-select" value="{{ current_variant.id }}">
+        
+        <div class="mb-4">
+          <label for="quantity" class="block mb-2">Cantidad:</label>
+          <input type="number" id="quantity" name="quantity" value="1" min="1" class="w-20 px-2 py-1 border rounded">
         </div>
-      </div>
 
-      <!-- Short description -->
-      <div class="mt-6">
-        <h3 class="sr-only">Description</h3>
-        <div class="text-base text-gray-700">
-          {{ product.metafields.custom.short_description }}
-        </div>
-      </div>
-
-      <form class="mt-6" action="/cart/add" method="POST">
-      <!-- Variant selector -->
-      {% unless product.has_only_default_variant %}
         {% for option in product.options_with_values %}
-          <div class="mt-6">
-            <label for="option-{{ forloop.index }}" class="block text-sm font-medium text-gray-700">
+          <div class="mb-4">
+            <label for="SingleOptionSelector-{{ forloop.index0 }}" class="block mb-2">
               {{ option.name }}
             </label>
-            <select id="option-{{ forloop.index }}" name="options[{{ option.name | escape }}]" class="variant-selector mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+            <select
+              id="SingleOptionSelector-{{ forloop.index0 }}"
+              data-index="option{{ forloop.index }}"
+              class="single-option-selector w-full px-2 py-1 border rounded"
+            >
               {% for value in option.values %}
-                <option value="{{ value | escape }}"{% if option.selected_value == value %} selected="selected"{% endif %}>
+                <option
+                  value="{{ value | escape }}"
+                  {% if option.selected_value == value %}selected="selected"{% endif %}
+                >
                   {{ value }}
                 </option>
               {% endfor %}
             </select>
           </div>
         {% endfor %}
-      {% endunless %}
-    
-   <!-- Stock label and Quantity selector -->
-<div class="mt-6" x-data="{ 
-  quantity: 1, 
-  maxStock: {% if selected_variant.inventory_management == blank %}null{% else %}{{ selected_variant.inventory_quantity }}{% endif %},
-  inventoryTracking: {% if selected_variant.inventory_management != blank %}true{% else %}false{% endif %}
-}">
-  <div class="stock-label" id="stock-label">
-    <span x-show="inventoryTracking && maxStock !== null">
-      <span x-show="maxStock > 0">Stock disponible: <span x-text="maxStock"></span></span>
-      <span x-show="maxStock <= 0" class="out-of-stock">Fuera de stock</span>
-    </span>
-    <span x-show="!inventoryTracking || maxStock === null" class="in-stock">En stock</span>
-  </div>
-  <div class="flex items-center justify-start space-x-4">
-    <!-- Botón de disminuir -->
-    <button type="button" 
-            @click="quantity > 1 ? quantity-- : quantity" 
-            :disabled="inventoryTracking && maxStock !== null && maxStock <= 0"
-            class="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
-      </svg>
-    </button>
-  
-    <!-- Campo de cantidad con ancho fijo -->
-    <span x-text="quantity" class="text-lg font-semibold w-10 text-center"></span>
-  
-    <!-- Botón de aumentar -->
-    <button type="button" 
-            @click="!inventoryTracking || maxStock === null || quantity < maxStock ? quantity++ : quantity" 
-            :disabled="inventoryTracking && maxStock !== null && (quantity >= maxStock || maxStock <= 0)"
-            class="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-      </svg>
-    </button>
-  
-    <!-- Campo hidden para el valor de la cantidad -->
-    <input type="hidden" name="quantity" :value="quantity">
-  </div>
-</div>
-    
-      <input type="hidden" name="id" value="{{ selected_variant.id }}">
-    
-      
-<button type="submit" 
-class="mt-6 w-full bg-indigo-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-:disabled="inventoryTracking && maxStock !== null && maxStock <= 0">
-<span x-show="!inventoryTracking || maxStock === null || maxStock > 0">Add to cart</span>
-<span x-show="inventoryTracking && maxStock !== null && maxStock <= 0">Out of Stock</span>
-</button>
-    </form>
 
-      <!-- Full description -->
-      <div class="mt-10">
-        <h2 class="text-sm font-medium text-gray-900">Details</h2>
-        <div class="mt-4 prose prose-sm text-gray-500">
-          {{ product.description }}
-        </div>
-      </div>
+        <div id="stock-label" class="stock-label mb-4"></div>
 
-      <!-- Sección de información adicional (Información de envío y Cambios y devoluciones) -->
-      <div class="mt-8 border-t pt-6">
-        <!-- Shipping Information -->
-        <div class="border rounded-lg mb-4" x-data="{ open: false }">
-          <button @click="open = !open" class="w-full text-left px-4 py-2 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <span class="text-lg font-semibold">Información de envíos</span>
-            <svg xmlns="http://www.w3.org/2000/svg" :class="{'rotate-180': open, 'rotate-0': !open}" class="h-6 w-6 transition-transform transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
-          </button>
-          <div x-show="open" x-transition class="px-4 py-2 text-gray-700">
-            <!-- Aquí va el contenido del metacampo de Shipping Information -->
-            {{ product.metafields.custom.shipping_information }}
-          </div>
-        </div>
-      
-        <!-- Returns & Exchanges Information -->
-        <div class="border rounded-lg mb-4" x-data="{ open: false }">
-          <button @click="open = !open" class="w-full text-left px-4 py-2 flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-indigo-500">
-            <span class="text-lg font-semibold">Cambios y Devoluciones</span>
-            <svg xmlns="http://www.w3.org/2000/svg" :class="{'rotate-180': open, 'rotate-0': !open}" class="h-6 w-6 transition-transform transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-            </svg>
-          </button>
-          <div x-show="open" x-transition class="px-4 py-2 text-gray-700">
-            <!-- Aquí va el contenido del metacampo de Returns Information -->
-            {{ product.metafields.custom.returns_information }}
-          </div>
-        </div>
-      </div>
+        <button type="submit" name="add" id="AddToCart" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition duration-200">
+          <span id="AddToCartText">Add to cart</span>
+        </button>
+      </form>
     </div>
   </div>
 </div>
 
-<div id="zoom-overlay" class="zoom-overlay">
-  <button id="close-zoom" class="close-button">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-    </svg>
-  </button>
-  <img id="zoomed-image" class="zoomed-image" src="" alt="">
-</div>
 
 <script>
- document.addEventListener('DOMContentLoaded', function() {
-  const mainCarousel = document.getElementById('product-carousel');
-  const mainCarouselItems = mainCarousel.querySelectorAll('.carousel-item');
-  const paginationContainer = document.getElementById('carousel-pagination');
-  
-  const thumbnailCarousel = document.getElementById('thumbnail-carousel');
-  const thumbnailItems = thumbnailCarousel.querySelectorAll('.thumbnail-item');
-  const thumbnailPrevButton = document.getElementById('thumbnail-prev');
-  const thumbnailNextButton = document.getElementById('thumbnail-next');
+  var variants = [
+    {% for variant in product.variants %}
+      {
+        id: {{ variant.id | json }},
+        title: {{ variant.title | json }},
+        options: {{ variant.options | json }},
+        available: {{ variant.available | json }},
+        inventory_quantity: {{ variant.inventory_quantity | json }},
+        inventory_management: {{ variant.inventory_management | json }}
+      }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ];
 
-  const variantSelectors = document.querySelectorAll('.variant-selector');
-  const addToCartForm = document.querySelector('form[action="/cart/add"]');
-  const variantIdInput = document.querySelector('input[name="id"]');
-  const priceContainer = document.querySelector('.price-container');
-  const zoomButton = document.getElementById('zoom-button');
-  const zoomOverlay = document.getElementById('zoom-overlay');
-  const zoomedImage = document.getElementById('zoomed-image');
-  const closeZoomButton = document.getElementById('close-zoom');
+  function updateStockLabel(variant) {
+    var stockLabel = document.getElementById('stock-label');
+    var addToCartButton = document.getElementById('AddToCart');
+    var addToCartText = document.getElementById('AddToCartText');
 
-  const variants = {{ product.variants | json }};
-  const moneyFormat = {{ shop.money_format | json }};
-  const stockLabel = document.getElementById('stock-label');
-
-  let currentIndex = 0;
-
-  function updateMainCarousel() {
-    mainCarousel.style.transform = `translateX(-${currentIndex * 100}%)`;
-    updatePagination();
-    updateThumbnails();
+    if (variant && variant.available) {
+      if (variant.inventory_management && variant.inventory_quantity > 0) {
+        stockLabel.innerHTML = '<span class="in-stock">Stock disponible: ' + variant.inventory_quantity + '</span>';
+      } else if (variant.inventory_management && variant.inventory_quantity <= 0 && variant.inventory_policy === 'continue') {
+        stockLabel.innerHTML = '<span class="in-stock">Sin stock, pero puedes continuar comprando</span>';
+      } else {
+        stockLabel.innerHTML = '<span class="in-stock">Disponible</span>';
+      }
+      addToCartButton.disabled = false;
+      addToCartText.textContent = 'Add to cart';
+    } else {
+      stockLabel.innerHTML = '<span class="out-of-stock">Fuera de stock</span>';
+      addToCartButton.disabled = true;
+      addToCartText.textContent = 'Sold Out';
+    }
   }
 
-  function updatePagination() {
-    const bullets = paginationContainer.querySelectorAll('.carousel-pagination-bullet');
-    bullets.forEach((bullet, index) => {
-      bullet.classList.toggle('active', index === currentIndex);
-    });
-  }
+  document.addEventListener('DOMContentLoaded', function() {
+    var productSelect = document.getElementById('product-select');
+    var quantityInput = document.getElementById('quantity');
+    var singleOptionSelectors = document.querySelectorAll('.single-option-selector');
 
-  function updateThumbnails() {
-    thumbnailItems.forEach((item, index) => {
-      item.classList.toggle('active', index === currentIndex);
-    });
-  }
+    function getSelectedVariant() {
+      var selectedOptions = Array.from(singleOptionSelectors).map(select => select.value);
+      return variants.find(variant => 
+        variant.options.every(function(option, index) {
+          return option === selectedOptions[index];
+        })
+      );
+    }
 
-  function createPagination() {
-    mainCarouselItems.forEach((_, index) => {
-      const bullet = document.createElement('div');
-      bullet.classList.add('carousel-pagination-bullet');
-      bullet.addEventListener('click', () => {
-        currentIndex = index;
-        updateMainCarousel();
-      });
-      paginationContainer.appendChild(bullet);
-    });
-  }
-
-  createPagination();
-
-  // Thumbnail navigation
-  let thumbnailIndex = 0;
-
-  function updateThumbnailCarousel() {
-    const maxIndex = thumbnailItems.length - 4; // Muestra 4 thumbnails a la vez
-    thumbnailIndex = Math.max(0, Math.min(thumbnailIndex, maxIndex));
-    thumbnailCarousel.style.transform = `translateX(-${thumbnailIndex * 25}%)`;
-  }
-
-  thumbnailPrevButton.addEventListener('click', () => {
-    thumbnailIndex = Math.max(thumbnailIndex - 1, 0);
-    updateThumbnailCarousel();
-  });
-
-  thumbnailNextButton.addEventListener('click', () => {
-    thumbnailIndex = Math.min(thumbnailIndex + 1, thumbnailItems.length - 4);
-    updateThumbnailCarousel();
-  });
-
-  // Swipe functionality for thumbnail carousel
-  let startX;
-  let scrollLeft;
-  let isDown = false;
-
-  thumbnailCarousel.addEventListener('mousedown', (e) => {
-    isDown = true;
-    startX = e.pageX - thumbnailCarousel.offsetLeft;
-    scrollLeft = thumbnailCarousel.scrollLeft;
-  });
-
-  thumbnailCarousel.addEventListener('mouseleave', () => {
-    isDown = false;
-  });
-
-  thumbnailCarousel.addEventListener('mouseup', () => {
-    isDown = false;
-  });
-
-  thumbnailCarousel.addEventListener('mousemove', (e) => {
-    if (!isDown) return;
-    e.preventDefault();
-    const x = e.pageX - thumbnailCarousel.offsetLeft;
-    const walk = (x - startX) * 2;
-    thumbnailCarousel.scrollLeft = scrollLeft - walk;
-  });
-
-  // Touch events for mobile devices
-  thumbnailCarousel.addEventListener('touchstart', (e) => {
-    isDown = true;
-    startX = e.touches[0].pageX - thumbnailCarousel.offsetLeft;
-    scrollLeft = thumbnailCarousel.scrollLeft;
-  });
-
-  thumbnailCarousel.addEventListener('touchend', () => {
-    isDown = false;
-  });
-
-  thumbnailCarousel.addEventListener('touchmove', (e) => {
-    if (!isDown) return;
-    e.preventDefault();
-    const x = e.touches[0].pageX - thumbnailCarousel.offsetLeft;
-    const walk = (x - startX) * 2;
-    thumbnailCarousel.scrollLeft = scrollLeft - walk;
-  });
-
-  thumbnailItems.forEach((item, index) => {
-    item.addEventListener('click', () => {
-      currentIndex = index;
-      updateMainCarousel();
-    });
-  });
-
-  function getSelectedVariant() {
-    const selectedOptions = Array.from(variantSelectors).map(select => select.value);
-    return variants.find(variant => 
-      JSON.stringify(variant.options) === JSON.stringify(selectedOptions)
-    );
-  }
-
-  function updateVariantInfo(variant) {
-    if (variant) {
-      variantIdInput.value = variant.id;
-      priceContainer.innerHTML = `
-        <span class="current-price">${Shopify.formatMoney(variant.price, moneyFormat)}</span>
-        ${variant.compare_at_price > variant.price 
-          ? `<span class="original-price">${Shopify.formatMoney(variant.compare_at_price, moneyFormat)}</span>
-             <span class="sale-label">En Oferta</span>`
-          : ''}
-      `;
-      if (variant.featured_image) {
-        const mediaId = variant.featured_media.id;
-        const mediaIndex = Array.from(mainCarouselItems).findIndex(item => item.dataset.mediaId == mediaId);
-        if (mediaIndex !== -1) {
-          currentIndex = mediaIndex;
-          updateMainCarousel();
+    singleOptionSelectors.forEach(function(selector) {
+      selector.addEventListener('change', function() {
+        var selectedVariant = getSelectedVariant();
+        if (selectedVariant) {
+          productSelect.value = selectedVariant.id;
+          updateStockLabel(selectedVariant);
         }
-      }
-      
-      // Actualizar la información de stock
-      const quantityContainer = document.querySelector('[x-data]');
-      if (quantityContainer) {
-        const alpineData = quantityContainer.__x.$data;
-        alpineData.inventoryTracking = variant.inventory_management !== null;
-        alpineData.maxStock = alpineData.inventoryTracking ? variant.inventory_quantity : null;
-        alpineData.quantity = alpineData.inventoryTracking && alpineData.maxStock !== null ? 
-                               Math.min(alpineData.quantity, variant.inventory_quantity) : 
-                               alpineData.quantity;
-      }
+      });
+    });
+
+    var initialVariant = getSelectedVariant();
+    updateStockLabel(initialVariant);
+
+// Inicializar Swiper
+var thumbSwiper = new Swiper('.thumb-swiper', {
+  spaceBetween: 10,
+  slidesPerView: 4.5, // Configuración predeterminada para pantallas medianas (md)
+
+  breakpoints: {
+    // Configuración para pantallas grandes (lg)
+    1024: {
+      slidesPerView: 4.5, // Mostrar 5.5 slides en pantallas grandes
+    },
+    // Configuración para pantallas pequeñas/móviles
+    768: {
+      slidesPerView: 3.5, // Mostrar 3.5 slides en pantallas móviles
     }
-  }
-
-  function handleVariantChange() {
-    const selectedVariant = getSelectedVariant();
-    updateVariantInfo(selectedVariant);
-  }
-
-  variantSelectors.forEach(selector => {
-    selector.addEventListener('change', handleVariantChange);
-  });
-
-  // Zoom functionality
-  function openZoom() {
-    const currentImage = mainCarouselItems[currentIndex].querySelector('img');
-    zoomedImage.src = currentImage.src;
-    zoomedImage.alt = currentImage.alt;
-    zoomOverlay.style.display = 'block';
-  }
-
-  function closeZoom() {
-    zoomOverlay.style.display = 'none';
-  }
-
-  zoomButton.addEventListener('click', openZoom);
-  closeZoomButton.addEventListener('click', closeZoom);
-  zoomOverlay.addEventListener('click', function(event) {
-    if (event.target === zoomOverlay) {
-      closeZoom();
-    }
-  });
-
-  // Initialize carousels
-  updateMainCarousel();
-
-  // Inicializar la información de la variante seleccionada
-  const initialVariant = getSelectedVariant();
-  updateVariantInfo(initialVariant);
+  },
+  freeMode: true,
+  watchSlidesVisibility: true,
+  watchSlidesProgress: true,
 });
+    var mainSwiper = new Swiper('.main-swiper', {
+      slidesPerView: 1,
+      spaceBetween: 10,
+      loop: true,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+      },
+      thumbs: {
+        swiper: thumbSwiper,
+      },
+    });
+  });
 </script>

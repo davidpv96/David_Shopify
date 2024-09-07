@@ -1,0 +1,84 @@
+<div class="recommended-products mt-12 relative">
+  <h2 class="text-xl font-bold mb-6">Productos recomendados</h2>
+  
+  {% assign recommendations = collections['all'].products | limit: 4 %}
+  
+  {% if recommendations.size > 0 %}
+    <div class="swiper-container overflow-hidden">
+      <div class="swiper-wrapper">
+        {% for product in recommendations limit: 4 %}
+          <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex flex-col">
+            {% if product.featured_image %}
+              <img src="{{ product.featured_image | img_url: 'medium' }}" alt="{{ product.title }}" class="w-full h-48 object-cover rounded-md mb-4">
+            {% else %}
+              <div class="w-full h-48 bg-gray-200 flex items-center justify-center rounded-md mb-4">
+                <span class="text-gray-400">No image</span>
+              </div>
+            {% endif %}
+            <div class="text-left flex-grow">
+              <div class="text-[#52A1BF] font-semibold">
+                {% if product.available %}
+                  In stock
+                {% else %}
+                  Out of stock
+                {% endif %}
+              </div>
+              <h3 class="text-lg font-bold text-gray-800 mt-2">{{ product.title }}</h3>
+              <span class="text-lg font-bold text-gray-900 mt-4 block">{{ product.price | money }}</span>
+            </div>
+            <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full hover:bg-[#163a4a] transition-colors duration-200">Agregar al carrito</button>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% else %}
+    <p class="text-gray-500 mt-4">No hay productos recomendados disponibles.</p>
+  {% endif %}
+</div>
+
+<style>
+  .recommended-products .swiper-container {
+    padding: 20px 0;
+  }
+  .recommended-products .swiper-slide {
+    height: auto;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    new Swiper('.recommended-products .swiper-container', {
+      slidesPerView: 1.5,
+      spaceBetween: 20,
+      loop: false,
+      slidesPerGroup: 1,
+      loopFillGroupWithBlank: false,
+      breakpoints: {
+        1024: {
+          slidesPerView: 4,
+        },
+      },
+      on: {
+        init: function () {
+          checkEdges(this);
+        },
+        slideChange: function () {
+          checkEdges(this);
+        }
+      }
+    });
+
+    function checkEdges(swiper) {
+      if (swiper.isBeginning) {
+        swiper.allowSlidePrev = false;
+      } else {
+        swiper.allowSlidePrev = true;
+      }
+      if (swiper.isEnd) {
+        swiper.allowSlideNext = false;
+      } else {
+        swiper.allowSlideNext = true;
+      }
+    }
+  });
+</script>

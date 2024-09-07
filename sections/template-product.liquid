@@ -281,7 +281,20 @@
 
     <div class="w-full md:w-1/2 px-4">
       <h1 class="text-2xl md:text-3xl font-bold mb-4">{{ product.title }}</h1>
-      <p class="text-xl md:text-2xl font-bold mb-6" id="product-price">{{ current_variant.price | money }}</p>
+      
+      <!-- Actualización en la visualización del precio -->
+      <div class="mb-6">
+        {% if current_variant.compare_at_price > current_variant.price %}
+          <p class="text-2xl font-bold flex items-center" id="product-price">
+            <span class="text-black">{{ current_variant.price | money }}</span>
+            <span class="text-gray-500 line-through text-lg ml-2">{{ current_variant.compare_at_price | money }}</span>
+          </p>
+        {% else %}
+          <p class="text-2xl font-bold text-black" id="product-price">
+            {{ current_variant.price | money }}
+          </p>
+        {% endif %}
+      </div>
       
       <div class="mb-6">
         <div class="bg-gray-100 p-4 rounded-lg shadow">
@@ -331,10 +344,49 @@
           </div>
         </form>
       </div>
+
+      <!-- Campos personalizados en acordeón -->
+       
+      <div class="mt-8">
+
+      <div x-data="{ open: false }" class="border border-gray-200 rounded-md mb-2">
+        <button @click="open = !open" class="flex justify-between items-center w-full px-4 py-3 bg-gray-100 hover:bg-gray-200 focus:outline-none">
+          <span class="font-semibold">Descripción</span>
+          <span x-text="open ? '-' : '+'" class="text-xl"></span>
+        </button>
+        <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-y-90" x-transition:enter-end="opacity-100 transform scale-y-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 transform scale-y-100" x-transition:leave-end="opacity-0 transform scale-y-90" class="p-4">
+          {{ product.description }}
+        </div>
+      </div>
+
+        <div x-data="{ open: false }" class="border border-gray-200 rounded-md mb-2">
+          <button @click="open = !open" class="flex justify-between items-center w-full px-4 py-3 bg-gray-100 hover:bg-gray-200 focus:outline-none">
+            <span class="font-semibold">Shipping information</span>
+            <span x-text="open ? '-' : '+'" class="text-xl"></span>
+          </button>
+          <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-y-90" x-transition:enter-end="opacity-100 transform scale-y-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 transform scale-y-100" x-transition:leave-end="opacity-0 transform scale-y-90" class="p-4">
+            {{ product.metafields.custom.shipping_information }}
+          </div>
+        </div>
+
+        <div x-data="{ open: false }" class="border border-gray-200 rounded-md mb-2">
+          <button @click="open = !open" class="flex justify-between items-center w-full px-4 py-3 bg-gray-100 hover:bg-gray-200 focus:outline-none">
+            <span class="font-semibold">Cambios y devoluciones</span>
+            <span x-text="open ? '-' : '+'" class="text-xl"></span>
+          </button>
+          <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-y-90" x-transition:enter-end="opacity-100 transform scale-y-100" x-transition:leave="transition ease-in duration-100" x-transition:leave-start="opacity-100 transform scale-y-100" x-transition:leave-end="opacity-0 transform scale-y-90" class="p-4">
+            {{ product.metafields.custom.returns_information }}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
+
+  {% render 'product-recommendations' %}
+
+  
+</div>
 <script>
  var variants = [
   {% for variant in product.variants %}
@@ -344,6 +396,7 @@
       options: {{ variant.options | json }},
       available: {{ variant.available | json }},
       price: {{ variant.price | money | json }},
+      compare_at_price: {{ variant.compare_at_price | money | json }},
       inventory_quantity: {{ variant.inventory_quantity | json }},
       inventory_management: {{ variant.inventory_management | json }},
       featured_media: {
@@ -381,13 +434,28 @@ function updateStockLabel(variant) {
   }
 }
 
+function updatePriceDisplay(variant) {
+  var priceElement = document.getElementById('product-price');
+  if (variant) {
+    if (variant.compare_at_price > variant.price) {
+      priceElement.innerHTML = `
+        <span class="text-black text-2xl font-bold">${variant.price}</span>
+        <span class="text-gray-500 line-through text-lg ml-2">${variant.compare_at_price}</span>
+      `;
+      priceElement.classList.add('flex', 'items-center');
+    } else {
+      priceElement.innerHTML = `<span class="text-black text-2xl font-bold">${variant.price}</span>`;
+      priceElement.classList.remove('flex', 'items-center');
+    }
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   var productSelect = document.getElementById('product-select');
   var quantityInput = document.getElementById('quantity');
   var decreaseQuantity = document.getElementById('decrease-quantity');
   var increaseQuantity = document.getElementById('increase-quantity');
   var singleOptionSelectors = document.querySelectorAll('.single-option-selector');
-  var priceElement = document.getElementById('product-price');
   var mainSwiper, thumbSwiper;
 
   function getSelectedVariant() {
@@ -450,7 +518,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateStockLabel(selectedVariant);
         updateVariantMedia(selectedVariant);
         updateQuantityButtons(selectedVariant);
-        priceElement.textContent = selectedVariant.price;
+        updatePriceDisplay(selectedVariant);
       } else {
         updateStockLabel(null);
         updateQuantityButtons(null);

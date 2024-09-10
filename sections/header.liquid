@@ -1,7 +1,7 @@
 <header class="mb-4 lg:mb-0">
   <!-- HEADER GLOBAL -->
 
-  <!-- Start Before Header -->
+  <!-- Start Before HeaderS -->
   <div class="bg-[#0E2129] p-4 flex justify-center">
     <a href="{{ section.settings.facebook_link }}" class="text-white mx-2" target="_blank" rel="noopener noreferrer">
       {% render 'icon-fb' %}
@@ -21,11 +21,13 @@
        class="px-[15px] py-[20px] relative">
     <section class="flex justify-between flex-row items-center mb-[1rem] lg:mb-0">
       <div>
-        {% if section.settings.logo_image %}
-          <img src="{{ section.settings.logo_image | img_url: '300x' }}" width="90" alt="Logo">
-        {% else %}
-          <img src="{{ 'logo-elec.png' | asset_url }}" width="90" alt="Logo">
-        {% endif %}
+        <a href="{{ routes.root_url }}">
+          {% if section.settings.logo_image %}
+            <img src="{{ section.settings.logo_image | img_url: '300x' }}" width="90" alt="Logo">
+          {% else %}
+            <img src="{{ 'logo-elec.png' | asset_url }}" width="90" alt="Logo">
+          {% endif %}
+        </a>
       </div>
 
       <div class="w-8/12 lg:block hidden">
@@ -34,13 +36,13 @@
 
       <div class="flex flex-row gap-3">
         <!-- Ícono de Login -->
+        <!-- Ícono de Login -->
         <div class="relative flex items-center justify-center w-12 h-12">
-          <a href="{{ routes.account_login_url }}" class="text-base text-gray-500 hover:text-gray-900 bg-[#1D495B] w-10 h-10 flex items-center justify-center rounded-full">
+          <a href="{{ routes.account_url }}" class="text-base text-gray-500 hover:text-gray-900 bg-[#1D495B] w-10 h-10 flex items-center justify-center rounded-full z-10 relative">
             {% render 'icon-login' %}
           </a>
-          <div class="absolute inset-0 border-2 border-gray-300 rounded-full"></div>
+          <div class="absolute inset-0 border-2 border-gray-300 rounded-full pointer-events-none"></div>
         </div>
-
         <!-- Ícono de Carrito -->
         <div class="relative flex items-center justify-center w-12 h-12">
           <button @click="openCart = !openCart" class="text-base text-gray-500 hover:text-gray-900 bg-[#1D495B] w-10 h-10 flex items-center justify-center rounded-full relative z-10">

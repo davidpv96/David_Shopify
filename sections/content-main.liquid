@@ -19,12 +19,16 @@
         {% assign new_products = collections.all.products | sort: 'created_at' | reverse %}
         {% for product in new_products limit: 10 %}
           <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex flex-col">
-            <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}" class="w-full h-auto mb-4">
+            <a href="{{ product.url }}" class="block mb-4">
+              <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}" class="w-full h-auto">
+            </a>
             <div class="flex flex-col items-start w-full">
               <div class="{% if product.available %}text-[#52A1BF]{% else %}text-red-500{% endif %} font-semibold text-left w-full">
                 {% if product.available %}En stock{% else %}Agotado{% endif %}
               </div>
-              <h3 class="text-lg font-bold text-gray-800 mt-2 text-left w-full">{{ product.title }}</h3>
+              <a href="{{ product.url }}" class="block mt-2 w-full">
+                <h3 class="text-lg font-bold text-gray-800 text-left">{{ product.title }}</h3>
+              </a>
               <div class="flex items-center mt-2 w-full">
                 <span class="text-lg font-bold text-gray-900">{{ product.price | money }}</span>
                 {% if product.compare_at_price > product.price %}
@@ -66,12 +70,16 @@
       {% assign sale_products = collections.all.products | where: "compare_at_price" %}
       {% for product in sale_products limit: 10 %}
         <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex flex-col">
-          <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}" class="w-full h-auto mb-4">
+          <a href="{{ product.url }}" class="block mb-4">
+            <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}" class="w-full h-auto">
+          </a>
           <div class="flex flex-col items-start w-full">
             <div class="{% if product.available %}text-[#52A1BF]{% else %}text-red-500{% endif %} font-semibold text-left w-full">
               {% if product.available %}En stock{% else %}Agotado{% endif %}
             </div>
-            <h3 class="text-lg font-bold text-gray-800 mt-2 text-left w-full">{{ product.title }}</h3>
+            <a href="{{ product.url }}" class="block mt-2 w-full">
+              <h3 class="text-lg font-bold text-gray-800 text-left">{{ product.title }}</h3>
+            </a>
             <div class="flex items-center mt-2 w-full">
               <span class="text-lg font-bold text-gray-900">{{ product.price | money }}</span>
               <span class="text-sm line-through text-gray-500 ml-2">{{ product.compare_at_price | money }}</span>
@@ -110,12 +118,16 @@
       {% assign recommended_products = collections.all.products | sort: 'updated_at' | reverse %}
       {% for product in recommended_products limit: 10 %}
         <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex flex-col">
-          <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}" class="w-full h-auto mb-4">
+          <a href="{{ product.url }}" class="block mb-4">
+            <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}" class="w-full h-auto">
+          </a>
           <div class="flex flex-col items-start w-full">
             <div class="{% if product.available %}text-[#52A1BF]{% else %}text-red-500{% endif %} font-semibold text-left w-full">
               {% if product.available %}En stock{% else %}Agotado{% endif %}
             </div>
-            <h3 class="text-lg font-bold text-gray-800 mt-2 text-left w-full">{{ product.title }}</h3>
+            <a href="{{ product.url }}" class="block mt-2 w-full">
+              <h3 class="text-lg font-bold text-gray-800 text-left">{{ product.title }}</h3>
+            </a>
             <div class="flex items-center mt-2 w-full">
               <span class="text-lg font-bold text-gray-900">{{ product.price | money }}</span>
               {% if product.compare_at_price > product.price %}

@@ -3,11 +3,11 @@
   <div class="lg:mx-20 relative group">
     <div class="flex justify-between items-center my-8 mx-2 lg:mx-0">
       <div>
-        <h2 class="text-2xl font-semibold text-gray-800">Nuevos Ingresos</h2>
-        <p class="text-gray-600">Nuestros productos más recientes</p>
+        <h2 class="text-2xl font-semibold text-gray-800">{{ section.settings.new_products_title }}</h2>
+        <p class="text-gray-600">{{ section.settings.new_products_subtitle }}</p>
       </div>
-      <a href="/collections/all" class="bg-[#52A1BF] text-white font-semibold py-2 px-4 rounded-full hover:bg-[#52A1BF] transition duration-300 flex items-center justify-center whitespace-nowrap space-x-2">
-        <span>Ver Tienda</span>
+      <a href="{{ section.settings.new_products_link }}" class="bg-[#52A1BF] text-white font-semibold py-2 px-4 rounded-full hover:bg-[#52A1BF] transition duration-300 flex items-center justify-center whitespace-nowrap space-x-2">
+        <span>{{ section.settings.new_products_button_text }}</span>
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
@@ -16,20 +16,28 @@
 
     <div class="swiper productSwiper my-8 z-10">
       <div class="swiper-wrapper">
-        {% for product in collections.all.products limit: 10 %}
-          {% if product.created_at > 'now' | date: '%s' | minus: 2592000 %}
-            <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex flex-col">
-              <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}" class="w-full h-auto mb-4">
-              <div class="text-left">
-                <div class="text-sm text-gray-700">{{ product.vendor }}</div>
-                <div class="text-[#52A1BF] font-semibold">{% if product.available %}En stock{% else %}Agotado{% endif %}</div>
-                <h3 class="text-lg font-bold text-gray-800 mt-2">{{ product.title }}</h3>
-                <p class="text-sm text-gray-600 mt-2">{{ product.description | strip_html | truncatewords: 20 }}</p>
-                <span class="text-lg font-bold text-gray-900 mt-4">{{ product.price | money }}</span>
+        {% assign new_products = collections.all.products | sort: 'created_at' | reverse %}
+        {% for product in new_products limit: 10 %}
+          <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex flex-col">
+            <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}" class="w-full h-auto mb-4">
+            <div class="flex flex-col items-start w-full">
+              <div class="{% if product.available %}text-[#52A1BF]{% else %}text-red-500{% endif %} font-semibold text-left w-full">
+                {% if product.available %}En stock{% else %}Agotado{% endif %}
               </div>
-              <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
+              <h3 class="text-lg font-bold text-gray-800 mt-2 text-left w-full">{{ product.title }}</h3>
+              <div class="flex items-center mt-2 w-full">
+                <span class="text-lg font-bold text-gray-900">{{ product.price | money }}</span>
+                {% if product.compare_at_price > product.price %}
+                  <span class="text-sm line-through text-gray-500 ml-2">{{ product.compare_at_price | money }}</span>
+                {% endif %}
+              </div>
             </div>
-          {% endif %}
+            {% if product.has_only_default_variant %}
+              <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center">Agregar al carrito</button>
+            {% else %}
+              <a href="{{ product.url }}" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center">Seleccionar opciones</a>
+            {% endif %}
+          </div>
         {% endfor %}
       </div>
       <div class="hidden lg:flex swiper-button-next opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -42,11 +50,11 @@
 <div class="lg:mx-20 relative group">
   <div class="flex justify-between items-center my-8 mx-2 lg:mx-0">
     <div>
-      <h2 class="text-2xl font-semibold text-gray-800">En Oferta</h2>
-      <p class="text-gray-600">Encuentra nuestros productos con rebaja</p>
+      <h2 class="text-2xl font-semibold text-gray-800">{{ section.settings.sale_products_title }}</h2>
+      <p class="text-gray-600">{{ section.settings.sale_products_subtitle }}</p>
     </div>
-    <a href="/collections/all" class="bg-[#52A1BF] text-white font-semibold py-2 px-4 rounded-full hover:bg-[#52A1BF] transition duration-300 flex items-center justify-center whitespace-nowrap space-x-2">
-      <span>Ver Tienda</span>
+    <a href="{{ section.settings.sale_products_link }}" class="bg-[#52A1BF] text-white font-semibold py-2 px-4 rounded-full hover:bg-[#52A1BF] transition duration-300 flex items-center justify-center whitespace-nowrap space-x-2">
+      <span>{{ section.settings.sale_products_button_text }}</span>
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
       </svg>
@@ -55,21 +63,26 @@
 
   <div class="swiper productSwiper my-8 z-10">
     <div class="swiper-wrapper">
-      {% for product in collections.all.products limit: 20 %}
-        {% if product.compare_at_price > product.price %}
-          <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex flex-col">
-            <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}" class="w-full h-auto mb-4">
-            <div class="text-left">
-              <div class="text-sm text-gray-700">{{ product.vendor }}</div>
-              <div class="text-[#52A1BF] font-semibold">{% if product.available %}En stock{% else %}Agotado{% endif %}</div>
-              <h3 class="text-lg font-bold text-gray-800 mt-2">{{ product.title }}</h3>
-              <p class="text-sm text-gray-600 mt-2">{{ product.description | strip_html | truncatewords: 20 }}</p>
-              <span class="text-lg font-bold text-gray-900 mt-4">{{ product.price | money }}</span>
+      {% assign sale_products = collections.all.products | where: "compare_at_price" %}
+      {% for product in sale_products limit: 10 %}
+        <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex flex-col">
+          <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}" class="w-full h-auto mb-4">
+          <div class="flex flex-col items-start w-full">
+            <div class="{% if product.available %}text-[#52A1BF]{% else %}text-red-500{% endif %} font-semibold text-left w-full">
+              {% if product.available %}En stock{% else %}Agotado{% endif %}
+            </div>
+            <h3 class="text-lg font-bold text-gray-800 mt-2 text-left w-full">{{ product.title }}</h3>
+            <div class="flex items-center mt-2 w-full">
+              <span class="text-lg font-bold text-gray-900">{{ product.price | money }}</span>
               <span class="text-sm line-through text-gray-500 ml-2">{{ product.compare_at_price | money }}</span>
             </div>
-            <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
           </div>
-        {% endif %}
+          {% if product.has_only_default_variant %}
+            <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center">Agregar al carrito</button>
+          {% else %}
+            <a href="{{ product.url }}" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center">Seleccionar opciones</a>
+          {% endif %}
+        </div>
       {% endfor %}
     </div>
     <div class="hidden lg:flex swiper-button-next opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -81,11 +94,11 @@
 <div class="lg:mx-20 relative group">
   <div class="flex justify-between items-center my-8 mx-2 lg:mx-0">
     <div>
-      <h2 class="text-2xl font-semibold text-gray-800">Productos Recomendados</h2>
-      <p class="text-gray-600">Lo mejor para ti</p>
+      <h2 class="text-2xl font-semibold text-gray-800">{{ section.settings.recommended_products_title }}</h2>
+      <p class="text-gray-600">{{ section.settings.recommended_products_subtitle }}</p>
     </div>
-    <a href="/collections/all" class="bg-[#52A1BF] text-white font-semibold py-2 px-4 rounded-full hover:bg-[#52A1BF] transition duration-300 flex items-center justify-center whitespace-nowrap space-x-2">
-      <span>Ver Tienda</span>
+    <a href="{{ section.settings.recommended_products_link }}" class="bg-[#52A1BF] text-white font-semibold py-2 px-4 rounded-full hover:bg-[#52A1BF] transition duration-300 flex items-center justify-center whitespace-nowrap space-x-2">
+      <span>{{ section.settings.recommended_products_button_text }}</span>
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
       </svg>
@@ -98,14 +111,23 @@
       {% for product in recommended_products limit: 10 %}
         <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex flex-col">
           <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}" class="w-full h-auto mb-4">
-          <div class="text-left">
-            <div class="text-sm text-gray-700">{{ product.vendor }}</div>
-            <div class="text-[#52A1BF] font-semibold">{% if product.available %}En stock{% else %}Agotado{% endif %}</div>
-            <h3 class="text-lg font-bold text-gray-800 mt-2">{{ product.title }}</h3>
-            <p class="text-sm text-gray-600 mt-2">{{ product.description | strip_html | truncatewords: 20 }}</p>
-            <span class="text-lg font-bold text-gray-900 mt-4">{{ product.price | money }}</span>
+          <div class="flex flex-col items-start w-full">
+            <div class="{% if product.available %}text-[#52A1BF]{% else %}text-red-500{% endif %} font-semibold text-left w-full">
+              {% if product.available %}En stock{% else %}Agotado{% endif %}
+            </div>
+            <h3 class="text-lg font-bold text-gray-800 mt-2 text-left w-full">{{ product.title }}</h3>
+            <div class="flex items-center mt-2 w-full">
+              <span class="text-lg font-bold text-gray-900">{{ product.price | money }}</span>
+              {% if product.compare_at_price > product.price %}
+                <span class="text-sm line-through text-gray-500 ml-2">{{ product.compare_at_price | money }}</span>
+              {% endif %}
+            </div>
           </div>
-          <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
+          {% if product.has_only_default_variant %}
+            <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center">Agregar al carrito</button>
+          {% else %}
+            <a href="{{ product.url }}" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center">Seleccionar opciones</a>
+          {% endif %}
         </div>
       {% endfor %}
     </div>
@@ -168,88 +190,84 @@
     "settings": [
       {
         "type": "header",
-        "content": "Sección de Testimonios"
+        "content": "Nuevos Productos"
       },
       {
         "type": "text",
-        "id": "testimonials_heading",
-        "label": "Título de la sección de testimonios",
-        "default": "Testimonios"
+        "id": "new_products_title",
+        "label": "Título",
+        "default": "Nuevos Ingresos"
       },
       {
         "type": "text",
-        "id": "testimonials_subheading",
-        "label": "Subtítulo de la sección de testimonios",
-        "default": "Descubre las historias de satisfacción y éxito de nuestra comunidad."
+        "id": "new_products_subtitle",
+        "label": "Subtítulo",
+        "default": "Nuestros productos más recientes"
+      },
+      {
+        "type": "text",
+        "id": "new_products_button_text",
+        "label": "Texto del botón",
+        "default": "Ver Tienda"
+      },
+      {
+        "type": "url",
+        "id": "new_products_link",
+        "label": "Enlace del botón"
       },
       {
         "type": "header",
-        "content": "Sección Nosotros"
+        "content": "Productos en Oferta"
       },
       {
         "type": "text",
-        "id": "about_heading",
-        "label": "Título de la sección 'Nosotros'",
-        "default": "Bienvenidos a H2 Electronics"
-      },
-      {
-        "type": "textarea",
-        "id": "about_description",
-        "label": "Descripción de la sección 'Nosotros'",
-        "default": "En H2ElectronicsCR, fusionamos robótica, inteligencia artificial y electrónica para abrir un mundo de posibilidades. Nuestro enfoque es simplificar el acceso a herramientas innovadoras, ayudando a cada cliente a transformar ideas en proyectos tangibles."
+        "id": "sale_products_title",
+        "label": "Título",
+        "default": "En Oferta"
       },
       {
         "type": "text",
-        "id": "mission_heading",
-        "label": "Título de la Misión",
-        "default": "Misión"
-      },
-      {
-        "type": "textarea",
-        "id": "mission_text",
-        "label": "Texto de la Misión",
-        "default": "Facilitar el acceso a herramientas de robótica e inteligencia artificial para todos, proporcionando recursos que fomentan la innovación y el aprendizaje. En H2ElectronicsCR, creemos en el poder de la tecnología para ampliar horizontes y posibilidades."
+        "id": "sale_products_subtitle",
+        "label": "Subtítulo",
+        "default": "Encuentra nuestros productos con rebaja"
       },
       {
         "type": "text",
-        "id": "vision_heading",
-        "label": "Título de la Visión",
-        "default": "Visión"
+        "id": "sale_products_button_text",
+        "label": "Texto del botón",
+        "default": "Ver Tienda"
       },
       {
-        "type": "textarea",
-        "id": "vision_text",
-        "label": "Texto de la Visión",
-        "default": "Liderar en hacer que la robótica, la inteligencia artificial y la electrónica sean accesibles para todos, desde estudiantes hasta profesionales. Nos dedicamos a ofrecer componentes de calidad que permiten explorar y crear sin barreras."
-      }
-    ],
-    "blocks": [
+        "type": "url",
+        "id": "sale_products_link",
+        "label": "Enlace del botón"
+      },
       {
-        "type": "testimonial",
-        "name": "Testimonio",
-        "settings": [
-          {
-            "type": "textarea",
-            "id": "testimonial_text",
-            "label": "Texto del testimonio"
-          },
-          {
-            "type": "text",
-            "id": "author_name",
-            "label": "Nombre del autor"
-          },
-          {
-            "type": "text",
-            "id": "author_role",
-            "label": "Rol del autor"
-          }
-        ]
-      }
-    ],
-    "presets": [
+        "type": "header",
+        "content": "Productos Recomendados"
+      },
       {
-        "name": "Contenido Principal",
-        "category": "Contenido"
+        "type": "text",
+        "id": "recommended_products_title",
+        "label": "Título",
+        "default": "Productos Recomendados"
+      },
+      {
+        "type": "text",
+        "id": "recommended_products_subtitle",
+        "label": "Subtítulo",
+        "default": "Lo mejor para ti"
+      },
+      {
+        "type": "text",
+        "id": "recommended_products_button_text",
+        "label": "Texto del botón",
+        "default": "Ver Tienda"
+      },
+      {
+        "type": "url",
+        "id": "recommended_products_link",
+        "label": "Enlace del botón"
       }
     ]
   }

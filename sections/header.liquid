@@ -1,8 +1,7 @@
-<header class="mb-4">
+<header class="mb-4 lg:mb-0">
   <!-- HEADER GLOBAL -->
 
   <!-- Start Before Header -->
-
   <div class="bg-[#0E2129] p-4 flex justify-center">
     <a href="{{ section.settings.facebook_link }}" class="text-white mx-2" target="_blank" rel="noopener noreferrer">
       {% render 'icon-fb' %}
@@ -13,20 +12,24 @@
     <a href="{{ section.settings.tiktok_link }}" class="text-white mx-2" target="_blank" rel="noopener noreferrer">
       {% render 'icon-tiktok' %}
     </a>
-</div>
+  </div>
   <!-- End Before Header -->
 
-  <!-- Header mobile -->
+  <!-- Header mobile and desktop -->
   <div x-data="{ openMenu: false, openCart: false }" 
        x-init="$watch('openMenu', value => document.body.classList.toggle('overflow-hidden', value)); $watch('openCart', value => document.body.classList.toggle('overflow-hidden', value))" 
        class="px-[15px] py-[20px] relative">
-    <section class="flex justify-between flex-row items-center mb-[1rem]">
+    <section class="flex justify-between flex-row items-center mb-[1rem] lg:mb-0">
       <div>
         {% if section.settings.logo_image %}
           <img src="{{ section.settings.logo_image | img_url: '300x' }}" width="90" alt="Logo">
         {% else %}
           <img src="{{ 'logo-elec.png' | asset_url }}" width="90" alt="Logo">
         {% endif %}
+      </div>
+
+      <div class="w-8/12 lg:block hidden">
+        {% render 'search-bar-header' %} 
       </div>
 
       <div class="flex flex-row gap-3">
@@ -38,17 +41,16 @@
           <div class="absolute inset-0 border-2 border-gray-300 rounded-full"></div>
         </div>
 
-       <!-- Ícono de Carrito -->
-<div class="relative flex items-center justify-center w-12 h-12">
-  <button @click="openCart = !openCart" class="text-base text-gray-500 hover:text-gray-900 bg-[#1D495B] w-10 h-10 flex items-center justify-center rounded-full relative z-10">
-    {% render 'icon-shopping-bag' %}
-  </button>
-  <div class="absolute inset-0 border-2 border-gray-300 rounded-full pointer-events-none z-0"></div>
-  <!-- Cantidad dinámica de ítems en el carrito -->
-  <div class="absolute top-[-5px] right-0 bg-[#52A1BF] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center z-20" id="cart-item-count">
-    {{ cart.item_count }}
-  </div>
-</div>
+        <!-- Ícono de Carrito -->
+        <div class="relative flex items-center justify-center w-12 h-12">
+          <button @click="openCart = !openCart" class="text-base text-gray-500 hover:text-gray-900 bg-[#1D495B] w-10 h-10 flex items-center justify-center rounded-full relative z-10">
+            {% render 'icon-shopping-bag' %}
+          </button>
+          <div class="absolute inset-0 border-2 border-gray-300 rounded-full pointer-events-none z-0"></div>
+          <div class="absolute top-[-5px] right-0 bg-[#52A1BF] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center z-20" id="cart-item-count">
+            {{ cart.item_count }}
+          </div>
+        </div>
 
         <!-- Botón de Menú -->
         <div>
@@ -59,112 +61,107 @@
       </div>
     </section>
 
-   <!-- Barra de búsqueda actualizada -->
- {% render 'search-bar-header' %} 
-
-    <!-- Menú desplegable como Modal -->
-    <div 
-    x-show="openMenu" 
-    x-cloak
-    @click.away="openMenu = false" 
-    x-transition:enter="transition ease-out duration-300"
-    x-transition:enter-start="opacity-0 transform scale-90"
-    x-transition:enter-end="opacity-100 transform scale-100"
-    x-transition:leave="transition ease-in duration-300"
-    x-transition:leave-start="opacity-100 transform scale-100"
-    x-transition:leave-end="opacity-0 transform scale-90"
-    class="fixed inset-0 bg-white z-[100] shadow-lg overflow-hidden flex flex-col"
->
-    <div class="flex justify-between items-center p-5">
-        {% if section.settings.logo_image %}
-            <img src="{{ section.settings.logo_image | img_url: '300x' }}" width="90" alt="Logo">
-        {% else %}
-            <img src="{{ 'logo-elec.png' | asset_url }}" width="90" alt="Logo">
-        {% endif %}
-        <button @click="openMenu = false" class="text-gray-500 hover:text-gray-900">
-            {% render 'icon-close' %}
-        </button>
+    <!-- Barra de búsqueda actualizada -->
+    <div class="block lg:hidden">
+      {% render 'search-bar-header' %} 
     </div>
 
-    <!-- Sección del menú que tendrá scroll -->
-    <nav class="overflow-y-auto h-full p-5">
-        {% if section.settings.header_menu %}
-            <ul class="space-y-4">
-                {% for link in linklists[section.settings.header_menu].links %}
-                    <li x-data="{ open: false }">
-                        <a href="{{ link.url }}" class="text-gray-700 hover:text-gray-900 flex items-center justify-between" @click.prevent="open = !open">
-                            {{ link.title }}
-                            {% if link.links != empty %}
-                                <!-- Ícono indicativo de submenú -->
-                                <span class="ml-2">
-                                    {% render 'icon-chevron-down' %}
-                                </span>
-                            {% endif %}
-                        </a>
-                        {% if link.links != empty %}
-                            <ul x-show="open" x-transition class="pl-4 mt-2 space-y-2">
-                                {% for sublink in link.links %}
-                                    <li>
-                                        <a href="{{ sublink.url }}" class="text-gray-600 hover:text-gray-800">
-                                            {{ sublink.title }}
-                                        </a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
+    <!-- Menú desplegable como Modal (móvil) y Off-canvas (desktop) -->
+    <div 
+      x-show="openMenu" 
+      x-cloak
+      @click.away="openMenu = false" 
+      x-transition:enter="transition ease-out duration-300"
+      x-transition:enter-start="opacity-0 transform translate-x-full lg:translate-x-[-100%]"
+      x-transition:enter-end="opacity-100 transform translate-x-0"
+      x-transition:leave="transition ease-in duration-300"
+      x-transition:leave-start="opacity-100 transform translate-x-0"
+      x-transition:leave-end="opacity-0 transform translate-x-full lg:translate-x-[-100%]"
+      class="fixed inset-y-0 right-0 lg:left-0 lg:right-auto max-w-xs w-full bg-white z-[100] shadow-lg overflow-hidden flex flex-col"
+    >
+      <div class="flex justify-between items-center p-5">
+        {% if section.settings.logo_image %}
+          <img src="{{ section.settings.logo_image | img_url: '300x' }}" width="90" alt="Logo">
         {% else %}
-            <p>No se ha seleccionado ningún menú.</p>
+          <img src="{{ 'logo-elec.png' | asset_url }}" width="90" alt="Logo">
         {% endif %}
-    </nav>
-</div>
+        <button @click="openMenu = false" class="text-gray-500 hover:text-gray-900">
+          {% render 'icon-close' %}
+        </button>
+      </div>
 
+      <!-- Sección del menú que tendrá scroll -->
+      <nav class="overflow-y-auto h-full p-5">
+        {% if section.settings.header_menu %}
+          <ul class="space-y-4">
+            {% for link in linklists[section.settings.header_menu].links %}
+              <li x-data="{ open: false }">
+                <a href="{{ link.url }}" class="text-gray-700 hover:text-gray-900 flex items-center justify-between" @click.prevent="open = !open">
+                  {{ link.title }}
+                  {% if link.links != empty %}
+                    <!-- Ícono indicativo de submenú -->
+                    <span class="ml-2">
+                      {% render 'icon-chevron-down' %}
+                    </span>
+                  {% endif %}
+                </a>
+                {% if link.links != empty %}
+                  <ul x-show="open" x-transition class="pl-4 mt-2 space-y-2">
+                    {% for sublink in link.links %}
+                      <li>
+                        <a href="{{ sublink.url }}" class="text-gray-600 hover:text-gray-800">
+                          {{ sublink.title }}
+                        </a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No se ha seleccionado ningún menú.</p>
+        {% endif %}
+      </nav>
+    </div>
 
-{% render 'cart-drawer' %}
-
-
+    {% render 'cart-drawer' %}
   </div>
 </header>
 
-
-
-
 {% schema %}
-  {
-    "name": "Header",
-    "settings": [
-      {
-        "type": "image_picker",
-        "id": "logo_image",
-        "label": "Logo"
-      },
-      {
-        "type": "url",
-        "id": "facebook_link",
-        "label": "Facebook URL"
-      },
-      {
-        "type": "url",
-        "id": "instagram_link",
-        "label": "Instagram URL"
-      },
-      {
-        "type": "url",
-        "id": "tiktok_link",
-        "label": "TikTok URL"
-      },
-      {
-        "type": "link_list",
-        "id": "header_menu",
-        "label": "Menú de Navegación"
-      }
-    ]
-  }
-  {% endschema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo"
+    },
+    {
+      "type": "url",
+      "id": "facebook_link",
+      "label": "Facebook URL"
+    },
+    {
+      "type": "url",
+      "id": "instagram_link",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "url",
+      "id": "tiktok_link",
+      "label": "TikTok URL"
+    },
+    {
+      "type": "link_list",
+      "id": "header_menu",
+      "label": "Menú de Navegación"
+    }
+  ]
+}
+{% endschema %}
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 {{ 'search-bar.js' | asset_url | script_tag }}
 {{ 'cart.js' | asset_url | script_tag }}
-

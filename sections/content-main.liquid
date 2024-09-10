@@ -1,338 +1,117 @@
-{% comment %} slide de productos {% endcomment %}
- <div class="bg-[#f8f8f8] py-10 my-10 mx-[0.3em] lg:mx-0">
-<div class="lg:mx-20 relative group ">
+{% comment %} Slider de Nuevos Productos {% endcomment %}
+<div class="bg-[#f8f8f8] py-10 my-10 mx-[0.3em] lg:mx-0">
+  <div class="lg:mx-20 relative group">
+    <div class="flex justify-between items-center my-8 mx-2 lg:mx-0">
+      <div>
+        <h2 class="text-2xl font-semibold text-gray-800">{{ section.settings.new_products_title }}</h2>
+        <p class="text-gray-600">{{ section.settings.new_products_subtitle }}</p>
+      </div>
+      <a href="{{ section.settings.new_products_link }}" class="bg-[#52A1BF] text-white font-semibold py-2 px-4 rounded-full hover:bg-[#52A1BF] transition duration-300 flex items-center justify-center whitespace-nowrap space-x-2">
+        <span>{{ section.settings.new_products_button_text }}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </a>
+    </div>
 
-<div class="flex justify-between items-center my-8 mx-2 lg:mx-0">
-    <!-- Título y subtítulo -->
+    <div class="swiper productSwiper my-8 z-10">
+      <div class="swiper-wrapper">
+        {% for product in collections[section.settings.new_products_collection].products limit: section.settings.new_products_count %}
+          <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex flex-col">
+            <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}" class="w-full h-auto mb-4">
+            <div class="text-left">
+              <div class="text-sm text-gray-700">{{ product.vendor }}</div>
+              <div class="text-[#52A1BF] font-semibold">{% if product.available %}En stock{% else %}Agotado{% endif %}</div>
+              <h3 class="text-lg font-bold text-gray-800 mt-2">{{ product.title }}</h3>
+              <p class="text-sm text-gray-600 mt-2">{{ product.description | strip_html | truncatewords: 20 }}</p>
+              <span class="text-lg font-bold text-gray-900 mt-4">{{ product.price | money }}</span>
+            </div>
+            <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="hidden lg:flex swiper-button-next opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      <div class="hidden lg:flex swiper-button-prev opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    </div>
+  </div>
+</div>
+
+{% comment %} Slider de Productos en Oferta {% endcomment %}
+<div class="lg:mx-20 relative group">
+  <div class="flex justify-between items-center my-8 mx-2 lg:mx-0">
     <div>
-        <h2 class="text-2xl font-semibold text-gray-800">Nuevo Ingreso</h2>
-        <p class="text-gray-600">Nuevos Productos</p>
+      <h2 class="text-2xl font-semibold text-gray-800">{{ section.settings.sale_products_title }}</h2>
+      <p class="text-gray-600">{{ section.settings.sale_products_subtitle }}</p>
     </div>
-    
-  <!-- Botón -->
-<a href="#" class="bg-[#52A1BF] text-white font-semibold py-2 px-4 rounded-full hover:bg-[#52A1BF] transition duration-300 flex items-center justify-center  whitespace-nowrap space-x-2">
-    <span>Ver Tienda</span>
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <a href="{{ section.settings.sale_products_link }}" class="bg-[#52A1BF] text-white font-semibold py-2 px-4 rounded-full hover:bg-[#52A1BF] transition duration-300 flex items-center justify-center whitespace-nowrap space-x-2">
+      <span>{{ section.settings.sale_products_button_text }}</span>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-    </svg>
-</a>
-</div>
+      </svg>
+    </a>
+  </div>
 
-<div class="swiper productSwiper my-8 z-10">
+  <div class="swiper productSwiper my-8 z-10">
     <div class="swiper-wrapper">
-        <!-- Slide 1 -->
-        <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
-            <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
+      {% for product in collections[section.settings.sale_products_collection].products limit: section.settings.sale_products_count %}
+        {% if product.compare_at_price > product.price %}
+          <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex flex-col">
+            <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}" class="w-full h-auto mb-4">
             <div class="text-left">
-            <div class="text-sm text-gray-700">CircuitTonik</div>
-            <div class="text-[#52A1BF] font-semibold">In stock</div>
-            <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
-            <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
-            <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
+              <div class="text-sm text-gray-700">{{ product.vendor }}</div>
+              <div class="text-[#52A1BF] font-semibold">{% if product.available %}En stock{% else %}Agotado{% endif %}</div>
+              <h3 class="text-lg font-bold text-gray-800 mt-2">{{ product.title }}</h3>
+              <p class="text-sm text-gray-600 mt-2">{{ product.description | strip_html | truncatewords: 20 }}</p>
+              <span class="text-lg font-bold text-gray-900 mt-4">{{ product.price | money }}</span>
+              <span class="text-sm line-through text-gray-500 ml-2">{{ product.compare_at_price | money }}</span>
             </div>
             <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
-        </div>
-
-            <!-- Slide 1 -->
-            <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
-                <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
-                <div class="text-left">
-                <div class="text-sm text-gray-700">CircuitTonik</div>
-                <div class="text-[#52A1BF] font-semibold">In stock</div>
-                <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
-                <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
-                <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
-                </div>
-                <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
-            </div>
-        
-        <!-- Repite los slides para cada producto -->
-        <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
-            <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
-            <div class="text-left">
-            <div class="text-sm text-gray-700">CircuitTonik</div>
-            <div class="text-[#52A1BF] font-semibold">In stock</div>
-            <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
-            <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
-            <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
-            </div>
-            <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
-        </div>
-        
-        <!-- Slide 3 -->
-        <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
-            <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
-            <div class="text-left">
-            <div class="text-sm text-gray-700">CircuitTonik</div>
-            <div class="text-[#52A1BF] font-semibold">In stock</div>
-            <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
-            <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
-            <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
-            </div>
-            <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
-        </div>
-
-        <!-- Más slides según sea necesario -->
-              <!-- Slide 3 -->
-              <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
-                <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
-                <div class="text-left">
-                <div class="text-sm text-gray-700">CircuitTonik</div>
-                <div class="text-[#52A1BF] font-semibold">In stock</div>
-                <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
-                <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
-                <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
-                </div>
-                <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
-            </div>
-
-             <!-- Slide 3 -->
-             <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
-                <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
-                <div class="text-left">
-                <div class="text-sm text-gray-700">CircuitTonik</div>
-                <div class="text-[#52A1BF] font-semibold">In stock</div>
-                <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
-                <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
-                <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
-                </div>
-                <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
-            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
     </div>
-    
-
-    <div class=" hidden lg:flex swiper-button-next opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-    <div class=" hidden lg:flex swiper-button-prev opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-</div>
+    <div class="hidden lg:flex swiper-button-next opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    <div class="hidden lg:flex swiper-button-prev opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+  </div>
 </div>
 
-
-
-{% comment %} slide mas populares inicia aqui {% endcomment %}
-
-<div class="lg:mx-20 relative group ">
-
-<div class="flex justify-between items-center my-8 mx-2 lg:mx-0">
-    <!-- Título y subtítulo -->
+{% comment %} Slider de Productos Recomendados {% endcomment %}
+<div class="lg:mx-20 relative group">
+  <div class="flex justify-between items-center my-8 mx-2 lg:mx-0">
     <div>
-        <h2 class="text-2xl font-semibold text-gray-800">En Oferta</h2>
-        <p class="text-gray-600">Encuentra nuestros productos con rebaja</p>
+      <h2 class="text-2xl font-semibold text-gray-800">{{ section.settings.recommended_products_title }}</h2>
+      <p class="text-gray-600">{{ section.settings.recommended_products_subtitle }}</p>
     </div>
-    
-  <!-- Botón -->
-<a href="#" class="bg-[#52A1BF] text-white font-semibold py-2 px-4 rounded-full hover:bg-[#52A1BF] transition duration-300 flex items-center justify-center  whitespace-nowrap space-x-2">
-    <span>Ver Tienda</span>
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <a href="{{ section.settings.recommended_products_link }}" class="bg-[#52A1BF] text-white font-semibold py-2 px-4 rounded-full hover:bg-[#52A1BF] transition duration-300 flex items-center justify-center whitespace-nowrap space-x-2">
+      <span>{{ section.settings.recommended_products_button_text }}</span>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-    </svg>
-</a>
-</div>
+      </svg>
+    </a>
+  </div>
 
-<div class="swiper productSwiper my-8 z-10">
+  <div class="swiper productSwiper my-8 z-10">
     <div class="swiper-wrapper">
-        <!-- Slide 1 -->
-        <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
-            <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
-            <div class="text-left">
-            <div class="text-sm text-gray-700">CircuitTonik</div>
-            <div class="text-[#52A1BF] font-semibold">In stock</div>
-            <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
-            <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
-            <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
-            </div>
-            <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
+      {% for product in collections[section.settings.recommended_products_collection].products limit: section.settings.recommended_products_count %}
+        <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex flex-col">
+          <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}" class="w-full h-auto mb-4">
+          <div class="text-left">
+            <div class="text-sm text-gray-700">{{ product.vendor }}</div>
+            <div class="text-[#52A1BF] font-semibold">{% if product.available %}En stock{% else %}Agotado{% endif %}</div>
+            <h3 class="text-lg font-bold text-gray-800 mt-2">{{ product.title }}</h3>
+            <p class="text-sm text-gray-600 mt-2">{{ product.description | strip_html | truncatewords: 20 }}</p>
+            <span class="text-lg font-bold text-gray-900 mt-4">{{ product.price | money }}</span>
+          </div>
+          <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
         </div>
-
-            <!-- Slide 1 -->
-            <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
-                <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
-                <div class="text-left">
-                <div class="text-sm text-gray-700">CircuitTonik</div>
-                <div class="text-[#52A1BF] font-semibold">In stock</div>
-                <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
-                <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
-                <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
-                </div>
-                <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
-            </div>
-        
-        <!-- Repite los slides para cada producto -->
-        <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
-            <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
-            <div class="text-left">
-            <div class="text-sm text-gray-700">CircuitTonik</div>
-            <div class="text-[#52A1BF] font-semibold">In stock</div>
-            <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
-            <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
-            <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
-            </div>
-            <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
-        </div>
-        
-        <!-- Slide 3 -->
-        <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
-            <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
-            <div class="text-left">
-            <div class="text-sm text-gray-700">CircuitTonik</div>
-            <div class="text-[#52A1BF] font-semibold">In stock</div>
-            <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
-            <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
-            <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
-            </div>
-            <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
-        </div>
-
-        <!-- Más slides según sea necesario -->
-              <!-- Slide 3 -->
-              <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
-                <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
-                <div class="text-left">
-                <div class="text-sm text-gray-700">CircuitTonik</div>
-                <div class="text-[#52A1BF] font-semibold">In stock</div>
-                <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
-                <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
-                <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
-                </div>
-                <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
-            </div>
-
-             <!-- Slide 3 -->
-             <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
-                <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
-                <div class="text-left">
-                <div class="text-sm text-gray-700">CircuitTonik</div>
-                <div class="text-[#52A1BF] font-semibold">In stock</div>
-                <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
-                <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
-                <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
-                </div>
-                <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
-            </div>
+      {% endfor %}
     </div>
-    
-
-    <div class=" hidden lg:flex swiper-button-next opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-    <div class=" hidden lg:flex swiper-button-prev opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-</div>
+    <div class="hidden lg:flex swiper-button-next opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    <div class="hidden lg:flex swiper-button-prev opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+  </div>
 </div>
 
-{% comment %} 
-slide oferta inicia aca {% endcomment %}
-
-
-<div class="lg:mx-20 relative group ">
-
-<div class="flex justify-between items-center my-8 mx-2 lg:mx-0">
-    <!-- Título y subtítulo -->
-    <div>
-        <h2 class="text-2xl font-semibold text-gray-800">Productos Recomendados</h2>
-        <p class="text-gray-600">Lo mejor para tí</p>
-    </div>
-    
-  <!-- Botón -->
-<a href="#" class="bg-[#52A1BF] text-white font-semibold py-2 px-4 rounded-full hover:bg-[#52A1BF] transition duration-300 flex items-center justify-center  whitespace-nowrap space-x-2">
-    <span>Ver Tienda</span>
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-    </svg>
-</a>
-</div>
-
-<div class="swiper productSwiper my-8 z-10">
-    <div class="swiper-wrapper">
-        <!-- Slide 1 -->
-        <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
-            <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
-            <div class="text-left">
-            <div class="text-sm text-gray-700">CircuitTonik</div>
-            <div class="text-[#52A1BF] font-semibold">In stock</div>
-            <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
-            <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
-            <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
-            </div>
-            <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
-        </div>
-
-            <!-- Slide 1 -->
-            <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
-                <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
-                <div class="text-left">
-                <div class="text-sm text-gray-700">CircuitTonik</div>
-                <div class="text-[#52A1BF] font-semibold">In stock</div>
-                <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
-                <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
-                <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
-                </div>
-                <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
-            </div>
-        
-        <!-- Repite los slides para cada producto -->
-        <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
-            <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
-            <div class="text-left">
-            <div class="text-sm text-gray-700">CircuitTonik</div>
-            <div class="text-[#52A1BF] font-semibold">In stock</div>
-            <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
-            <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
-            <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
-            </div>
-            <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
-        </div>
-        
-        <!-- Slide 3 -->
-        <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
-            <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
-            <div class="text-left">
-            <div class="text-sm text-gray-700">CircuitTonik</div>
-            <div class="text-[#52A1BF] font-semibold">In stock</div>
-            <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
-            <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
-            <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
-            </div>
-            <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
-        </div>
-
-        <!-- Más slides según sea necesario -->
-              <!-- Slide 3 -->
-              <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
-                <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
-                <div class="text-left">
-                <div class="text-sm text-gray-700">CircuitTonik</div>
-                <div class="text-[#52A1BF] font-semibold">In stock</div>
-                <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
-                <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
-                <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
-                </div>
-                <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
-            </div>
-
-             <!-- Slide 3 -->
-             <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex  flex-col">
-                <img src="{{'produt-prueba.webp' | asset_url}}" alt="Producto 1" class="w-full h-auto mb-4">
-                <div class="text-left">
-                <div class="text-sm text-gray-700">CircuitTonik</div>
-                <div class="text-[#52A1BF] font-semibold">In stock</div>
-                <h3 class="text-lg font-bold text-gray-800 mt-2">Universal AC/DC Power Supply: 100-240V Input, 48V 2A Output</h3>
-                <p class="text-sm text-gray-600 mt-2">Power your projects globally with ease...</p>
-                <span class="text-lg font-bold text-gray-900 mt-4">€39,90 inc. VAT</span>
-                </div>
-                <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full">Agregar al carrito</button>
-            </div>
-    </div>
-    
-
-    <div class=" hidden lg:flex swiper-button-next opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-    <div class=" hidden lg:flex swiper-button-prev opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-</div>
-</div>
-</div>
-
-
-
-
-
-{% comment %} Slide testimonios {% endcomment %}
-
+{% comment %} Sección de Testimonios {% endcomment %}
 <div class="text-center mb-8 mt-10">
     <h2 class="text-3xl font-extrabold text-gray-900">{{ section.settings.testimonials_heading }}</h2>
     <p class="mt-4 text-gray-500">{{ section.settings.testimonials_subheading }}</p>
@@ -344,7 +123,7 @@ slide oferta inicia aca {% endcomment %}
       {% for block in section.blocks %}
         {% if block.type == 'testimonial' %}
           <div class="swiper-slide swiper-testimonio-slide p-8 rounded-lg shadow-lg mb-2">
-            <div class="text-[#00796b] text-3xl">“</div>
+            <div class="text-[#00796b] text-3xl">"</div>
             <p class="mt-4 text-gray-800 leading-relaxed">{{ block.settings.testimonial_text }}</p>
             <div class="mt-6">
               <p class="text-lg font-semibold text-gray-900">{{ block.settings.author_name }}</p>
@@ -357,10 +136,7 @@ slide oferta inicia aca {% endcomment %}
   </div>
 </div>
 
-
-{% comment %} 
-SECCION NOSOTROS {% endcomment %}
-
+{% comment %} Sección Nosotros {% endcomment %}
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
     <h1 class="text-3xl font-extrabold text-gray-900">{{ section.settings.about_heading }}</h1>
     <p class="mt-4 text-xl text-gray-600">{{ section.settings.about_description }}</p>
@@ -384,89 +160,218 @@ SECCION NOSOTROS {% endcomment %}
 </div>
 
 
-
-
 {% schema %}
-    {
-      "name": "Contenido Principal",
-      "settings": [
-        {
-          "type": "text",
-          "id": "about_heading",
-          "label": "Título de la sección 'Nosotros'",
-          "default": "Bienvenidos a H2 Electronics"
-        },
-        {
-          "type": "textarea",
-          "id": "about_description",
-          "label": "Descripción de la sección 'Nosotros'",
-          "default": "En H2ElectronicsCR, fusionamos robótica, inteligencia artificial y electrónica para abrir un mundo de posibilidades. Nuestro enfoque es simplificar el acceso a herramientas innovadoras, ayudando a cada cliente a transformar ideas en proyectos tangibles."
-        },
-        {
-          "type": "text",
-          "id": "mission_heading",
-          "label": "Título de la Misión",
-          "default": "Misión"
-        },
-        {
-          "type": "textarea",
-          "id": "mission_text",
-          "label": "Texto de la Misión",
-          "default": "Facilitar el acceso a herramientas de robótica e inteligencia artificial para todos, proporcionando recursos que fomentan la innovación y el aprendizaje. En H2ElectronicsCR, creemos en el poder de la tecnología para ampliar horizontes y posibilidades."
-        },
-        {
-          "type": "text",
-          "id": "vision_heading",
-          "label": "Título de la Visión",
-          "default": "Visión"
-        },
-        {
-          "type": "textarea",
-          "id": "vision_text",
-          "label": "Texto de la Visión",
-          "default": "Liderar en hacer que la robótica, la inteligencia artificial y la electrónica sean accesibles para todos, desde estudiantes hasta profesionales. Nos dedicamos a ofrecer componentes de calidad que permiten explorar y crear sin barreras."
-        },
-        {
-          "type": "text",
-          "id": "testimonials_heading",
-          "label": "Título de la sección de testimonios",
-          "default": "Testimonials"
-        },
-        {
-          "type": "text",
-          "id": "testimonials_subheading",
-          "label": "Subtítulo de la sección de testimonios",
-          "default": "Discover the stories of satisfaction and success from our community."
-        }
-      ],
-      "blocks": [
-        {
-          "type": "testimonial",
-          "name": "Testimonio",
-          "settings": [
-            {
-              "type": "textarea",
-              "id": "testimonial_text",
-              "label": "Texto del testimonio"
-            },
-            {
-              "type": "text",
-              "id": "author_name",
-              "label": "Nombre del autor"
-            },
-            {
-              "type": "text",
-              "id": "author_role",
-              "label": "Rol del autor"
-            }
-          ]
-        }
-      ],
-      "presets": [
-        {
-          "name": "Contenido Principal",
-          "category": "Testimonials"
-        }
-      ]
-    }
-    {% endschema %}
+  {
+    "name": "Contenido Principal",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Nuevos Productos"
+      },
+      {
+        "type": "text",
+        "id": "new_products_title",
+        "label": "Título",
+        "default": "Nuevos Ingresos"
+      },
+      {
+        "type": "text",
+        "id": "new_products_subtitle",
+        "label": "Subtítulo",
+        "default": "Echa un vistazo a nuestros últimos productos"
+      },
+      {
+        "type": "text",
+        "id": "new_products_button_text",
+        "label": "Texto del Botón",
+        "default": "Ver Todos"
+      },
+      {
+        "type": "url",
+        "id": "new_products_link",
+        "label": "Enlace del Botón"
+      },
+      {
+        "type": "collection",
+        "id": "new_products_collection",
+        "label": "Colección"
+      },
+      {
+        "type": "range",
+        "id": "new_products_count",
+        "min": 4,
+        "max": 12,
+        "step": 1,
+        "label": "Productos a mostrar",
+        "default": 8
+      },
+      {
+        "type": "header",
+        "content": "Productos en Oferta"
+      },
+      {
+        "type": "text",
+        "id": "sale_products_title",
+        "label": "Título",
+        "default": "En Oferta"
+      },
+      {
+        "type": "text",
+        "id": "sale_products_subtitle",
+        "label": "Subtítulo",
+        "default": "Grandes ofertas en artículos seleccionados"
+      },
+      {
+        "type": "text",
+        "id": "sale_products_button_text",
+        "label": "Texto del Botón",
+        "default": "Ver Todos"
+      },
+      {
+        "type": "url",
+        "id": "sale_products_link",
+        "label": "Enlace del Botón"
+      },
+      {
+        "type": "collection",
+        "id": "sale_products_collection",
+        "label": "Colección"
+      },
+      {
+        "type": "range",
+        "id": "sale_products_count",
+        "min": 4,
+        "max": 12,
+        "step": 1,
+        "label": "Productos a mostrar",
+        "default": 8
+      },
+      {
+        "type": "header",
+        "content": "Productos Recomendados"
+      },
+      {
+        "type": "text",
+        "id": "recommended_products_title",
+        "label": "Título",
+        "default": "Recomendados para Ti"
+      },
+      {
+        "type": "text",
+        "id": "recommended_products_subtitle",
+        "label": "Subtítulo",
+        "default": "Seleccionados especialmente para ti"
+      },
+      {
+        "type": "text",
+        "id": "recommended_products_button_text",
+        "label": "Texto del Botón",
+        "default": "Ver Todos"
+      },
+      {
+        "type": "url",
+        "id": "recommended_products_link",
+        "label": "Enlace del Botón"
+      },
+      {
+        "type": "collection",
+        "id": "recommended_products_collection",
+        "label": "Colección"
+      },
+      {
+        "type": "range",
+        "id": "recommended_products_count",
+        "min": 4,
+        "max": 12,
+        "step": 1,
+        "label": "Productos a mostrar",
+        "default": 8
+      },
+      {
+        "type": "header",
+        "content": "Testimonios"
+      },
+      {
+        "type": "text",
+        "id": "testimonials_heading",
+        "label": "Título de la sección de testimonios",
+        "default": "Testimonios"
+      },
+      {
+        "type": "text",
+        "id": "testimonials_subheading",
+        "label": "Subtítulo de la sección de testimonios",
+        "default": "Descubre las historias de satisfacción y éxito de nuestra comunidad."
+      },
+      {
+        "type": "header",
+        "content": "Sección Nosotros"
+      },
+      {
+        "type": "text",
+        "id": "about_heading",
+        "label": "Título de la sección 'Nosotros'",
+        "default": "Bienvenidos a H2 Electronics"
+      },
+      {
+        "type": "textarea",
+        "id": "about_description",
+        "label": "Descripción de la sección 'Nosotros'",
+        "default": "En H2ElectronicsCR, fusionamos robótica, inteligencia artificial y electrónica para abrir un mundo de posibilidades. Nuestro enfoque es simplificar el acceso a herramientas innovadoras, ayudando a cada cliente a transformar ideas en proyectos tangibles."
+      },
+      {
+        "type": "text",
+        "id": "mission_heading",
+        "label": "Título de la Misión",
+        "default": "Misión"
+      },
+      {
+        "type": "textarea",
+        "id": "mission_text",
+        "label": "Texto de la Misión",
+        "default": "Facilitar el acceso a herramientas de robótica e inteligencia artificial para todos, proporcionando recursos que fomentan la innovación y el aprendizaje. En H2ElectronicsCR, creemos en el poder de la tecnología para ampliar horizontes y posibilidades."
+      },
+      {
+        "type": "text",
+        "id": "vision_heading",
+        "label": "Título de la Visión",
+        "default": "Visión"
+      },
+      {
+        "type": "textarea",
+        "id": "vision_text",
+        "label": "Texto de la Visión",
+        "default": "Liderar en hacer que la robótica, la inteligencia artificial y la electrónica sean accesibles para todos, desde estudiantes hasta profesionales. Nos dedicamos a ofrecer componentes de calidad que permiten explorar y crear sin barreras."
+      }
+    ],
+    "blocks": [
+      {
+        "type": "testimonial",
+        "name": "Testimonio",
+        "settings": [
+          {
+            "type": "textarea",
+            "id": "testimonial_text",
+            "label": "Texto del testimonio"
+          },
+          {
+            "type": "text",
+            "id": "author_name",
+            "label": "Nombre del autor"
+          },
+          {
+            "type": "text",
+            "id": "author_role",
+            "label": "Rol del autor"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Contenido Principal",
+        "category": "Contenido"
+      }
+    ]
+  }
+  {% endschema %}

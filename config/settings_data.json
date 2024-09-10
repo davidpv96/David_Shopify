@@ -16,7 +16,7 @@
           "facebook_link": "https:\/\/instagram.com\/gabrielleclub\/rielleclu\/",
           "instagram_link": "https:\/\/www.instagram.com\/gabrielleclub\/",
           "tiktok_link": "https:\/\/www.instagram.com\/gabrielleclub\/",
-          "header_menu": "main-menu"
+          "header_menu": "categorias"
         }
       },
       "footer": {
@@ -33,29 +33,6 @@
         "type": "shopify:\/\/apps\/whatsapp-button\/blocks\/app-embed-block\/96d80a63-e860-4262-a001-8b82ac4d00e6",
         "disabled": false,
         "settings": {
-        }
-      },
-      "5182184951224911228": {
-        "type": "shopify:\/\/apps\/rapid-ai-search-bar-filter\/blocks\/script\/bd827795-feaa-41a8-9219-2b83f238aa7d",
-        "disabled": true,
-        "settings": {
-        }
-      },
-      "3770645089152979137": {
-        "type": "shopify:\/\/apps\/rapid-ai-search-bar-filter\/blocks\/csb\/bd827795-feaa-41a8-9219-2b83f238aa7d",
-        "disabled": true,
-        "settings": {
-          "picker_enabled": true,
-          "icon_color": "#6f6f6f",
-          "button_background_color": "#d6d6d6",
-          "position": "below",
-          "placeholder": "Buscar",
-          "width": 250,
-          "height": 37,
-          "show_on_desktop": true,
-          "show_on_mobile": true,
-          "hideDefaultSearch": true,
-          "css": ".rps-csb-container {\n}"
         }
       }
     }

@@ -112,24 +112,29 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         };
 
-        const updateCart = function(key, quantity, callback) {
-            axios.post('/cart/change.js', {
-                id: key,
-                quantity: quantity
-            })
-            .then(response => {
-                const data = response.data;
-                updateCartUI(data);
-                updateItemSubtotal(key, data);
-                synchronizeQuantityInputs(key, quantity);
-                updateCartItemCount(data.item_count); 
-                if (callback) callback();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                if (callback) callback();
-            });
-        };
+    
+const updateCart = function(key, quantity, callback) {
+    axios.post('/cart/change.js', {
+        id: key,
+        quantity: quantity
+    })
+    .then(response => {
+        const data = response.data;
+        updateCartUI(data);
+        updateItemSubtotal(key, data);
+        synchronizeQuantityInputs(key, quantity);
+        if (window.shopifyCartDrawer && window.shopifyCartDrawer.updateCartItemCount) {
+            window.shopifyCartDrawer.updateCartItemCount(data.item_count);
+        } else {
+            updateCartItemCount(data.item_count);
+        }
+        if (callback) callback();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        if (callback) callback();
+    });
+};
 
         const updateCartItemCount = function(itemCount) {
             if (cartItemCount) {

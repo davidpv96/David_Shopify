@@ -1,7 +1,7 @@
 <header class="mb-4 lg:mb-0">
   <!-- HEADER GLOBAL -->
 
-  <!-- Start Before HeaderS -->
+  <!-- Start Before Header -->
   <div class="bg-[#0E2129] p-4 flex justify-center">
     <a href="{{ section.settings.facebook_link }}" class="text-white mx-2" target="_blank" rel="noopener noreferrer">
       {% render 'icon-fb' %}
@@ -36,7 +36,6 @@
 
       <div class="flex flex-row gap-3">
         <!-- Ícono de Login -->
-        <!-- Ícono de Login -->
         <div class="relative flex items-center justify-center w-12 h-12">
           <a href="{{ routes.account_url }}" class="text-base text-gray-500 hover:text-gray-900 bg-[#1D495B] w-10 h-10 flex items-center justify-center rounded-full z-10 relative">
             {% render 'icon-login' %}
@@ -45,11 +44,11 @@
         </div>
         <!-- Ícono de Carrito -->
         <div class="relative flex items-center justify-center w-12 h-12">
-          <button @click="openCart = !openCart" class="text-base text-gray-500 hover:text-gray-900 bg-[#1D495B] w-10 h-10 flex items-center justify-center rounded-full relative z-10">
-            {% render 'icon-shopping-bag' %}
-          </button>
+          <button @click="$store.cartDrawer.toggle()" class="text-base text-gray-500 hover:text-gray-900 bg-[#1D495B] w-10 h-10 flex items-center justify-center rounded-full relative z-10">
+  {% render 'icon-shopping-bag' %}
+</button>
           <div class="absolute inset-0 border-2 border-gray-300 rounded-full pointer-events-none z-0"></div>
-          <div class="absolute top-[-5px] right-0 bg-[#52A1BF] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center z-20" id="cart-item-count">
+          <div class="absolute top-[-5px] right-0 bg-[#52A1BF] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center z-20 cart-count" id="cart-item-count">
             {{ cart.item_count }}
           </div>
         </div>
@@ -95,28 +94,46 @@
       <!-- Sección del menú que tendrá scroll -->
       <nav class="overflow-y-auto h-full p-5">
         {% if section.settings.header_menu %}
-          <ul class="space-y-4">
-            {% for link in linklists[section.settings.header_menu].links %}
-              <li x-data="{ open: false }">
-                <a href="{{ link.url }}" class="text-gray-700 hover:text-gray-900 flex items-center justify-between" @click.prevent="open = !open">
-                  {{ link.title }}
-                  {% if link.links != empty %}
-                    <!-- Ícono indicativo de submenú -->
-                    <span class="ml-2">
-                      {% render 'icon-chevron-down' %}
-                    </span>
-                  {% endif %}
-                </a>
-                {% if link.links != empty %}
-                  <ul x-show="open" x-transition class="pl-4 mt-2 space-y-2">
-                    {% for sublink in link.links %}
-                      <li>
-                        <a href="{{ sublink.url }}" class="text-gray-600 hover:text-gray-800">
-                          {{ sublink.title }}
-                        </a>
-                      </li>
-                    {% endfor %}
-                  </ul>
+          <ul class="space-y-2 mb-10">
+            {% assign links = linklists[section.settings.header_menu].links %}
+            {% for link in links %}
+              <li class="border-b border-gray-200">
+                {% if link.links.size > 0 %}
+                  <details class="group">
+                    <summary class="cursor-pointer p-2 flex justify-between items-center text-gray-800 font-medium hover:bg-gray-100 rounded transition-colors duration-300">
+                      <a href="{{ link.url }}" class="flex-grow">{{ link.title }}</a>
+                      <span class="ml-2 transform transition-transform group-open:rotate-90 text-gray-500">
+                        &#x25B8;
+                      </span>
+                    </summary>
+                    <ul class="pl-4">
+                      {% for sublink in link.links %}
+                        <li class="border-t border-gray-100 mt-2">
+                          {% if sublink.links.size > 0 %}
+                            <details class="group">
+                              <summary class="cursor-pointer p-2 flex justify-between items-center text-gray-700 hover:bg-gray-50 rounded transition-colors duration-300">
+                                <a href="{{ sublink.url }}" class="flex-grow">{{ sublink.title }}</a>
+                                <span class="ml-2 transform transition-transform group-open:rotate-90 text-gray-500">
+                                  &#x25B8;
+                                </span>
+                              </summary>
+                              <ul class="pl-4">
+                                {% for sub_sublink in sublink.links %}
+                                  <li class="py-2">
+                                    <a href="{{ sub_sublink.url }}" class="block p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded transition-colors duration-300">{{ sub_sublink.title }}</a>
+                                  </li>
+                                {% endfor %}
+                              </ul>
+                            </details>
+                          {% else %}
+                            <a href="{{ sublink.url }}" class="block p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded transition-colors duration-300">{{ sublink.title }}</a>
+                          {% endif %}
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  </details>
+                {% else %}
+                  <a href="{{ link.url }}" class="block p-2 text-gray-800 font-medium hover:bg-gray-100 rounded transition-colors duration-300">{{ link.title }}</a>
                 {% endif %}
               </li>
             {% endfor %}
@@ -166,4 +183,3 @@
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 {{ 'search-bar.js' | asset_url | script_tag }}
-{{ 'cart.js' | asset_url | script_tag }}

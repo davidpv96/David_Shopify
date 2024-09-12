@@ -11,6 +11,8 @@
     
     <!-- Swiper CSS -->
        {{ 'swiper-bundle.min.css' | asset_url | stylesheet_tag }}
+
+    
     
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
@@ -31,6 +33,7 @@
     {{ 'application.css' | asset_url | stylesheet_tag }}
         <!-- CSS principal del tema -->
    {{ 'swiper-custom.css' | asset_url | stylesheet_tag }}
+  
 
     <!-- Hooks de contenido para el header (inclusión automática de plugins) -->
     {{ content_for_header }}
@@ -39,6 +42,8 @@
 
     <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    {{ 'cart-drawer-handler.js' | asset_url | script_tag }}
+    {{ 'cart.js' | asset_url | script_tag }}
     {% render 'rapid-search-settings' %}
 </head>
   <body>
@@ -56,7 +61,11 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     
-
+    <script>
+      // window.openCart = function() {
+      //   document.querySelector('[x-data]').__x.$data.openCart = true;
+      // }
+    </script>
     <!-- Inicialización de Swiper -->
      <script>
    window.addEventListener('pageshow', function(event) {
@@ -70,6 +79,16 @@
 
     <!-- Scripts principales del tema -->
     {{ 'application.js' | asset_url | script_tag }}
-
+  
+<!-- Asegúrate de que esta línea esté presente cerca del final del <body> -->
+  <script>
+    window.openCart = function() {
+      if (typeof Alpine !== 'undefined') {
+        Alpine.store('cartDrawer').open();
+      } else {
+        console.error('Alpine.js no está disponible');
+      }
+    }
+  </script>
   </body>
 </html>

@@ -36,10 +36,20 @@
                 {% endif %}
               </div>
             </div>
-            {% if product.has_only_default_variant %}
-              <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center">Agregar al carrito</button>
+            {% if product.available %}
+              {% if product.has_only_default_variant %}
+                <form action="/cart/add" method="post" class="add-to-cart-form">
+                  <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+                  <input type="hidden" name="quantity" value="1">
+                  <button type="submit" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center add-to-cart-button">
+                    Agregar al carrito
+                  </button>
+                </form>
+              {% else %}
+                <a href="{{ product.url }}" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center">Seleccionar opciones</a>
+              {% endif %}
             {% else %}
-              <a href="{{ product.url }}" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center">Seleccionar opciones</a>
+              <button disabled class="bg-gray-300 text-gray-600 py-2 px-4 rounded-full mt-4 w-full text-center cursor-not-allowed">Agotado</button>
             {% endif %}
           </div>
         {% endfor %}
@@ -85,10 +95,20 @@
               <span class="text-sm line-through text-gray-500 ml-2">{{ product.compare_at_price | money }}</span>
             </div>
           </div>
-          {% if product.has_only_default_variant %}
-            <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center">Agregar al carrito</button>
+          {% if product.available %}
+            {% if product.has_only_default_variant %}
+              <form action="/cart/add" method="post" class="add-to-cart-form">
+                <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center add-to-cart-button">
+                  Agregar al carrito
+                </button>
+              </form>
+            {% else %}
+              <a href="{{ product.url }}" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center">Seleccionar opciones</a>
+            {% endif %}
           {% else %}
-            <a href="{{ product.url }}" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center">Seleccionar opciones</a>
+            <button disabled class="bg-gray-300 text-gray-600 py-2 px-4 rounded-full mt-4 w-full text-center cursor-not-allowed">Agotado</button>
           {% endif %}
         </div>
       {% endfor %}
@@ -135,10 +155,20 @@
               {% endif %}
             </div>
           </div>
-          {% if product.has_only_default_variant %}
-            <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center">Agregar al carrito</button>
+          {% if product.available %}
+            {% if product.has_only_default_variant %}
+              <form action="/cart/add" method="post" class="add-to-cart-form">
+                <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center add-to-cart-button">
+                  Agregar al carrito
+                </button>
+              </form>
+            {% else %}
+              <a href="{{ product.url }}" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center">Seleccionar opciones</a>
+            {% endif %}
           {% else %}
-            <a href="{{ product.url }}" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center">Seleccionar opciones</a>
+            <button disabled class="bg-gray-300 text-gray-600 py-2 px-4 rounded-full mt-4 w-full text-center cursor-not-allowed">Agotado</button>
           {% endif %}
         </div>
       {% endfor %}

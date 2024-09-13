@@ -16,8 +16,8 @@
   <!-- End Before Header -->
 
   <!-- Header mobile and desktop -->
-  <div x-data="{ openMenu: false, openCart: false }" 
-       x-init="$watch('openMenu', value => document.body.classList.toggle('overflow-hidden', value)); $watch('openCart', value => document.body.classList.toggle('overflow-hidden', value))" 
+  <div x-data="{ openMenu: false }" 
+       x-init="$watch('openMenu', value => document.body.classList.toggle('overflow-hidden', value))" 
        class="px-[15px] py-[20px] relative">
     <section class="flex justify-between flex-row items-center mb-[1rem] lg:mb-0">
       <div>
@@ -42,11 +42,12 @@
           </a>
           <div class="absolute inset-0 border-2 border-gray-300 rounded-full pointer-events-none"></div>
         </div>
+
         <!-- Ícono de Carrito -->
         <div class="relative flex items-center justify-center w-12 h-12">
-          <button @click="$store.cartDrawer.toggle()" class="text-base text-gray-500 hover:text-gray-900 bg-[#1D495B] w-10 h-10 flex items-center justify-center rounded-full relative z-10">
-  {% render 'icon-shopping-bag' %}
-</button>
+          <a href="{{ routes.cart_url }}" class="text-base text-gray-500 hover:text-gray-900 bg-[#1D495B] w-10 h-10 flex items-center justify-center rounded-full relative z-10">
+            {% render 'icon-shopping-bag' %}
+          </a>
           <div class="absolute inset-0 border-2 border-gray-300 rounded-full pointer-events-none z-0"></div>
           <div class="absolute top-[-5px] right-0 bg-[#52A1BF] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center z-20 cart-count" id="cart-item-count">
             {{ cart.item_count }}
@@ -143,10 +144,9 @@
         {% endif %}
       </nav>
     </div>
-
-    {% render 'cart-drawer' %}
   </div>
 </header>
+
 
 {% schema %}
 {

@@ -139,7 +139,7 @@
   .swiper-container {
     width: 100%;
   }
-  
+
   .main-swiper {
     height: 500px;
     margin-bottom: 10px;
@@ -376,6 +376,7 @@
 
   {% render 'product-recommendations' %}
 </div>
+
 <script>
   var variants = [
     {% for variant in product.variants %}
@@ -586,27 +587,6 @@
       }
     });
 
-    // Evento para capturar cambios en el drawer del carrito
-    window.addEventListener('cart-updated', function(event) {
-      const cart = event.detail.cart;
-      const selectedVariant = getSelectedVariant();
-
-      if (selectedVariant) {
-        const itemInCart = cart.items.find(item => item.id === selectedVariant.id);
-        const quantityInCart = itemInCart ? itemInCart.quantity : 0;
-
-        // Actualizar cantidad en la página del producto
-        quantityInput.value = quantityInCart;
-
-        // Actualizar stock en la página del producto
-        const availableStock = selectedVariant.inventory_quantity - quantityInCart;
-        document.getElementById('stock-label').textContent = 'Stock disponible: ' + availableStock;
-
-        // Actualizar los botones de cantidad
-        updateQuantityButtons(selectedVariant);
-      }
-    });
-
     // Inicializar Swiper
     thumbSwiper = new Swiper('.thumb-swiper', {
       spaceBetween: 10,
@@ -644,33 +624,9 @@
     updateAddToCartButton(false);
     updateQuantityButtons(null);
 
-    // Evento de submit del formulario
+    // Evento de submit del formulario para agregar al carrito
     document.getElementById('add-to-cart-form').addEventListener('submit', function(event) {
-      event.preventDefault();
-      
-      var selectedVariant = getSelectedVariant();
-      var quantity = parseInt(quantityInput.value);
-      
-      var formData = new FormData(event.target);
-      fetch('/cart/add.js', {
-        method: 'POST',
-        body: formData
-      })
-      .then(response => response.json())
-      .then(item => {
-        // Actualizar el carrito y abrir el drawer
-        if (typeof window.updateCartDrawer === 'function') {
-          window.updateCartDrawer();
-        }
-        if (typeof Alpine !== 'undefined') {
-          Alpine.store('cartDrawer').open = true;
-        }
-        // Refrescar los datos del producto
-        updateQuantityButtons(selectedVariant);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
+      // No manejar el carrito en el drawer, dejar que el carrito se maneje según la configuración por defecto de Shopify
     });
   });
 </script>

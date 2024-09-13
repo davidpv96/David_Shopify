@@ -1,0 +1,11 @@
+<div class="product-stock"></div>
+  {% if variant.inventory_management == 'shopify' and variant.inventory_policy != 'continue' %}
+    {% if variant.inventory_quantity > 0 %}
+      Stock disponible: {{ variant.inventory_quantity }}
+    {% else %}
+      Fuera de stock
+    {% endif %}
+  {% else %}
+    Disponible
+  {% endif %}
+</div>

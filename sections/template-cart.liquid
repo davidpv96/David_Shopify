@@ -2,14 +2,14 @@
   {% if cart.item_count > 0 %}
     <!-- Mostrar contenido del carrito si hay items -->
     <div class="flex justify-between items-center mb-6">
-      <h2 class="text-2xl font-semibold">Your cart</h2>
-      <a href="/" class="text-green-600 hover:text-green-700 underline">Continue shopping</a>
+      <h2 class="text-2xl font-semibold">Tu carrito</h2>
+      <a href="/" class="text-[#004d40] hover:text-[#004d40] underline">Seguir comprando</a>
     </div>
     
     <!-- Formulario del carrito -->
     <form action="/cart" method="post" class="grid grid-cols-1 lg:grid-cols-3 gap-6" id="cart-form">
       <!-- Tabla de productos del carrito -->
-      <div class="lg:col-span-2 overflow-x-auto">
+      <div class="lg:col-span-2 overflow-x-auto p-6">
         <table class="min-w-full bg-white border rounded-lg">
           <tbody>
             <!-- Iterar sobre los items del carrito -->
@@ -22,7 +22,7 @@
                   <div class="text-center sm:text-left">
                     <h3 class="text-lg font-semibold">{{ item.product.title }}</h3>
                     <p class="text-sm text-gray-500">{{ item.variant.title }}</p>
-                    <p class="text-xs text-gray-400">Model: {{ item.sku }}</p>
+                    <p class="text-xs text-gray-400">Modelo: {{ item.sku }}</p>
                     <p class="text-sm font-semibold mt-2 item-price">{{ item.price | money }}</p>
                   </div>
                 </div>
@@ -71,28 +71,25 @@
 
       <!-- Resumen del pedido y área de instrucciones -->
       <div class="lg:col-span-1 p-6 border rounded-lg bg-gray-50">
-        <textarea name="note" class="w-full p-2 border rounded-md mb-4" placeholder="Order special instructions"></textarea>
+        <textarea name="note" class="w-full p-2 border rounded-md mb-4" placeholder="Instrucciones especiales para el pedido"></textarea>
         <div class="flex justify-between mb-4">
           <p>Subtotal</p>
           <p class="font-semibold" id="cart-subtotal">{{ cart.total_price | money }}</p>
         </div>
-        <p class="text-sm text-gray-500 mb-4">Tax included and shipping calculated at checkout</p>
-        {% if cart.total_price >= 10000 %}
-          <p class="text-sm text-green-500 mb-4">You are eligible for free shipping!</p>
-        {% endif %}
+        <p class="text-sm text-gray-500 mb-4">Impuestos incluidos y el envío se calcula al finalizar la compra</p>
         <label class="flex items-center mb-4">
-          <input type="checkbox" class="form-checkbox h-4 w-4 text-green-500" required>
-          <span class="ml-2 text-sm">I have read and agree to the <a href="/policies/privacy-policy" class="text-green-500 underline">Privacy Policy</a>.</span>
+          <input type="checkbox" class="form-checkbox h-4 w-4 text-[#004d40]" required>
+          <span class="ml-2 text-sm">He leído y acepto la <a href="/policies/privacy-policy" class="text-[#004d40] underline">Política de Privacidad</a>.</span>
         </label>
-        <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-md hover:bg-green-700">Check out</button>
+        <button type="submit" class="w-full bg-[#004d40] text-white py-2 rounded-md hover:bg-[#00332b]">Finalizar compra</button>
       </div>
     </form>
   {% else %}
     <!-- Mostrar mensaje cuando el carrito está vacío -->
     <div class="text-center">
-      <h2 class="text-2xl font-semibold">Your cart is empty</h2>
-      <a href="/" class="inline-block bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 mt-4">Continue shopping</a>
-      <p class="mt-4">Have an account? <a href="/account/login" class="text-green-600 hover:text-green-700 underline">Log in to check out faster.</a></p>
+      <h2 class="text-2xl font-semibold">Tu carrito está vacío</h2>
+      <a href="/" class="inline-block bg-[#004d40] text-white py-2 px-4 rounded-md hover:bg-[#00332b] mt-4">Seguir comprando</a>
+      <p class="mt-4">¿Tienes una cuenta? <a href="/account/login" class="text-[#004d40] hover:text-[#00332b] underline">Inicia sesión para comprar más rápido.</a></p>
     </div>
   {% endif %}
 </div>
@@ -100,5 +97,3 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 {{ 'cart.js' | asset_url | script_tag }}
-
-

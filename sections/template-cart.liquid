@@ -80,10 +80,8 @@
           <input type="checkbox" class="form-checkbox h-4 w-4 text-[#004d40]" required>
           <span class="ml-2 text-sm">He leído y acepto la <a href="/policies/privacy-policy" class="text-[#004d40] underline">Política de privacidad</a>.</span>
         </label>
-        <!-- Botón para finalizar la compra utilizando routes.checkout_url -->
-        <form action="{{ routes.checkout_url }}" method="post">
-          <button type="submit" class="w-full bg-[#004d40] text-white py-2 rounded-md hover:bg-[#00382e]">Finalizar compra</button>
-        </form>
+        <!-- Enlace para finalizar la compra utilizando routes.checkout_url -->
+        <a href="{{ routes.checkout_url }}" class="w-full bg-[#004d40] text-white py-2 rounded-md hover:bg-[#00382e] text-center block">Finalizar compra</a>
       </div>
     </form>
   {% else %}

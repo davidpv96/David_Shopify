@@ -377,131 +377,119 @@
   {% render 'product-recommendations' %}
 </div>
 <script>
-var variants = [
-  {% for variant in product.variants %}
-    {
-      id: {{ variant.id | json }},
-      title: {{ variant.title | json }},
-      options: {{ variant.options | json }},
-      available: {{ variant.available | json }},
-      price: {{ variant.price | money | json }},
-      compare_at_price: {{ variant.compare_at_price | money | json }},
-      inventory_quantity: {{ variant.inventory_quantity | json }},
-      inventory_management: {{ variant.inventory_management | json }},
-      inventory_policy: {{ variant.inventory_policy | json }},
-      featured_media: {
-        id: {{ variant.featured_media.id | default: 'null' | json }},
-        position: {{ variant.featured_media.position | default: 'null' | json }},
-        product_id: {{ variant.featured_media.product_id | default: 'null' | json }}
+  var variants = [
+    {% for variant in product.variants %}
+      {
+        id: {{ variant.id | json }},
+        title: {{ variant.title | json }},
+        options: {{ variant.options | json }},
+        available: {{ variant.available | json }},
+        price: {{ variant.price | money | json }},
+        compare_at_price: {{ variant.compare_at_price | money | json }},
+        inventory_quantity: {{ variant.inventory_quantity | json }},
+        inventory_management: {{ variant.inventory_management | json }},
+        inventory_policy: {{ variant.inventory_policy | json }},
+        featured_media: {
+          id: {{ variant.featured_media.id | default: 'null' | json }},
+          position: {{ variant.featured_media.position | default: 'null' | json }},
+          product_id: {{ variant.featured_media.product_id | default: 'null' | json }}
+        }
+      }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ];
+
+  var mainSwiper, thumbSwiper;
+  let updateInProgress = false;
+
+  function updateStockLabel(variant) {
+    var stockLabel = document.getElementById('stock-label');
+    var addToCartButton = document.getElementById('AddToCart');
+    var addToCartText = document.getElementById('AddToCartText');
+
+    if (variant && variant.available) {
+      if (variant.inventory_management && variant.inventory_quantity > 0) {
+        fetch('/cart.js')
+          .then(response => response.json())
+          .then(cart => {
+            var itemInCart = cart.items.find(item => item.id === variant.id);
+            var quantityInCart = itemInCart ? itemInCart.quantity : 0;
+            var availableQuantity = variant.inventory_quantity - quantityInCart;
+            stockLabel.textContent = 'Stock disponible: ' + availableQuantity;
+            addToCartButton.disabled = false;
+            addToCartText.textContent = 'Add to cart';
+          });
+      } else if (variant.inventory_management && variant.inventory_quantity <= 0 && variant.inventory_policy === 'continue') {
+        stockLabel.textContent = 'Sin stock, pero puedes continuar comprando';
+        addToCartButton.disabled = false;
+        addToCartText.textContent = 'Add to cart';
+      } else {
+        stockLabel.textContent = 'Disponible';
+        addToCartButton.disabled = false;
+        addToCartText.textContent = 'Add to cart';
       }
-    }{% unless forloop.last %},{% endunless %}
-  {% endfor %}
-];
-
-var mainSwiper, thumbSwiper;
-let updateInProgress = false;
-
-function updateStockLabel(variant) {
-  var stockLabel = document.getElementById('stock-label');
-  var addToCartButton = document.getElementById('AddToCart');
-  var addToCartText = document.getElementById('AddToCartText');
-
-  if (variant && variant.available) {
-    if (variant.inventory_management && variant.inventory_quantity > 0) {
-      fetch('/cart.js')
-        .then(response => response.json())
-        .then(cart => {
-          var itemInCart = cart.items.find(item => item.id === variant.id);
-          var quantityInCart = itemInCart ? itemInCart.quantity : 0;
-          var availableQuantity = variant.inventory_quantity - quantityInCart;
-          stockLabel.textContent = 'Stock disponible: ' + availableQuantity;
-          addToCartButton.disabled = false;
-          addToCartText.textContent = 'Add to cart';
-        });
-    } else if (variant.inventory_management && variant.inventory_quantity <= 0 && variant.inventory_policy === 'continue') {
-      stockLabel.textContent = 'Sin stock, pero puedes continuar comprando';
-      addToCartButton.disabled = false;
-      addToCartText.textContent = 'Add to cart';
+    } else if (variant) {
+      stockLabel.textContent = 'Fuera de stock';
+      addToCartButton.disabled = true;
+      addToCartText.textContent = 'Sold Out';
     } else {
-      stockLabel.textContent = 'Disponible';
-      addToCartButton.disabled = false;
-      addToCartText.textContent = 'Add to cart';
-    }
-  } else if (variant) {
-    stockLabel.textContent = 'Fuera de stock';
-    addToCartButton.disabled = true;
-    addToCartText.textContent = 'Sold Out';
-  } else {
-    stockLabel.textContent = '';
-    addToCartButton.disabled = true;
-    addToCartText.textContent = 'Select all options';
-  }
-}
-
-function updatePriceDisplay(variant) {
-  var priceElement = document.getElementById('product-price');
-  if (variant) {
-    if (variant.compare_at_price > variant.price) {
-      priceElement.innerHTML = `
-        <span class="text-black text-2xl font-bold">${variant.price}</span>
-        <span class="text-gray-500 line-through text-lg ml-2">${variant.compare_at_price}</span>
-      `;
-      priceElement.classList.add('flex', 'items-center');
-    } else {
-      priceElement.innerHTML = `<span class="text-black text-2xl font-bold">${variant.price}</span>`;
-      priceElement.classList.remove('flex', 'items-center');
+      stockLabel.textContent = '';
+      addToCartButton.disabled = true;
+      addToCartText.textContent = 'Select all options';
     }
   }
-}
 
-function updateVariantMedia(variant) {
-  if (variant && variant.featured_media && variant.featured_media.id) {
-    var slideIndex = Array.from(mainSwiper.slides).findIndex(slide => 
-      slide.getAttribute('data-media-id') == variant.featured_media.id
-    );
-    if (slideIndex !== -1) {
-      mainSwiper.slideTo(slideIndex);
+  function updatePriceDisplay(variant) {
+    var priceElement = document.getElementById('product-price');
+    if (variant) {
+      if (variant.compare_at_price > variant.price) {
+        priceElement.innerHTML = `
+          <span class="text-black text-2xl font-bold">${variant.price}</span>
+          <span class="text-gray-500 line-through text-lg ml-2">${variant.compare_at_price}</span>
+        `;
+        priceElement.classList.add('flex', 'items-center');
+      } else {
+        priceElement.innerHTML = `<span class="text-black text-2xl font-bold">${variant.price}</span>`;
+        priceElement.classList.remove('flex', 'items-center');
+      }
     }
   }
-}
 
-document.addEventListener('DOMContentLoaded', function() {
-  var productSelect = document.getElementById('product-select');
-  var quantityInput = document.getElementById('quantity');
-  var decreaseQuantity = document.getElementById('decrease-quantity');
-  var increaseQuantity = document.getElementById('increase-quantity');
-  var singleOptionSelectors = document.querySelectorAll('.single-option-selector');
-
-  function getSelectedVariant() {
-    var selectedOptions = Array.from(singleOptionSelectors).map(select => select.value);
-    return variants.find(variant => 
-      variant.options.every((option, index) => option === selectedOptions[index])
-    );
+  function updateVariantMedia(variant) {
+    if (variant && variant.featured_media && variant.featured_media.id) {
+      var slideIndex = Array.from(mainSwiper.slides).findIndex(slide => 
+        slide.getAttribute('data-media-id') == variant.featured_media.id
+      );
+      if (slideIndex !== -1) {
+        mainSwiper.slideTo(slideIndex);
+      }
+    }
   }
 
   function updateQuantityButtons(variant) {
     if (updateInProgress) return;
     updateInProgress = true;
 
+    var quantityInput = document.getElementById('quantity');
+    var decreaseQuantity = document.getElementById('decrease-quantity');
+    var increaseQuantity = document.getElementById('increase-quantity');
     var currentQuantity = parseInt(quantityInput.value);
     var maxQuantity = variant ? (variant.inventory_management ? variant.inventory_quantity : Infinity) : 0;
-    
+
     fetch('/cart.js')
       .then(response => response.json())
       .then(cart => {
         var itemInCart = cart.items.find(item => item.id === variant.id);
         var quantityInCart = itemInCart ? itemInCart.quantity : 0;
-        
         var availableQuantity = maxQuantity - quantityInCart;
-        
+
         decreaseQuantity.disabled = currentQuantity <= 1;
         increaseQuantity.disabled = currentQuantity >= availableQuantity;
-        
         quantityInput.max = availableQuantity;
+
         if (currentQuantity > availableQuantity) {
           quantityInput.value = availableQuantity;
         }
-        
+
         updateStockLabel(variant);
         updateInProgress = false;
       })
@@ -530,123 +518,159 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  singleOptionSelectors.forEach(function(selector) {
-    selector.addEventListener('change', function() {
-      var selectedVariant = getSelectedVariant();
-      var allSelected = Array.from(singleOptionSelectors).every(select => select.value !== '');
-      
-      if (selectedVariant) {
-        productSelect.value = selectedVariant.id;
-        updateStockLabel(selectedVariant);
-        updateVariantMedia(selectedVariant);
-        updateQuantityButtons(selectedVariant);
-        updatePriceDisplay(selectedVariant);
-      } else {
-        updateStockLabel(null);
-        updateQuantityButtons(null);
-      }
-      
-      updateAddToCartButton(allSelected);
+  function getSelectedVariant() {
+    var singleOptionSelectors = document.querySelectorAll('.single-option-selector');
+    var selectedOptions = Array.from(singleOptionSelectors).map(select => select.value);
+    return variants.find(variant => 
+      variant.options.every((option, index) => option === selectedOptions[index])
+    );
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var productSelect = document.getElementById('product-select');
+    var quantityInput = document.getElementById('quantity');
+    var decreaseQuantity = document.getElementById('decrease-quantity');
+    var increaseQuantity = document.getElementById('increase-quantity');
+    var singleOptionSelectors = document.querySelectorAll('.single-option-selector');
+
+    singleOptionSelectors.forEach(function(selector) {
+      selector.addEventListener('change', function() {
+        var selectedVariant = getSelectedVariant();
+        var allSelected = Array.from(singleOptionSelectors).every(select => select.value !== '');
+
+        if (selectedVariant) {
+          productSelect.value = selectedVariant.id;
+          updateStockLabel(selectedVariant);
+          updateVariantMedia(selectedVariant);
+          updateQuantityButtons(selectedVariant);
+          updatePriceDisplay(selectedVariant);
+        } else {
+          updateStockLabel(null);
+          updateQuantityButtons(null);
+        }
+
+        updateAddToCartButton(allSelected);
+      });
     });
-  });
 
-  decreaseQuantity.addEventListener('click', function() {
-    if (updateInProgress) return;
-    var currentQuantity = parseInt(quantityInput.value);
-    if (currentQuantity > 1) {
-      quantityInput.value = currentQuantity - 1;
+    decreaseQuantity.addEventListener('click', function() {
+      if (updateInProgress) return;
+      var currentQuantity = parseInt(quantityInput.value);
+      if (currentQuantity > 1) {
+        quantityInput.value = currentQuantity - 1;
+        var selectedVariant = getSelectedVariant();
+        if (selectedVariant) {
+          updateQuantityButtons(selectedVariant);
+        }
+      }
+    });
+
+    increaseQuantity.addEventListener('click', function() {
+      if (updateInProgress) return;
+      var currentQuantity = parseInt(quantityInput.value);
+      var selectedVariant = getSelectedVariant();
+      if (selectedVariant) {
+        var maxQuantity = selectedVariant.inventory_management ? selectedVariant.inventory_quantity : Infinity;
+        if (currentQuantity < maxQuantity) {
+          quantityInput.value = currentQuantity + 1;
+          updateQuantityButtons(selectedVariant);
+        }
+      }
+    });
+
+    quantityInput.addEventListener('change', function() {
+      if (updateInProgress) return;
       var selectedVariant = getSelectedVariant();
       if (selectedVariant) {
         updateQuantityButtons(selectedVariant);
       }
-    }
-  });
+    });
 
-  increaseQuantity.addEventListener('click', function() {
-    if (updateInProgress) return;
-    var currentQuantity = parseInt(quantityInput.value);
-    var selectedVariant = getSelectedVariant();
-    if (selectedVariant) {
-      var maxQuantity = selectedVariant.inventory_management ? selectedVariant.inventory_quantity : Infinity;
-      if (currentQuantity < maxQuantity) {
-        quantityInput.value = currentQuantity + 1;
+    // Evento para capturar cambios en el drawer del carrito
+    window.addEventListener('cart-updated', function(event) {
+      const cart = event.detail.cart;
+      const selectedVariant = getSelectedVariant();
+
+      if (selectedVariant) {
+        const itemInCart = cart.items.find(item => item.id === selectedVariant.id);
+        const quantityInCart = itemInCart ? itemInCart.quantity : 0;
+
+        // Actualizar cantidad en la página del producto
+        quantityInput.value = quantityInCart;
+
+        // Actualizar stock en la página del producto
+        const availableStock = selectedVariant.inventory_quantity - quantityInCart;
+        document.getElementById('stock-label').textContent = 'Stock disponible: ' + availableStock;
+
+        // Actualizar los botones de cantidad
         updateQuantityButtons(selectedVariant);
       }
-    }
-  });
+    });
 
-  quantityInput.addEventListener('change', function() {
-    if (updateInProgress) return;
-    var selectedVariant = getSelectedVariant();
-    if (selectedVariant) {
-      updateQuantityButtons(selectedVariant);
-    }
-  });
-
-  // Inicializar Swiper
-  thumbSwiper = new Swiper('.thumb-swiper', {
-    spaceBetween: 10,
-    slidesPerView: 3.5,
-    breakpoints: {
-      1024: {
-        slidesPerView: 4.5,
+    // Inicializar Swiper
+    thumbSwiper = new Swiper('.thumb-swiper', {
+      spaceBetween: 10,
+      slidesPerView: 3.5,
+      breakpoints: {
+        1024: {
+          slidesPerView: 4.5,
+        },
+        767: {
+          slidesPerView: 3.5,
+        }
       },
-      767: {
-        slidesPerView: 3.5,
-      }
-    },
-    freeMode: true,
-    watchSlidesVisibility: true,
-    watchSlidesProgress: true,
-  });
+      freeMode: true,
+      watchSlidesVisibility: true,
+      watchSlidesProgress: true,
+    });
 
-  mainSwiper = new Swiper('.main-swiper', {
-    slidesPerView: 1,
-    spaceBetween: 10,
-    loop: false,
-    pagination: {
-      el: '.swiper-pagination',
-      clickable: true,
-      bulletClass: 'swiper-pagination-bullet',
-      bulletActiveClass: 'swiper-pagination-bullet-active'
-    },
-    thumbs: {
-      swiper: thumbSwiper,
-    },
-  });
+    mainSwiper = new Swiper('.main-swiper', {
+      slidesPerView: 1,
+      spaceBetween: 10,
+      loop: false,
+      pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+        bulletClass: 'swiper-pagination-bullet',
+        bulletActiveClass: 'swiper-pagination-bullet-active'
+      },
+      thumbs: {
+        swiper: thumbSwiper,
+      },
+    });
 
-  // Inicializar con ninguna opción seleccionada
-  updateStockLabel(null);
-  updateAddToCartButton(false);
-  updateQuantityButtons(null);
+    // Inicializar con ninguna opción seleccionada
+    updateStockLabel(null);
+    updateAddToCartButton(false);
+    updateQuantityButtons(null);
 
-  // Evento de submit del formulario
-  document.getElementById('add-to-cart-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    
-    var selectedVariant = getSelectedVariant();
-    var quantity = parseInt(quantityInput.value);
-    
-    var formData = new FormData(event.target);
-    fetch('/cart/add.js', {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => response.json())
-    .then(item => {
-      // Actualizar el carrito y abrir el drawer
-      if (typeof window.updateCartDrawer === 'function') {
-        window.updateCartDrawer();
-      }
-      if (typeof Alpine !== 'undefined') {
-        Alpine.store('cartDrawer').open = true;
-      }
-      // Refrescar los datos del producto
-      updateQuantityButtons(selectedVariant);
-    })
-    .catch(error => {
-      console.error('Error:', error);
+    // Evento de submit del formulario
+    document.getElementById('add-to-cart-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      var selectedVariant = getSelectedVariant();
+      var quantity = parseInt(quantityInput.value);
+      
+      var formData = new FormData(event.target);
+      fetch('/cart/add.js', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(item => {
+        // Actualizar el carrito y abrir el drawer
+        if (typeof window.updateCartDrawer === 'function') {
+          window.updateCartDrawer();
+        }
+        if (typeof Alpine !== 'undefined') {
+          Alpine.store('cartDrawer').open = true;
+        }
+        // Refrescar los datos del producto
+        updateQuantityButtons(selectedVariant);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
     });
   });
-});
 </script>

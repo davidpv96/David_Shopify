@@ -47,6 +47,33 @@ function updateCartDrawer() {
     });
 }
 
+function updateCartItemQuantity(key, newQuantity) {
+  fetch('/cart/change.js', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ id: key, quantity: newQuantity })
+  })
+  .then(response => response.json())
+  .then(cart => {
+    updateCartDrawerContent(cart);
+    updateCartItemCount(cart.item_count);
+    
+    // Emitir evento personalizado con los datos actualizados del carrito
+    const updateEvent = new CustomEvent('cart-updated', { detail: { cart } });
+    window.dispatchEvent(updateEvent);
+
+    if (typeof Alpine !== 'undefined') {
+      Alpine.store('cart').update(cart);
+    }
+  })
+  .catch(error => {
+    console.error('Error al actualizar la cantidad:', error);
+  });
+}
+
+
 function updateCartDrawerContent(cart) {
   const cartDrawerContent = document.querySelector('#cart-drawer-content');
   if (!cartDrawerContent) {
@@ -149,6 +176,13 @@ document.addEventListener('shopify:section:load', initializeAddToCart);
 
 if (typeof Alpine !== 'undefined') {
   document.addEventListener('alpine:init', () => {
+    Alpine.store('cartDrawer', {
+      open: false,
+      toggle() {
+        this.open = !this.open;
+      }
+    });
+
     Alpine.store('cart', {
       items: [],
       total_price: 0,
@@ -157,6 +191,7 @@ if (typeof Alpine !== 'undefined') {
         this.items = newCart.items;
         this.total_price = newCart.total_price;
         this.item_count = newCart.item_count;
+        updateCartItemCount(newCart.item_count);
       }
     });
   });

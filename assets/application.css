@@ -2166,6 +2166,10 @@ video {
   --tw-bg-opacity: 0.9;
 }
 
+.hover\:bg-opacity-80:hover {
+  --tw-bg-opacity: 0.8;
+}
+
 .hover\:text-\[\#00382e\]:hover {
   --tw-text-opacity: 1;
   color: rgb(0 56 46 / var(--tw-text-opacity));
@@ -2229,6 +2233,11 @@ video {
 .hover\:text-blue-800:hover {
   --tw-text-opacity: 1;
   color: rgb(30 64 175 / var(--tw-text-opacity));
+}
+
+.hover\:text-\[\#0e2129\]:hover {
+  --tw-text-opacity: 1;
+  color: rgb(14 33 41 / var(--tw-text-opacity));
 }
 
 .hover\:text-opacity-80:hover {

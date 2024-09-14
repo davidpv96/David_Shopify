@@ -32,6 +32,8 @@
 {% endcapture %}
 
 {% comment %} Carrusel de Nuevos Productos {% endcomment %}
+{% comment %} Carrusel de Nuevos Productos {% endcomment %}
+{% comment %} Carrusel de Nuevos Productos {% endcomment %}
 <div class="bg-[#f8f8f8] py-10 my-10 mx-[0.3em] lg:mx-0">
   <div class="lg:mx-20 relative group">
     <div class="flex justify-between items-center my-8 mx-2 lg:mx-0">
@@ -51,56 +53,86 @@
       <div class="swiper-wrapper">
         {% assign new_products = collections.all.products | sort: 'created_at' | reverse %}
         {% for product in new_products limit: 10 %}
-          {% assign product_availability = product_availability %}
+          {% assign total_inventory = 0 %}
+          {% assign cart_quantity = 0 %}
+          {% assign tracks_inventory = false %}
+          {% assign continues_selling = false %}
 
-          <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex flex-col justify-between h-full">
+          {% for variant in product.variants %}
+            {% if variant.inventory_management %}
+              {% assign tracks_inventory = true %}
+              {% assign total_inventory = total_inventory | plus: variant.inventory_quantity %}
+              {% if variant.inventory_policy == 'continue' %}
+                {% assign continues_selling = true %}
+              {% endif %}
+            {% endif %}
+            {% for item in cart.items %}
+              {% if item.variant_id == variant.id %}
+                {% assign cart_quantity = cart_quantity | plus: item.quantity %}
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+
+          {% assign available_quantity = total_inventory | minus: cart_quantity %}
+
+          {% if tracks_inventory == false %}
+            {% assign product_availability = 'available' %}
+          {% elsif continues_selling %}
+            {% if available_quantity > 0 %}
+              {% assign product_availability = 'available' %}
+            {% else %}
+              {% assign product_availability = 'continue' %}
+            {% endif %}
+          {% elsif available_quantity > 0 %}
+            {% assign product_availability = 'available' %}
+          {% else %}
+            {% assign product_availability = 'sold_out' %}
+          {% endif %}
+
+          <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex flex-col relative">
             {% if product.compare_at_price > product.price %}
               <div class="absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-bold">
                 En oferta
               </div>
             {% endif %}
-            <div class="flex flex-col h-full">
-              <a href="{{ product.url }}" class="block mb-4 flex-shrink-0">
-                <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}" class="w-full h-auto object-cover">
+            <a href="{{ product.url }}" class="block mb-4">
+              <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}" class="w-full h-auto">
+            </a>
+            <div class="flex flex-col items-start w-full">
+              <div class="{% if product_availability == 'available' or product_availability == 'continue' %}text-[#52A1BF]{% else %}text-red-500{% endif %} font-semibold text-left w-full">
+                {% if product_availability == 'available' %}
+                  Disponible
+                {% elsif product_availability == 'continue' %}
+                  Disponible bajo pedido
+                {% else %}
+                  Agotado
+                {% endif %}
+              </div>
+              <a href="{{ product.url }}" class="block mt-2 w-full">
+                <h3 class="text-lg font-bold text-gray-800 text-left">{{ product.title }}</h3>
               </a>
-              <div class="flex flex-col flex-grow">
-                <div class="{% if product_availability == 'available' or product_availability == 'continue' %}text-[#52A1BF]{% else %}text-red-500{% endif %} font-semibold text-left w-full text-sm">
-                  {% if product_availability == 'available' %}
-                    Disponible
-                  {% elsif product_availability == 'continue' %}
-                    Disponible bajo pedido
-                  {% else %}
-                    Agotado
-                  {% endif %}
-                </div>
-                <a href="{{ product.url }}" class="block mt-2 w-full">
-                  <h3 class="text-base font-bold text-gray-800 text-left line-clamp-2">{{ product.title }}</h3>
-                </a>
-                <div class="flex items-center mt-2 w-full">
-                  <span class="text-lg font-bold text-gray-900">{{ product.price | money }}</span>
-                  {% if product.compare_at_price > product.price %}
-                    <span class="text-sm line-through text-gray-500 ml-2">{{ product.compare_at_price | money }}</span>
-                  {% endif %}
-                </div>
+              <div class="flex items-center mt-2 w-full">
+                <span class="text-lg font-bold text-gray-900">{{ product.price | money }}</span>
+                {% if product.compare_at_price > product.price %}
+                  <span class="text-sm line-through text-gray-500 ml-2">{{ product.compare_at_price | money }}</span>
+                {% endif %}
               </div>
             </div>
-            <div class="mt-4 w-full">
-              {% if product_availability == 'available' or product_availability == 'continue' %}
-                {% if product.has_only_default_variant %}
-                  <form action="/cart/add" method="post" class="add-to-cart-form w-full">
-                    <input type="hidden" name="id" value="{{ product.variants.first.id }}">
-                    <input type="hidden" name="quantity" value="1">
-                    <button type="submit" class="bg-[#1D495B] text-white py-2 px-2 rounded-full w-full text-center add-to-cart-button text-xs sm:text-sm whitespace-nowrap overflow-hidden text-ellipsis h-10">
-                      Agregar al carrito
-                    </button>
-                  </form>
-                {% else %}
-                  <a href="{{ product.url }}" class="bg-[#1D495B] text-white py-2 px-2 rounded-full w-full text-center block text-xs sm:text-sm whitespace-nowrap overflow-hidden text-ellipsis h-10 flex items-center justify-center">Seleccionar opciones</a>
-                {% endif %}
+            {% if product_availability == 'available' or product_availability == 'continue' %}
+              {% if product.has_only_default_variant %}
+                <form action="/cart/add" method="post" class="add-to-cart-form w-full"> <!-- Añadido w-full al form -->
+                  <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+                  <input type="hidden" name="quantity" value="1">
+                  <button type="submit" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center add-to-cart-button">
+                    Agregar al carrito
+                  </button>
+                </form>
               {% else %}
-                <button disabled class="bg-gray-300 text-gray-600 py-2 px-2 rounded-full w-full text-center cursor-not-allowed text-xs sm:text-sm whitespace-nowrap overflow-hidden text-ellipsis h-10">Agotado</button>
+                <a href="{{ product.url }}" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center">Seleccionar opciones</a>
               {% endif %}
-            </div>
+            {% else %}
+              <button disabled class="bg-gray-300 text-gray-600 py-2 px-4 rounded-full mt-4 w-full text-center cursor-not-allowed">Agotado</button>
+            {% endif %}
           </div>
         {% endfor %}
       </div>
@@ -110,6 +142,7 @@
   </div>
 </div>
 
+{% comment %} Carrusel de Productos en Oferta {% endcomment %}
 {% comment %} Carrusel de Productos en Oferta {% endcomment %}
 <div class="lg:mx-20 relative group">
   <div class="flex justify-between items-center my-8 mx-2 lg:mx-0">
@@ -129,52 +162,82 @@
     <div class="swiper-wrapper">
       {% assign sale_products = collections.all.products | where: "compare_at_price" %}
       {% for product in sale_products limit: 10 %}
-        {% assign product_availability = product_availability %}
+        {% assign total_inventory = 0 %}
+        {% assign cart_quantity = 0 %}
+        {% assign tracks_inventory = false %}
+        {% assign continues_selling = false %}
 
-        <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex flex-col justify-between h-full">
+        {% for variant in product.variants %}
+          {% if variant.inventory_management %}
+            {% assign tracks_inventory = true %}
+            {% assign total_inventory = total_inventory | plus: variant.inventory_quantity %}
+            {% if variant.inventory_policy == 'continue' %}
+              {% assign continues_selling = true %}
+            {% endif %}
+          {% endif %}
+          {% for item in cart.items %}
+            {% if item.variant_id == variant.id %}
+              {% assign cart_quantity = cart_quantity | plus: item.quantity %}
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+
+        {% assign available_quantity = total_inventory | minus: cart_quantity %}
+
+        {% if tracks_inventory == false %}
+          {% assign product_availability = 'available' %}
+        {% elsif continues_selling %}
+          {% if available_quantity > 0 %}
+            {% assign product_availability = 'available' %}
+          {% else %}
+            {% assign product_availability = 'continue' %}
+          {% endif %}
+        {% elsif available_quantity > 0 %}
+          {% assign product_availability = 'available' %}
+        {% else %}
+          {% assign product_availability = 'sold_out' %}
+        {% endif %}
+
+        <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex flex-col relative">
           <div class="absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-bold">
             En oferta
           </div>
-          <div class="flex flex-col h-full">
-            <a href="{{ product.url }}" class="block mb-4 flex-shrink-0">
-              <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}" class="w-full h-auto object-cover">
+          <a href="{{ product.url }}" class="block mb-4">
+            <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}" class="w-full h-auto">
+          </a>
+          <div class="flex flex-col items-start w-full">
+            <div class="{% if product_availability == 'available' or product_availability == 'continue' %}text-[#52A1BF]{% else %}text-red-500{% endif %} font-semibold text-left w-full">
+              {% if product_availability == 'available' %}
+                Disponible
+              {% elsif product_availability == 'continue' %}
+                Disponible bajo pedido
+              {% else %}
+                Agotado
+              {% endif %}
+            </div>
+            <a href="{{ product.url }}" class="block mt-2 w-full">
+              <h3 class="text-lg font-bold text-gray-800 text-left">{{ product.title }}</h3>
             </a>
-            <div class="flex flex-col flex-grow">
-              <div class="{% if product_availability == 'available' or product_availability == 'continue' %}text-[#52A1BF]{% else %}text-red-500{% endif %} font-semibold text-left w-full text-sm">
-                {% if product_availability == 'available' %}
-                  Disponible
-                {% elsif product_availability == 'continue' %}
-                  Disponible bajo pedido
-                {% else %}
-                  Agotado
-                {% endif %}
-              </div>
-              <a href="{{ product.url }}" class="block mt-2 w-full">
-                <h3 class="text-base font-bold text-gray-800 text-left line-clamp-2">{{ product.title }}</h3>
-              </a>
-              <div class="flex items-center mt-2 w-full">
-                <span class="text-lg font-bold text-gray-900">{{ product.price | money }}</span>
-                <span class="text-sm line-through text-gray-500 ml-2">{{ product.compare_at_price | money }}</span>
-              </div>
+            <div class="flex items-center mt-2 w-full">
+              <span class="text-lg font-bold text-gray-900">{{ product.price | money }}</span>
+              <span class="text-sm line-through text-gray-500 ml-2">{{ product.compare_at_price | money }}</span>
             </div>
           </div>
-          <div class="mt-4 w-full">
-            {% if product_availability == 'available' or product_availability == 'continue' %}
-              {% if product.has_only_default_variant %}
-                <form action="/cart/add" method="post" class="add-to-cart-form w-full">
-                  <input type="hidden" name="id" value="{{ product.variants.first.id }}">
-                  <input type="hidden" name="quantity" value="1">
-                  <button type="submit" class="bg-[#1D495B] text-white py-2 px-2 rounded-full w-full text-center add-to-cart-button text-xs sm:text-sm whitespace-nowrap overflow-hidden text-ellipsis h-10">
-                    Agregar al carrito
-                  </button>
-                </form>
-              {% else %}
-                <a href="{{ product.url }}" class="bg-[#1D495B] text-white py-2 px-2 rounded-full w-full text-center block text-xs sm:text-sm whitespace-nowrap overflow-hidden text-ellipsis h-10 flex items-center justify-center">Seleccionar opciones</a>
-              {% endif %}
+          {% if product_availability == 'available' or product_availability == 'continue' %}
+            {% if product.has_only_default_variant %}
+              <form action="/cart/add" method="post" class="add-to-cart-form w-full">
+                <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center add-to-cart-button">
+                  Agregar al carrito
+                </button>
+              </form>
             {% else %}
-              <button disabled class="bg-gray-300 text-gray-600 py-2 px-2 rounded-full w-full text-center cursor-not-allowed text-xs sm:text-sm whitespace-nowrap overflow-hidden text-ellipsis h-10">Agotado</button>
+              <a href="{{ product.url }}" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center">Seleccionar opciones</a>
             {% endif %}
-          </div>
+          {% else %}
+            <button disabled class="bg-gray-300 text-gray-600 py-2 px-4 rounded-full mt-4 w-full text-center cursor-not-allowed">Agotado</button>
+          {% endif %}
         </div>
       {% endfor %}
     </div>
@@ -182,6 +245,8 @@
     <div class="hidden lg:flex swiper-button-prev opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
   </div>
 </div>
+
+{% comment %} Carrusel de Productos RecomendadosS {% endcomment %}
 {% comment %} Carrusel de Productos Recomendados {% endcomment %}
 <div class="lg:mx-20 relative group">
   <div class="flex justify-between items-center my-8 mx-2 lg:mx-0">
@@ -201,7 +266,41 @@
     <div class="swiper-wrapper">
       {% assign recommended_products = collections.all.products | sort: 'updated_at' | reverse %}
       {% for product in recommended_products limit: 10 %}
-        {% assign product_availability = product_availability %}
+        {% assign total_inventory = 0 %}
+        {% assign cart_quantity = 0 %}
+        {% assign tracks_inventory = false %}
+        {% assign continues_selling = false %}
+
+        {% for variant in product.variants %}
+          {% if variant.inventory_management %}
+            {% assign tracks_inventory = true %}
+            {% assign total_inventory = total_inventory | plus: variant.inventory_quantity %}
+            {% if variant.inventory_policy == 'continue' %}
+              {% assign continues_selling = true %}
+            {% endif %}
+          {% endif %}
+          {% for item in cart.items %}
+            {% if item.variant_id == variant.id %}
+              {% assign cart_quantity = cart_quantity | plus: item.quantity %}
+            {% endif %}
+          {% endfor %}
+        {% endfor %}
+
+        {% assign available_quantity = total_inventory | minus: cart_quantity %}
+
+        {% if tracks_inventory == false %}
+          {% assign product_availability = 'available' %}
+        {% elsif continues_selling %}
+          {% if available_quantity > 0 %}
+            {% assign product_availability = 'available' %}
+          {% else %}
+            {% assign product_availability = 'continue' %}
+          {% endif %}
+        {% elsif available_quantity > 0 %}
+          {% assign product_availability = 'available' %}
+        {% else %}
+          {% assign product_availability = 'sold_out' %}
+        {% endif %}
 
         <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex flex-col relative">
           {% if product.compare_at_price > product.price %}
@@ -231,6 +330,29 @@
                 <span class="text-sm line-through text-gray-500 ml-2">{{ product.compare_at_price | money }}</span>
               {% endif %}
             </div>
+          </div>
+          {% if product_availability == 'available' or product_availability == 'continue' %}
+            {% if product.has_only_default_variant %}
+              <form action="/cart/add" method="post" class="add-to-cart-form w-full">
+                <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center add-to-cart-button">
+                  Agregar al carrito
+                </button>
+              </form>
+            {% else %}
+              <a href="{{ product.url }}" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center">Seleccionar opciones</a>
+            {% endif %}
+          {% else %}
+            <button disabled class="bg-gray-300 text-gray-600 py-2 px-4 rounded-full mt-4 w-full text-center cursor-not-allowed">Agotado</button>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+    <div class="hidden lg:flex swiper-button-next opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    <div class="hidden lg:flex swiper-button-prev opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+  </div>
+</div>
 
 
 

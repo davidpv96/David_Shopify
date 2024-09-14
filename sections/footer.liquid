@@ -1,12 +1,26 @@
+{% comment %}
+  Footer section
+{% endcomment %}
+
 <footer class="text-white bg-[#f7f8fa] pt-10">
+  {% comment %} slide de caracteristicas {% endcomment %}
   <div class="mx-[0.2em] lg:mx-20">
-    <div class="swiper mySwiper">
+    <div class="swiper myFeatureSwiper mt-3">
       <div class="swiper-wrapper">
         {% for block in section.blocks %}
-          <div class="swiper-slide bg-white rounded-lg shadow-md p-6 flex flex-col items-center justify-center text-center">
-            <h3 class="text-xl font-bold mb-2 text-gray-800">{{ block.settings.title }}</h3>
-            <p class="text-gray-600">{{ block.settings.text }}</p>
-          </div>
+          {% if block.type == 'feature' %}
+            <div class="swiper-slide swiper-caracteristicas bg-white flex items-center border border-gray-300">
+              <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#00796b" class="w-6 h-6 mr-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m-6 6h12m-6-3v-3.586a1 1 0 00-.293-.707L8.414 7H4a1 1 0 00-1 1v11h12m-6 0h-2.586a1 1 0 01-.707-.293L3 13m18 0l-7 7"/>
+                </svg>
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-800">{{ block.settings.title | escape }}</h3>
+                  <p class="text-gray-500">{{ block.settings.text | escape }}</p>
+                </div>
+              </div>
+            </div>
+          {% endif %}
         {% endfor %}
       </div>
       <div class="swiper-pagination"></div>
@@ -14,15 +28,18 @@
   </div>
 
   <div class="bg-[#0E2129] relative pt-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center lg:flex-row lg:justify-center lg:items-start lg:space-x-20 mt-20">
-      <div class="text-center mb-8 lg:mb-0 lg:text-left">
-        <h3 class="text-lg font-semibold text-white mb-4">{{ section.settings.company_name | escape }}</h3>
-        <p class="text-gray-400">{{ section.settings.company_address | escape }}</p>
+    <!-- Secciones del footer -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row justify-center items-center lg:space-x-20 mt-20">
+      <!-- Información de contacto y Company -->
+      <div class="text-center lg:text-left mb-8 lg:mb-0">
+        <h3 class="text-lg font-semibold text-white">{{ section.settings.company_name | escape }}</h3>
+        <p class="mt-4 text-gray-400">{{ section.settings.company_address | escape }}</p>
       </div>
       
+      <!-- Useful links -->
       <div class="text-center lg:text-left">
-        <h3 class="text-lg font-semibold text-white mb-4">{{ section.settings.useful_links_title | escape }}</h3>
-        <ul class="space-y-2 text-gray-400">
+        <h3 class="text-lg font-semibold text-white">{{ section.settings.useful_links_title | escape }}</h3>
+        <ul class="mt-4 space-y-2 text-gray-400">
           {% for link in linklists[section.settings.footer_menu].links %}
             <li><a href="{{ link.url }}" class="hover:text-white">{{ link.title }}</a></li>
           {% endfor %}
@@ -30,6 +47,7 @@
       </div>
     </div>
 
+    <!-- Redes sociales con líneas divisorias a los lados -->
     <div class="flex items-center justify-center mt-8">
       <div class="flex-grow border-t border-gray-700 max-w-xs"></div>
       <div class="flex space-x-4 px-4">
@@ -52,9 +70,10 @@
       <div class="flex-grow border-t border-gray-700 max-w-xs"></div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center md:flex-row md:justify-between py-6 mt-8">
-      <p class="text-gray-400 text-center mb-4 md:mb-0 md:text-left">© 2024, H2 Helectronics - Desarrollado por Aura Digital</p>
-      <div class="flex justify-center md:justify-end bg-white rounded-[10px] px-[10px]">
+    <!-- Derechos reservados y métodos de pago -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center py-6 mt-8">
+      <p class="text-gray-400 text-center md:text-left">© 2024, H2 Helectronics - Desarrollado por Aura Digital</p>
+      <div class="flex space-x-4 mt-4 md:mt-0 bg-white rounded-[10px] px-[10px]">
         <img src="{{ section.settings.payment_methods_image | img_url: '200x' }}" alt="Métodos de pago aceptados" class="h-8 w-auto">
       </div>
     </div>

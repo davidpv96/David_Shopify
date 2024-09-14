@@ -21,7 +21,51 @@
       },
       "footer": {
         "type": "footer",
+        "blocks": {
+          "feature_xfrE43": {
+            "type": "feature",
+            "settings": {
+              "title": "Feature Title",
+              "text": "Feature description goes here"
+            }
+          },
+          "feature_TPpKWA": {
+            "type": "feature",
+            "settings": {
+              "title": "Feature Title",
+              "text": "Feature description goes here"
+            }
+          },
+          "feature_tebCGc": {
+            "type": "feature",
+            "settings": {
+              "title": "Feature Title",
+              "text": "Feature description goes here"
+            }
+          },
+          "feature_q6iYe9": {
+            "type": "feature",
+            "settings": {
+              "title": "Feature Title",
+              "text": "Feature description goes here"
+            }
+          }
+        },
+        "block_order": [
+          "feature_xfrE43",
+          "feature_TPpKWA",
+          "feature_tebCGc",
+          "feature_q6iYe9"
+        ],
         "settings": {
+          "company_name": "H2 Electronics",
+          "company_address": "Costa Rica",
+          "useful_links_title": "Useful links",
+          "footer_menu": "footer",
+          "facebook_link": "shopify:\/\/collections",
+          "instagram_link": "shopify:\/\/collections",
+          "tiktok_link": "shopify:\/\/collections",
+          "payment_methods_image": "shopify:\/\/shop_images\/credit-cards-logo.png"
         }
       }
     },

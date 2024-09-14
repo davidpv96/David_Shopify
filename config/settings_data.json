@@ -62,9 +62,9 @@
           "company_address": "Costa Rica",
           "useful_links_title": "Useful links",
           "footer_menu": "footer",
-          "facebook_link": "",
-          "instagram_link": "",
-          "tiktok_link": "",
+          "facebook_link": "shopify:\/\/collections",
+          "instagram_link": "shopify:\/\/collections",
+          "tiktok_link": "shopify:\/\/collections",
           "payment_methods_image": "shopify:\/\/shop_images\/credit-cards-logo.png"
         }
       }

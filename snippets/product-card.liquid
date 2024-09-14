@@ -38,36 +38,73 @@
   
   <!-- Contenedor de Información del Producto -->
   <div class="flex-1 text-left">
-  
-    {% if product.available %}
-      <div class="text-[#52A1BF] font-semibold">Stock disponible</div>
-    {% else %}
-      <div class="text-red-500 font-semibold">Sin existencias</div>
-    {% endif %}
-    <h3 class="text-base font-bold text-gray-800 mt-2">{{ product.title }}</h3> <!-- Ajuste de tamaño del título -->
-    <div class="flex items-center mt-4">
-      {% if product.compare_at_price > product.price %}
-        <span class="text-lg font-bold text-gray-900">{{ product.price | money }}</span>
-        <span class="text-sm text-gray-600 line-through ml-2">{{ product.compare_at_price | money }}</span>
+    {% assign total_inventory = 0 %}
+    {% assign cart_quantity = 0 %}
+    {% assign tracks_inventory = false %}
+    {% assign continues_selling = false %}
+
+    {% for variant in product.variants %}
+      {% if variant.inventory_management %}
+        {% assign tracks_inventory = true %}
+        {% assign total_inventory = total_inventory | plus: variant.inventory_quantity %}
+        {% if variant.inventory_policy == 'continue' %}
+          {% assign continues_selling = true %}
+        {% endif %}
+      {% endif %}
+      {% for item in cart.items %}
+        {% if item.variant_id == variant.id %}
+          {% assign cart_quantity = cart_quantity | plus: item.quantity %}
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+
+    {% assign available_quantity = total_inventory | minus: cart_quantity %}
+
+    {% if tracks_inventory == false %}
+      {% assign product_availability = 'available' %}
+    {% elsif continues_selling %}
+      {% if available_quantity > 0 %}
+        {% assign product_availability = 'available' %}
       {% else %}
-        <span class="text-lg font-bold text-gray-900">{{ product.price | money }}</span>
+        {% assign product_availability = 'continue' %}
+      {% endif %}
+    {% elsif available_quantity > 0 %}
+      {% assign product_availability = 'available' %}
+    {% else %}
+      {% assign product_availability = 'sold_out' %}
+    {% endif %}
+
+    <div class="{% if product_availability == 'available' or product_availability == 'continue' %}text-[#52A1BF]{% else %}text-red-500{% endif %} font-semibold">
+      {% if product_availability == 'available' %}
+        En stock
+      {% elsif product_availability == 'continue' %}
+        Disponible bajo pedido
+      {% else %}
+        Agotado
+      {% endif %}
+    </div>
+    <h3 class="text-base font-bold text-gray-800 mt-2">{{ product.title }}</h3>
+    <div class="flex items-center mt-4">
+      <span class="text-lg font-bold text-gray-900">{{ product.price | money }}</span>
+      {% if product.compare_at_price > product.price %}
+        <span class="text-sm text-gray-600 line-through ml-2">{{ product.compare_at_price | money }}</span>
       {% endif %}
     </div>
   </div>
 
   <!-- Botón de Acción -->
   <div class="mt-4">
-    {% if product.available %}
+    {% if product_availability == 'available' or product_availability == 'continue' %}
       {% if product.has_only_default_variant %}
-        <form action="/cart/add" method="post">
+        <form action="/cart/add" method="post" class="w-full">
           <input type="hidden" name="id" value="{{ product.variants.first.id }}">
-          <button type="submit" class="bg-[#1D495B] text-white py-2 px-4 rounded-full w-full">Add to cart</button>
+          <button type="submit" class="bg-[#1D495B] text-white py-2 px-4 rounded-full w-full">Agregar al carrito</button>
         </form>
       {% else %}
-        <a href="{{ product.url }}" class="bg-[#1D495B] text-white py-2 px-4 rounded-full w-full text-center block">Select options</a>
+        <a href="{{ product.url }}" class="bg-[#1D495B] text-white py-2 px-4 rounded-full w-full text-center block">Seleccionar opciones</a>
       {% endif %}
     {% else %}
-      <button class="bg-gray-400 text-white py-2 px-4 rounded-full w-full cursor-not-allowed" disabled>Out of stock</button>
+      <button class="bg-gray-400 text-white py-2 px-4 rounded-full w-full cursor-not-allowed" disabled>Agotado</button>
     {% endif %}
   </div>
 </div>

@@ -91,7 +91,7 @@
 
           <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex flex-col relative">
             {% if product.compare_at_price > product.price %}
-              <div class="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+              <div class="absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-bold">
                 En oferta
               </div>
             {% endif %}
@@ -199,15 +199,21 @@
         {% endif %}
 
         <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex flex-col relative">
-          <div class="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+          <div class="absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-bold">
             En oferta
           </div>
           <a href="{{ product.url }}" class="block mb-4">
             <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}" class="w-full h-auto">
           </a>
           <div class="flex flex-col items-start w-full">
-            <div class="text-[#52A1BF] font-semibold text-left w-full">
-              Disponible
+            <div class="{% if product_availability == 'available' or product_availability == 'continue' %}text-[#52A1BF]{% else %}text-red-500{% endif %} font-semibold text-left w-full">
+              {% if product_availability == 'available' %}
+                Disponible
+              {% elsif product_availability == 'continue' %}
+                Disponible bajo pedido
+              {% else %}
+                Agotado
+              {% endif %}
             </div>
             <a href="{{ product.url }}" class="block mt-2 w-full">
               <h3 class="text-lg font-bold text-gray-800 text-left">{{ product.title }}</h3>
@@ -219,7 +225,7 @@
           </div>
           {% if product_availability == 'available' or product_availability == 'continue' %}
             {% if product.has_only_default_variant %}
-              <form action="/cart/add" method="post" class="add-to-cart-form w-full"> <!-- Añadido w-full al form -->
+              <form action="/cart/add" method="post" class="add-to-cart-form w-full">
                 <input type="hidden" name="id" value="{{ product.variants.first.id }}">
                 <input type="hidden" name="quantity" value="1">
                 <button type="submit" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center add-to-cart-button">
@@ -239,7 +245,6 @@
     <div class="hidden lg:flex swiper-button-prev opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
   </div>
 </div>
-
 
 {% comment %} Carrusel de Productos RecomendadosS {% endcomment %}
 {% comment %} Carrusel de Productos Recomendados {% endcomment %}
@@ -298,6 +303,11 @@
         {% endif %}
 
         <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex flex-col relative">
+          {% if product.compare_at_price > product.price %}
+            <div class="absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+              En oferta
+            </div>
+          {% endif %}
           <a href="{{ product.url }}" class="block mb-4">
             <img src="{{ product.featured_image | img_url: '300x300' }}" alt="{{ product.title }}" class="w-full h-auto">
           </a>
@@ -323,7 +333,7 @@
           </div>
           {% if product_availability == 'available' or product_availability == 'continue' %}
             {% if product.has_only_default_variant %}
-              <form action="/cart/add" method="post" class="add-to-cart-form w-full"> <!-- Añadido w-full al form -->
+              <form action="/cart/add" method="post" class="add-to-cart-form w-full">
                 <input type="hidden" name="id" value="{{ product.variants.first.id }}">
                 <input type="hidden" name="quantity" value="1">
                 <button type="submit" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center add-to-cart-button">

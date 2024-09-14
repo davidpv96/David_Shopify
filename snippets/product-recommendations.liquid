@@ -2,12 +2,56 @@
   <h2 class="text-xl font-bold mb-6">Productos recomendados</h2>
   
   {% assign recommendations = collections['all'].products | limit: 4 %}
-  
   {% if recommendations.size > 0 %}
     <div class="swiper-container overflow-hidden">
       <div class="swiper-wrapper">
         {% for product in recommendations limit: 4 %}
-          <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex flex-col">
+          {% assign total_inventory = 0 %}
+          {% assign cart_quantity = 0 %}
+          {% assign tracks_inventory = false %}
+          {% assign continues_selling = false %}
+          {% assign has_variant_on_sale = false %}
+
+          {% for variant in product.variants %}
+            {% if variant.inventory_management %}
+              {% assign tracks_inventory = true %}
+              {% assign total_inventory = total_inventory | plus: variant.inventory_quantity %}
+              {% if variant.inventory_policy == 'continue' %}
+                {% assign continues_selling = true %}
+              {% endif %}
+            {% endif %}
+            {% for item in cart.items %}
+              {% if item.variant_id == variant.id %}
+                {% assign cart_quantity = cart_quantity | plus: item.quantity %}
+              {% endif %}
+            {% endfor %}
+            {% if variant.compare_at_price > variant.price %}
+              {% assign has_variant_on_sale = true %}
+            {% endif %}
+          {% endfor %}
+
+          {% assign available_quantity = total_inventory | minus: cart_quantity %}
+
+          {% if tracks_inventory == false %}
+            {% assign product_availability = 'available' %}
+          {% elsif continues_selling %}
+            {% if available_quantity > 0 %}
+              {% assign product_availability = 'available' %}
+            {% else %}
+              {% assign product_availability = 'continue' %}
+            {% endif %}
+          {% elsif available_quantity > 0 %}
+            {% assign product_availability = 'available' %}
+          {% else %}
+            {% assign product_availability = 'sold_out' %}
+          {% endif %}
+
+          <div class="swiper-slide bg-white p-4 border border-gray-300 rounded-lg flex flex-col relative">
+            {% if product.compare_at_price > product.price or has_variant_on_sale %}
+              <div class="absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                En oferta
+              </div>
+            {% endif %}
             <a href="{{ product.url }}" class="block mb-4">
               {% if product.featured_image %}
                 <img src="{{ product.featured_image | img_url: 'medium' }}" alt="{{ product.title }}" class="w-full h-48 object-cover rounded-md">
@@ -18,17 +62,41 @@
               {% endif %}
             </a>
             <div class="text-left flex-grow">
-              <div class="text-[#52A1BF] font-semibold">
-                {% if product.available %}
-                  En stock
+              <div class="{% if product_availability == 'available' or product_availability == 'continue' %}text-[#52A1BF]{% else %}text-red-500{% endif %} font-semibold">
+                {% if product_availability == 'available' %}
+                  Disponible
+                {% elsif product_availability == 'continue' %}
+                  Disponible bajo pedido
                 {% else %}
                   Agotado
                 {% endif %}
               </div>
               <h3 class="text-lg font-bold text-gray-800 mt-2">{{ product.title }}</h3>
-              <span class="text-lg font-bold text-gray-900 mt-4 block">{{ product.price | money }}</span>
+              <div class="flex items-center mt-4">
+                <span class="text-lg font-bold text-gray-900">{{ product.price | money }}</span>
+                {% if product.compare_at_price > product.price %}
+                  <span class="text-sm line-through text-gray-500 ml-2">{{ product.compare_at_price | money }}</span>
+                {% endif %}
+              </div>
             </div>
-            <button class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full hover:bg-[#163a4a] transition-colors duration-200">Agregar al carrito</button>
+            {% if product_availability == 'available' or product_availability == 'continue' %}
+              {% if product.has_only_default_variant %}
+                <form action="/cart/add" method="post" class="w-full">
+                  <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+                  <button type="submit" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full hover:bg-[#163a4a] transition-colors duration-200">
+                    Agregar al carrito
+                  </button>
+                </form>
+              {% else %}
+                <a href="{{ product.url }}" class="bg-[#1D495B] text-white py-2 px-4 rounded-full mt-4 w-full text-center block hover:bg-[#163a4a] transition-colors duration-200">
+                  Seleccionar opciones
+                </a>
+              {% endif %}
+            {% else %}
+              <button disabled class="bg-gray-300 text-gray-600 py-2 px-4 rounded-full mt-4 w-full cursor-not-allowed">
+                Agotado
+              </button>
+            {% endif %}
           </div>
         {% endfor %}
       </div>
@@ -37,6 +105,8 @@
     <p class="text-gray-500 mt-4">No hay productos recomendados disponibles.</p>
   {% endif %}
 </div>
+
+<!-- El resto del código (estilos y script) permanece sin cambios -->
 
 <style>
   .recommended-products .swiper-container {

@@ -42,7 +42,7 @@
     {%- endfor -%}
 
     {%- if has_active_filters -%}
-      <div class="mt-4">
+      <div class="mt-4 z-0">
         <div class="flex justify-between items-center mb-2">
           <span class="text-white font-medium">Filtros:</span>
           <a href="{{ collection.url }}?sort_by={{ collection.sort_by }}" class="text-[#52A1BF] underline hover:no-underline cursor-pointer">Remover todo</a>
@@ -75,7 +75,7 @@
   <div x-show="open" @click="open = false" x-cloak class="fixed inset-0 bg-black opacity-50 z-40 lg:hidden"></div>
 
   <!-- Contenedor de Filtros -->
-  <div :class="{'block': open, 'hidden': !open}" class="fixed inset-y-0 right-0 w-64 bg-white shadow-lg z-[300] lg:transform-none lg:relative lg:translate-x-0 lg:w-1/4 lg:bg-transparent lg:shadow-none lg:block hidden flex flex-col">
+  <div :class="{'block': open, 'hidden': !open}" class="fixed inset-y-0 right-0 w-64 bg-white shadow-lg  z-[300] lg:transform-none lg:relative lg:translate-x-0 lg:w-1/4 lg:bg-transparent lg:shadow-none lg:block hidden flex flex-col">
     
     <!-- Cerrar botón en móviles -->
     <div class="flex justify-end lg:hidden p-4">

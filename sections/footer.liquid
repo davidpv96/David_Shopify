@@ -1,144 +1,173 @@
+{% comment %}
+  Footer section
+{% endcomment %}
 
-
-<footer class="  text-white bg-[#f7f8fa] pt-10 ">
-
-
-
-{% comment %} slide de caracteristicas {% endcomment %}
-<div class=" mx-[0.2em] lg:mx-20 ">
-    <div class="swiper myFeatureSwiper mt-3 ">
-        <div class="swiper-wrapper ">
-            <!-- Slide 1 -->
-            <div class="swiper-slide swiper-caracteristicas bg-white flex items-center  border border-gray-300 ">
-                <div class="flex items-center ">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#00796b" class="w-6 h-6 mr-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m-6 6h12m-6-3v-3.586a1 1 0 00-.293-.707L8.414 7H4a1 1 0 00-1 1v11h12m-6 0h-2.586a1 1 0 01-.707-.293L3 13m18 0l-7 7"/>
-                    </svg>
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800">Same-day shipping, daily.</h3>
-                        <p class="text-gray-500">Get it fast: orders shipped today!</p>
-                    </div>
+<footer class="text-white bg-[#f7f8fa] pt-10">
+  {% comment %} slide de caracteristicas {% endcomment %}
+  <div class="mx-[0.2em] lg:mx-20">
+    <div class="swiper myFeatureSwiper mt-3">
+      <div class="swiper-wrapper">
+        {% for block in section.blocks %}
+          {% if block.type == 'feature' %}
+            <div class="swiper-slide swiper-caracteristicas bg-white flex items-center border border-gray-300">
+              <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#00796b" class="w-6 h-6 mr-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m-6 6h12m-6-3v-3.586a1 1 0 00-.293-.707L8.414 7H4a1 1 0 00-1 1v11h12m-6 0h-2.586a1 1 0 01-.707-.293L3 13m18 0l-7 7"/>
+                </svg>
+                <div>
+                  <h3 class="text-lg font-semibold text-gray-800">{{ block.settings.title | escape }}</h3>
+                  <p class="text-gray-500">{{ block.settings.text | escape }}</p>
                 </div>
+              </div>
             </div>
-    
-            <!-- Slide 2S -->
-            <div class="swiper-slide swiper-caracteristicas bg-white flex items-center  border border-gray-300 ">
-                <div class="flex items-center ">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#00796b" class="w-6 h-6 mr-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m-6 6h12m-6-3v-3.586a1 1 0 00-.293-.707L8.414 7H4a1 1 0 00-1 1v11h12m-6 0h-2.586a1 1 0 01-.707-.293L3 13m18 0l-7 7"/>
-                    </svg>
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800">Price protection.</h3>
-                        <p class="text-gray-500">We guarantee the best prices.</p>
-                    </div>
-                </div>
-            </div>
-    
-            <div class="swiper-slide swiper-caracteristicas bg-white flex items-center  border border-gray-300 ">
-                <div class="flex items-center ">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#00796b" class="w-6 h-6 mr-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m-6 6h12m-6-3v-3.586a1 1 0 00-.293-.707L8.414 7H4a1 1 0 00-1 1v11h12m-6 0h-2.586a1 1 0 01-.707-.293L3 13m18 0l-7 7"/>
-                    </svg>
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800">Same-day shipping, daily.</h3>
-                        <p class="text-gray-500">Get it fast: orders shipped today!</p>
-                    </div>
-                </div>
-            </div>
-    
-            <div class="swiper-slide swiper-caracteristicas bg-white flex items-center  border border-gray-300 ">
-                <div class="flex items-center ">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#00796b" class="w-6 h-6 mr-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m-6 6h12m-6-3v-3.586a1 1 0 00-.293-.707L8.414 7H4a1 1 0 00-1 1v11h12m-6 0h-2.586a1 1 0 01-.707-.293L3 13m18 0l-7 7"/>
-                    </svg>
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800">Same-day shipping, daily.</h3>
-                        <p class="text-gray-500">Get it fast: orders shipped today!</p>
-                    </div>
-                </div>
-            </div>
-    
-          
-        </div>
-         <!-- Contenedor de paginación -->
-         <div class="swiper-pagination"></div>
-    
+          {% endif %}
+        {% endfor %}
+      </div>
+      <div class="swiper-pagination"></div>
     </div>
+  </div>
+
+  <div class="bg-[#0E2129] relative pt-12">
+    <!-- Secciones del footer -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
+      <!-- Información de contacto y Company -->
+      <div class="md:col-span-1">
+        <h3 class="text-lg font-semibold text-white">{{ section.settings.company_name | escape }}</h3>
+        <p class="mt-4 text-gray-400">{{ section.settings.company_address | escape }}</p>
+      </div>
+      
+      <!-- Useful links -->
+      <div class="md:col-span-1">
+        <h3 class="text-lg font-semibold text-white">{{ section.settings.useful_links_title | escape }}</h3>
+        <ul class="mt-4 space-y-2 text-gray-400">
+          {% for link in linklists[section.settings.footer_menu].links %}
+            <li><a href="{{ link.url }}" class="hover:text-white">{{ link.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
     </div>
 
+    <!-- Redes sociales con líneas divisorias a los lados -->
+    <div class="flex items-center justify-between mt-8">
+      <div class="flex-grow border-t border-gray-700"></div>
+      <div class="flex space-x-4 px-4">
+        {% if section.settings.facebook_link != blank %}
+          <a href="{{ section.settings.facebook_link }}" class="text-gray-400 hover:text-white">
+            {% render 'icon-fb' %}
+          </a>
+        {% endif %}
+        {% if section.settings.instagram_link != blank %}
+          <a href="{{ section.settings.instagram_link }}" class="text-gray-400 hover:text-white">
+            {% render 'icon-ig' %}
+          </a>
+        {% endif %}
+        {% if section.settings.tiktok_link != blank %}
+          <a href="{{ section.settings.tiktok_link }}" class="text-gray-400 hover:text-white">
+            {% render 'icon-tiktok' %}
+          </a>
+        {% endif %}
+      </div>
+      <div class="flex-grow border-t border-gray-700"></div>
+    </div>
 
-
-<div class="bg-[#0E2129] relative pt-12">
-  <!-- Carrusel de características superpuesto -->
-  <div class="absolute top-0 left-0 w-full transform -translate-y-1/2">
-    <div class="mx-[0.2em] lg:mx-20">
-      <div class="swiper myFeatureSwiper mt-3">
-        <div class="swiper-wrapper">
-          <!-- Tus slides de características van aquí -->
-        </div>
-        <div class="swiper-pagination"></div>
+    <!-- Derechos reservados y métodos de pago -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center py-6 mt-8">
+      <p class="text-gray-400 text-center md:text-left">© 2024, H2 Helectronics - Desarrollado por Aura Digital</p>
+      <div class="flex space-x-4 mt-4 md:mt-0">
+        <img src="{{ section.settings.payment_methods_image | img_url: '200x' }}" alt="Métodos de pago aceptados" class="h-8 w-auto">
       </div>
     </div>
   </div>
-
-  <!-- Secciones del footer -->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
-    <!-- Información de contacto y Company en una fila en móviles -->
-    <div class="md:col-span-1">
-      <h3 class="text-lg font-semibold text-white">Tokyo Ltd.</h3>
-      <p class="mt-4 text-gray-400">5-19 Nelson Parade, Manchester, AB1 2CD</p>
-      <p class="text-gray-400">+44 (0) 1234 567</p>
-    </div>
-    <div class="md:col-span-1">
-      <h3 class="text-lg font-semibold text-white">Company</h3>
-      <ul class="mt-4 space-y-2 text-gray-400">
-        <li>Covid-19 safety measures</li>
-        <li>Shipping & Returns</li>
-        <li>Warranty Policy</li>
-      </ul>
-    </div>
-
-    <!-- Useful links y Popular en otra fila en móviles -->
-    <div class="md:col-span-1">
-      <h3 class="text-lg font-semibold text-white">Useful links</h3>
-      <ul class="mt-4 space-y-2 text-gray-400">
-        <li>Privacy Policy</li>
-        <li>Terms and conditions</li>
-        <li>Contact us</li>
-      </ul>
-    </div>
-    <div class="md:col-span-1">
-      <h3 class="text-lg font-semibold text-white">Popular</h3>
-      <ul class="mt-4 space-y-2 text-gray-400">
-        <li>Shop Boards</li>
-        <li>Shop Components</li>
-        <li>Shop Batteries</li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- Redes sociales con líneas divisorias a los lados -->
-  <div class="flex items-center justify-between mt-8">
-    <div class="flex-grow border-t border-gray-700"></div>
-    <div class="flex space-x-4 px-4">
-      <a href="#" class="text-gray-400 hover:text-white">fb<i class="fab fa-facebook-f"></i></a>
-      <a href="#" class="text-gray-400 hover:text-white">ig<i class="fab fa-instagram"></i></a>
-      <a href="#" class="text-gray-400 hover:text-white">tk<i class="fab fa-twitter"></i></a>
-
-    </div>
-    <div class="flex-grow border-t border-gray-700"></div>
-  </div>
-
-  <!-- Derechos reservados y métodos de pago -->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center py-6 mt-8">
-    <p class="text-gray-400 text-center md:text-left">© 2024, Tokyo - Powered by Shopify</p>
-    <div class="flex space-x-4 mt-4 md:mt-0">
-      {% comment %} <img src="path/to/visa.png" alt="Visa" class="w-10">
-      <img src="path/to/mastercard.png" alt="Mastercard" class="w-10">
-      <img src="path/to/amex.png" alt="American Express" class="w-10">
-      <img src="path/to/paypal.png" alt="PayPal" class="w-10">
-      <img src="path/to/discover.png" alt="Discover" class="w-10"> {% endcomment %}
-    </div>
-  </div>
-  </div>
 </footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    {
+      "type": "text",
+      "id": "company_name",
+      "label": "Company Name",
+      "default": "H2 Electronics"
+    },
+    {
+      "type": "text",
+      "id": "company_address",
+      "label": "Company Address",
+      "default": "Costa Rica"
+    },
+    {
+      "type": "text",
+      "id": "useful_links_title",
+      "label": "Useful Links Title",
+      "default": "Useful links"
+    },
+    {
+      "type": "link_list",
+      "id": "footer_menu",
+      "label": "Footer Menu",
+      "default": "footer"
+    },
+    {
+      "type": "url",
+      "id": "facebook_link",
+      "label": "Facebook URL"
+    },
+    {
+      "type": "url",
+      "id": "instagram_link",
+      "label": "Instagram URL"
+    },
+    {
+      "type": "url",
+      "id": "tiktok_link",
+      "label": "TikTok URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "payment_methods_image",
+      "label": "Payment Methods Image"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "limit": 4,
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Feature Title",
+          "default": "Feature Title"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Feature Text",
+          "default": "Feature description goes here"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer",
+      "blocks": [
+        {
+          "type": "feature"
+        },
+        {
+          "type": "feature"
+        },
+        {
+          "type": "feature"
+        },
+        {
+          "type": "feature"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

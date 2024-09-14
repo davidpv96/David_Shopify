@@ -3,7 +3,7 @@
     <!-- Mostrar contenido del carrito si hay items -->
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-2xl font-semibold">Tu carrito</h2>
-      <a href="/" class="text-[#004d40] hover:text-[#00382e] underline">Seguir comprando</a>
+      <a href="/collections/all" class="text-[#004d40] hover:text-[#00382e] underline">Seguir comprando</a>
     </div>
     
     <!-- Formulario del carrito -->
@@ -39,7 +39,7 @@
                          name="updates[{{ item.key }}]" 
                          value="{{ item.quantity }}" 
                          min="0" 
-                         max="{% if item.variant.inventory_management %}{{ item.variant.inventory_quantity }}{% else %}''{% endif %}" 
+                         max="{% if item.variant.inventory_management %}{{ item.variant.inventory_quantity }}{% else %}''{% endif %}"
                          class="w-12 h-8 text-center border border-gray-300 rounded outline-none focus:ring focus:ring-gray-300 item-quantity" 
                          data-key="{{ item.key }}" 
                          data-stock="{% if item.variant.inventory_management %}{{ item.variant.inventory_quantity }}{% else %}''{% endif %}">
@@ -78,22 +78,21 @@
         <p class="text-sm text-gray-500 mb-4">Impuestos incluidos y el envío se calcula en el checkout</p>
         <label class="flex items-center mb-4">
           <input type="checkbox" class="form-checkbox h-4 w-4 text-[#004d40]" required>
-          <span class="ml-2 text-sm">He leído y acepto la <a href="/policies/privacy-policy" class="text-[#004d40] underline">Política de privacidad</a>.</span>
+          <span class="ml-2 text-sm">He leído y acepto la <a href="/policies/privacy-policy" class="text-[#0e2129] underline">Política de privacidad</a>.</span>
         </label>
         <!-- Enlace para finalizar la compra utilizando routes.checkout_url -->
-        <a href="/checkout" class="w-full bg-[#004d40] text-white py-2 rounded-md hover:bg-[#00382e] text-center block">Finalizar compra</a>
+        <a href="/checkout" class="w-full bg-[#0e2129] text-white py-2 rounded-md hover:bg-[#00382e] text-center block">Finalizar compra</a>
       </div>
     </form>
   {% else %}
     <!-- Mostrar mensaje cuando el carrito está vacío -->
     <div class="text-center">
       <h2 class="text-2xl font-semibold">Tu carrito está vacío</h2>
-      <a href="/" class="inline-block bg-[#004d40] text-white py-2 px-4 rounded-md hover:bg-[#00382e] mt-4">Seguir comprando</a>
-      <p class="mt-4">¿Tienes una cuenta? <a href="/account/login" class="text-[#004d40] hover:text-[#00382e] underline">Inicia sesión para finalizar la compra más rápido.</a></p>
+      <a href="/collections/all" class="inline-block bg-[#0e2129] text-white py-2 px-4 rounded-md hover:bg-[#00382e] mt-4">Seguir comprando</a>
+      <p class="mt-4">¿Tienes una cuenta? <a href="/account/login" class="text-[#0e2129] hover:text-[#00382e] underline">Inicia sesión</a></p>
     </div>
   {% endif %}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
 {{ 'cart.js' | asset_url | script_tag }}

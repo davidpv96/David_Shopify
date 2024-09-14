@@ -124,8 +124,8 @@
     flex-grow: 1;
     height: 36px;
     font-size: 16px;
-    background-color: #ffc107;
-    color: #000;
+    background-color: #1d495b;
+    color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -290,35 +290,41 @@
         </p>
       </div>
       
-      <div class="mb-6">
-        <div class="bg-gray-100 p-4 rounded-lg shadow">
-          {{ product.metafields.custom.short_description }}
+      {% if product.metafields.custom.short_description != blank %}
+        <div class="mb-6">
+          <div class="bg-gray-100 p-4 rounded-lg shadow">
+            {{ product.metafields.custom.short_description }}
+          </div>
         </div>
-      </div>
+      {% endif %}
 
       <div class="max-w-md">
         <form action="/cart/add" method="post" enctype="multipart/form-data" id="add-to-cart-form">
           <input type="hidden" name="id" id="product-select" value="{{ current_variant.id }}">
 
-          {% for option in product.options_with_values %}
-            <div class="mb-4">
-              <label for="SingleOptionSelector-{{ forloop.index0 }}" class="block font-bold mb-2">
-                {{ option.name }}
-              </label>
-              <select
-                id="SingleOptionSelector-{{ forloop.index0 }}"
-                data-index="option{{ forloop.index }}"
-                class="single-option-selector w-full border border-gray-300 rounded-md p-2"
-              >
-                <option value="" disabled selected>Selecciona un {{ option.name | downcase }}</option>
-                {% for value in option.values %}
-                  <option value="{{ value | escape }}">
-                    {{ value }}
-                  </option>
-                {% endfor %}
-              </select>
-            </div>
-          {% endfor %}
+          {% if product.has_only_default_variant == false %}
+            {% for option in product.options_with_values %}
+              <div class="mb-4">
+                <label for="SingleOptionSelector-{{ forloop.index0 }}" class="block font-bold mb-2">
+                  {{ option.name }}
+                </label>
+                <select
+                  id="SingleOptionSelector-{{ forloop.index0 }}"
+                  data-index="option{{ forloop.index }}"
+                  class="single-option-selector w-full border border-gray-300 rounded-md p-2"
+                >
+                  <option value="" disabled selected>Selecciona un {{ option.name | downcase }}</option>
+                  {% for value in option.values %}
+                    <option value="{{ value | escape }}">
+                      {{ value }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+            {% endfor %}
+          {% else %}
+            <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+          {% endif %}
 
           <div id="stock-label" class="text-sm font-semibold text-green-600 mb-4"></div>
 
@@ -332,8 +338,8 @@
                 <button type="button" class="quantity-button w-10 h-10 bg-gray-100 text-lg font-bold" id="increase-quantity">+</button>
               </div>
             </div>
-            <button type="submit" name="add" id="AddToCart" disabled class="w-full sm:w-auto sm:ml-4 px-6 py-2 my-4 lg:my-0 bg-yellow-400 text-black rounded-md font-semibold">
-              <span id="AddToCartText">Select all options</span>
+            <button type="submit" name="add" id="AddToCart" disabled class="w-full sm:w-auto sm:ml-4 px-6 py-2 my-4 lg:my-0 bg-[#1d495b] text-black rounded-md font-semibold">
+              <span id="AddToCartText">Selecciona las opciones</span>
             </button>
           </div>
         </form>
@@ -377,163 +383,189 @@
   {% render 'product-recommendations' %}
 </div>
 
+
 <script>
-  var variants = [
-    {% for variant in product.variants %}
-      {
-        id: {{ variant.id | json }},
-        title: {{ variant.title | json }},
-        options: {{ variant.options | json }},
-        available: {{ variant.available | json }},
-        price: {{ variant.price | money | json }},
-        compare_at_price: {{ variant.compare_at_price | money | json }},
-        inventory_quantity: {{ variant.inventory_quantity | json }},
-        inventory_management: {{ variant.inventory_management | json }},
-        inventory_policy: {{ variant.inventory_policy | json }},
-        featured_media: {
-          id: {{ variant.featured_media.id | default: 'null' | json }},
-          position: {{ variant.featured_media.position | default: 'null' | json }},
-          product_id: {{ variant.featured_media.product_id | default: 'null' | json }}
-        }
-      }{% unless forloop.last %},{% endunless %}
-    {% endfor %}
-  ];
-
-  var mainSwiper, thumbSwiper;
-  let updateInProgress = false;
-
-  function updateStockLabel(variant) {
-    var stockLabel = document.getElementById('stock-label');
-    var addToCartButton = document.getElementById('AddToCart');
-    var addToCartText = document.getElementById('AddToCartText');
-
-    if (variant && variant.available) {
-      if (variant.inventory_management && variant.inventory_quantity > 0) {
-        fetch('/cart.js')
-          .then(response => response.json())
-          .then(cart => {
-            var itemInCart = cart.items.find(item => item.id === variant.id);
-            var quantityInCart = itemInCart ? itemInCart.quantity : 0;
-            var availableQuantity = variant.inventory_quantity - quantityInCart;
-            stockLabel.textContent = 'Stock disponible: ' + availableQuantity;
-            addToCartButton.disabled = false;
-            addToCartText.textContent = 'Add to cart';
-          });
-      } else if (variant.inventory_management && variant.inventory_quantity <= 0 && variant.inventory_policy === 'continue') {
-        stockLabel.textContent = 'Sin stock, pero puedes continuar comprando';
-        addToCartButton.disabled = false;
-        addToCartText.textContent = 'Add to cart';
-      } else {
-        stockLabel.textContent = 'Disponible';
-        addToCartButton.disabled = false;
-        addToCartText.textContent = 'Add to cart';
+var variants = [
+  {% for variant in product.variants %}
+    {
+      id: {{ variant.id | json }},
+      title: {{ variant.title | json }},
+      options: {{ variant.options | json }},
+      available: {{ variant.available | json }},
+      price: {{ variant.price | money | json }},
+      compare_at_price: {{ variant.compare_at_price | money | json }},
+      inventory_quantity: {{ variant.inventory_quantity | json }},
+      inventory_management: {{ variant.inventory_management | json }},
+      inventory_policy: {{ variant.inventory_policy | json }},
+      featured_media: {
+        id: {{ variant.featured_media.id | default: 'null' | json }},
+        position: {{ variant.featured_media.position | default: 'null' | json }},
+        product_id: {{ variant.featured_media.product_id | default: 'null' | json }}
       }
-    } else if (variant) {
-      stockLabel.textContent = 'Fuera de stock';
-      addToCartButton.disabled = true;
-      addToCartText.textContent = 'Sold Out';
+    }{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+];
+
+var mainSwiper, thumbSwiper;
+let updateInProgress = false;
+
+function updateStockLabel(variant) {
+  var stockLabel = document.getElementById('stock-label');
+  var addToCartButton = document.getElementById('AddToCart');
+  var addToCartText = document.getElementById('AddToCartText');
+
+  if (variant && variant.available) {
+    if (variant.inventory_management && variant.inventory_quantity > 0) {
+      fetch('/cart.js')
+        .then(response => response.json())
+        .then(cart => {
+          var itemInCart = cart.items.find(item => item.id === variant.id);
+          var quantityInCart = itemInCart ? itemInCart.quantity : 0;
+          var availableQuantity = variant.inventory_quantity - quantityInCart;
+          stockLabel.textContent = 'Stock disponible: ' + availableQuantity;
+          addToCartButton.disabled = false;
+          addToCartText.textContent = 'Agregar al carrito';
+        });
+    } else if (variant.inventory_management && variant.inventory_quantity <= 0 && variant.inventory_policy === 'continue') {
+      stockLabel.textContent = 'Sin stock, pero puedes continuar comprando';
+      addToCartButton.disabled = false;
+      addToCartText.textContent = 'Agregar al carrito';
     } else {
-      stockLabel.textContent = '';
-      addToCartButton.disabled = true;
-      addToCartText.textContent = 'Select all options';
+      stockLabel.textContent = 'Disponible';
+      addToCartButton.disabled = false;
+      addToCartText.textContent = 'Agregar al carrito';
+    }
+  } else if (variant) {
+    stockLabel.textContent = 'Fuera de stock';
+    addToCartButton.disabled = true;
+    addToCartText.textContent = 'Agotado';
+  } else {
+    stockLabel.textContent = '';
+    addToCartButton.disabled = true;
+    addToCartText.textContent = 'Selecciona las opciones';
+  }
+}
+
+function updatePriceDisplay(variant) {
+  var priceElement = document.getElementById('product-price');
+  if (variant) {
+    if (variant.compare_at_price > variant.price) {
+      priceElement.innerHTML = `
+        <span class="text-black text-2xl font-bold">${variant.price}</span>
+        <span class="text-gray-500 line-through text-lg ml-2">${variant.compare_at_price}</span>
+      `;
+      priceElement.classList.add('flex', 'items-center');
+    } else {
+      priceElement.innerHTML = `<span class="text-black text-2xl font-bold">${variant.price}</span>`;
+      priceElement.classList.remove('flex', 'items-center');
     }
   }
+}
 
-  function updatePriceDisplay(variant) {
-    var priceElement = document.getElementById('product-price');
-    if (variant) {
-      if (variant.compare_at_price > variant.price) {
-        priceElement.innerHTML = `
-          <span class="text-black text-2xl font-bold">${variant.price}</span>
-          <span class="text-gray-500 line-through text-lg ml-2">${variant.compare_at_price}</span>
-        `;
-        priceElement.classList.add('flex', 'items-center');
-      } else {
-        priceElement.innerHTML = `<span class="text-black text-2xl font-bold">${variant.price}</span>`;
-        priceElement.classList.remove('flex', 'items-center');
+function updateVariantMedia(variant) {
+  if (variant && variant.featured_media && variant.featured_media.id) {
+    var slideIndex = Array.from(mainSwiper.slides).findIndex(slide => 
+      slide.getAttribute('data-media-id') == variant.featured_media.id
+    );
+    if (slideIndex !== -1) {
+      mainSwiper.slideTo(slideIndex);
+    }
+  }
+}
+
+function updateQuantityButtons(variant) {
+  if (updateInProgress) return;
+  updateInProgress = true;
+
+  var quantityInput = document.getElementById('quantity');
+  var decreaseQuantity = document.getElementById('decrease-quantity');
+  var increaseQuantity = document.getElementById('increase-quantity');
+  var currentQuantity = parseInt(quantityInput.value);
+  
+  var maxQuantity = Infinity;
+  if (variant && variant.inventory_management) {
+    if (variant.inventory_policy === 'deny') {
+      maxQuantity = variant.inventory_quantity;
+    }
+    // Si inventory_policy es 'continue', maxQuantity se mantiene como Infinity
+  }
+
+  fetch('/cart.js')
+    .then(response => response.json())
+    .then(cart => {
+      var itemInCart = cart.items.find(item => item.id === variant.id);
+      var quantityInCart = itemInCart ? itemInCart.quantity : 0;
+      var availableQuantity = maxQuantity - quantityInCart;
+
+      decreaseQuantity.disabled = currentQuantity <= 1;
+      increaseQuantity.disabled = currentQuantity >= availableQuantity;
+
+      if (variant.inventory_policy === 'continue') {
+        increaseQuantity.disabled = false; // Siempre habilitado para 'continue'
       }
-    }
-  }
 
-  function updateVariantMedia(variant) {
-    if (variant && variant.featured_media && variant.featured_media.id) {
-      var slideIndex = Array.from(mainSwiper.slides).findIndex(slide => 
-        slide.getAttribute('data-media-id') == variant.featured_media.id
-      );
-      if (slideIndex !== -1) {
-        mainSwiper.slideTo(slideIndex);
+      quantityInput.max = availableQuantity;
+
+      if (currentQuantity > availableQuantity && variant.inventory_policy !== 'continue') {
+        quantityInput.value = availableQuantity;
       }
-    }
-  }
 
-  function updateQuantityButtons(variant) {
-    if (updateInProgress) return;
-    updateInProgress = true;
+      updateStockLabel(variant);
+      updateInProgress = false;
+    })
+    .catch(error => {
+      console.error('Error al actualizar la cantidad:', error);
+      updateInProgress = false;
+    });
+}
 
-    var quantityInput = document.getElementById('quantity');
-    var decreaseQuantity = document.getElementById('decrease-quantity');
-    var increaseQuantity = document.getElementById('increase-quantity');
-    var currentQuantity = parseInt(quantityInput.value);
-    var maxQuantity = variant ? (variant.inventory_management ? variant.inventory_quantity : Infinity) : 0;
-
-    fetch('/cart.js')
-      .then(response => response.json())
-      .then(cart => {
-        var itemInCart = cart.items.find(item => item.id === variant.id);
-        var quantityInCart = itemInCart ? itemInCart.quantity : 0;
-        var availableQuantity = maxQuantity - quantityInCart;
-
-        decreaseQuantity.disabled = currentQuantity <= 1;
-        increaseQuantity.disabled = currentQuantity >= availableQuantity;
-        quantityInput.max = availableQuantity;
-
-        if (currentQuantity > availableQuantity) {
-          quantityInput.value = availableQuantity;
-        }
-
-        updateStockLabel(variant);
-        updateInProgress = false;
-      })
-      .catch(error => {
-        console.error('Error al actualizar la cantidad:', error);
-        updateInProgress = false;
-      });
-  }
-
-  function updateAddToCartButton(allSelected) {
-    var addToCartButton = document.getElementById('AddToCart');
-    var addToCartText = document.getElementById('AddToCartText');
-    
+function updateAddToCartButton(allSelected) {
+  var addToCartButton = document.getElementById('AddToCart');
+  var addToCartText = document.getElementById('AddToCartText');
+  
+  if (variants.length > 1) {
     if (allSelected) {
       var selectedVariant = getSelectedVariant();
       if (selectedVariant && selectedVariant.available) {
         addToCartButton.disabled = false;
-        addToCartText.textContent = 'Add to cart';
+        addToCartText.textContent = 'Agregar al carrito';
       } else {
         addToCartButton.disabled = true;
-        addToCartText.textContent = 'Sold Out';
+        addToCartText.textContent = 'Agotado';
       }
     } else {
       addToCartButton.disabled = true;
-      addToCartText.textContent = 'Select all options';
+      addToCartText.textContent = 'Selecciona las opciones';
+    }
+  } else {
+    // Producto simple
+    var variant = variants[0];
+    if (variant && variant.available) {
+      addToCartButton.disabled = false;
+      addToCartText.textContent = 'Agregar al carrito';
+    } else {
+      addToCartButton.disabled = true;
+      addToCartText.textContent = 'Agotado';
     }
   }
+}
 
-  function getSelectedVariant() {
-    var singleOptionSelectors = document.querySelectorAll('.single-option-selector');
-    var selectedOptions = Array.from(singleOptionSelectors).map(select => select.value);
-    return variants.find(variant => 
-      variant.options.every((option, index) => option === selectedOptions[index])
-    );
-  }
+function getSelectedVariant() {
+  var singleOptionSelectors = document.querySelectorAll('.single-option-selector');
+  var selectedOptions = Array.from(singleOptionSelectors).map(select => select.value);
+  return variants.find(variant => 
+    variant.options.every((option, index) => option === selectedOptions[index])
+  );
+}
 
-  document.addEventListener('DOMContentLoaded', function() {
-    var productSelect = document.getElementById('product-select');
-    var quantityInput = document.getElementById('quantity');
-    var decreaseQuantity = document.getElementById('decrease-quantity');
-    var increaseQuantity = document.getElementById('increase-quantity');
-    var singleOptionSelectors = document.querySelectorAll('.single-option-selector');
+document.addEventListener('DOMContentLoaded', function() {
+  var productSelect = document.getElementById('product-select');
+  var quantityInput = document.getElementById('quantity');
+  var decreaseQuantity = document.getElementById('decrease-quantity');
+  var increaseQuantity = document.getElementById('increase-quantity');
+  var singleOptionSelectors = document.querySelectorAll('.single-option-selector');
 
+  if (variants.length > 1) {
     singleOptionSelectors.forEach(function(selector) {
       selector.addEventListener('change', function() {
         var selectedVariant = getSelectedVariant();
@@ -553,80 +585,83 @@
         updateAddToCartButton(allSelected);
       });
     });
+  } else {
+    // Producto simple
+    var defaultVariant = variants[0];
+    updateStockLabel(defaultVariant);
+    updateQuantityButtons(defaultVariant);
+    updatePriceDisplay(defaultVariant);
+    updateAddToCartButton(true);
+  }
 
-    decreaseQuantity.addEventListener('click', function() {
-      if (updateInProgress) return;
-      var currentQuantity = parseInt(quantityInput.value);
-      if (currentQuantity > 1) {
-        quantityInput.value = currentQuantity - 1;
-        var selectedVariant = getSelectedVariant();
-        if (selectedVariant) {
-          updateQuantityButtons(selectedVariant);
-        }
-      }
-    });
-
-    increaseQuantity.addEventListener('click', function() {
-      if (updateInProgress) return;
-      var currentQuantity = parseInt(quantityInput.value);
-      var selectedVariant = getSelectedVariant();
-      if (selectedVariant) {
-        var maxQuantity = selectedVariant.inventory_management ? selectedVariant.inventory_quantity : Infinity;
-        if (currentQuantity < maxQuantity) {
-          quantityInput.value = currentQuantity + 1;
-          updateQuantityButtons(selectedVariant);
-        }
-      }
-    });
-
-    quantityInput.addEventListener('change', function() {
-      if (updateInProgress) return;
-      var selectedVariant = getSelectedVariant();
-      if (selectedVariant) {
-        updateQuantityButtons(selectedVariant);
-      }
-    });
-
-    // Inicializar Swiper
-    thumbSwiper = new Swiper('.thumb-swiper', {
-      spaceBetween: 10,
-      slidesPerView: 3.5,
-      breakpoints: {
-        1024: {
-          slidesPerView: 4.5,
-        },
-        767: {
-          slidesPerView: 3.5,
-        }
-      },
-      freeMode: true,
-      watchSlidesVisibility: true,
-      watchSlidesProgress: true,
-    });
-
-    mainSwiper = new Swiper('.main-swiper', {
-      slidesPerView: 1,
-      spaceBetween: 10,
-      loop: false,
-      pagination: {
-        el: '.swiper-pagination',
-        clickable: true,
-        bulletClass: 'swiper-pagination-bullet',
-        bulletActiveClass: 'swiper-pagination-bullet-active'
-      },
-      thumbs: {
-        swiper: thumbSwiper,
-      },
-    });
-
-    // Inicializar con ninguna opción seleccionada
-    updateStockLabel(null);
-    updateAddToCartButton(false);
-    updateQuantityButtons(null);
-
-    // Evento de submit del formulario para agregar al carrito
-    document.getElementById('add-to-cart-form').addEventListener('submit', function(event) {
-      // No manejar el carrito en el drawer, dejar que el carrito se maneje según la configuración por defecto de Shopify
-    });
+  decreaseQuantity.addEventListener('click', function() {
+    if (updateInProgress) return;
+    var currentQuantity = parseInt(quantityInput.value);
+    if (currentQuantity > 1) {
+      quantityInput.value = currentQuantity - 1;
+      var selectedVariant = variants.length > 1 ? getSelectedVariant() : variants[0];
+      updateQuantityButtons(selectedVariant);
+    }
   });
+
+  increaseQuantity.addEventListener('click', function() {
+    if (updateInProgress) return;
+    var currentQuantity = parseInt(quantityInput.value);
+    var selectedVariant = variants.length > 1 ? getSelectedVariant() : variants[0];
+    
+    if (selectedVariant.inventory_policy === 'continue' || !selectedVariant.inventory_management) {
+      quantityInput.value = currentQuantity + 1;
+    } else {
+      var maxQuantity = selectedVariant.inventory_quantity;
+      if (currentQuantity < maxQuantity) {
+        quantityInput.value = currentQuantity + 1;
+      }
+    }
+    
+    updateQuantityButtons(selectedVariant);
+  });
+
+  quantityInput.addEventListener('change', function() {
+    if (updateInProgress) return;
+    var selectedVariant = variants.length > 1 ? getSelectedVariant() : variants[0];
+    updateQuantityButtons(selectedVariant);
+  });
+
+  // Inicializar Swiper
+  thumbSwiper = new Swiper('.thumb-swiper', {
+    spaceBetween: 10,
+    slidesPerView: 3.5,
+    breakpoints: {
+      1024: {
+        slidesPerView: 4.5,
+      },
+      767: {
+        slidesPerView: 3.5,
+      }
+    },
+    freeMode: true,
+    watchSlidesVisibility: true,
+    watchSlidesProgress: true,
+  });
+
+  mainSwiper = new Swiper('.main-swiper', {
+    slidesPerView: 1,
+    spaceBetween: 10,
+    loop: false,
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+      bulletClass: 'swiper-pagination-bullet',
+      bulletActiveClass: 'swiper-pagination-bullet-active'
+    },
+    thumbs: {
+      swiper: thumbSwiper,
+    },
+  });
+
+  // Evento de submit del formulario para agregar al carrito
+  document.getElementById('add-to-cart-form').addEventListener('submit', function(event) {
+    // No manejar el carrito en el drawer, dejar que el carrito se maneje según la configuración por defecto de Shopify
+  });
+});
 </script>

@@ -72,10 +72,10 @@
   </div>
 
   <!-- Overlay oscuro -->
-  <div x-show="open" @click="open = false" x-cloak class="fixed inset-0 bg-black opacity-50 z-40 lg:hidden"></div>
+  <div x-show="open" @click="open = false" x-cloak class="fixed inset-0 bg-black opacity-50 z-60 lg:hidden"></div>
 
   <!-- Contenedor de Filtros -->
-  <div :class="{'block': open, 'hidden': !open}" class="fixed inset-y-0 right-0 w-64 bg-white shadow-lg z-[300] lg:transform-none lg:relative lg:translate-x-0 lg:w-1/4 lg:bg-transparent lg:shadow-none lg:block hidden flex flex-col">
+  <div :class="{'block': open, 'hidden': !open}" class="fixed inset-y-0 right-0 w-64 bg-white shadow-lg z-[10] lg:transform-none lg:relative lg:translate-x-0 lg:w-1/4 lg:bg-transparent lg:shadow-none lg:block hidden flex flex-col">
     
     <!-- Cerrar botón en móviles -->
     <div class="flex justify-end lg:hidden p-4">
@@ -99,7 +99,7 @@
     
     <!-- Información de Productos y Orden solo para pantallas grandes -->
     <div class="lg:flex justify-between items-center mb-6 md:mx-auto bg-[#1D495B] p-2 lg:p-5 rounded-lg w-full text-center lg:text-left">
-      <div class="text-white font-medium  lg:mb-0">
+      <div class="text-white font-medium lg:mb-0">
         {{ search.results_count }} Resultados para "{{ search.terms | escape }}"
       </div>
       <div class="hidden lg:block">
@@ -122,6 +122,13 @@
       </div>
     </div>
 
+    {% comment %} <!-- Botón "Volver a la tienda" debajo del título de resultados -->
+    <div class="mb-4 text-center">
+      <a href="/collections/all" class="inline-block px-6 py-3 bg-[#0e2129] text-white font-medium rounded-full hover:bg-opacity-90">
+        Volver a la tienda
+      </a>
+    </div> {% endcomment %}
+
     <div class="px-4 md:px-0 py-8">
       {% paginate search.results by 12 %}
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -129,6 +136,12 @@
             {% render 'product-card', product: product %}
           {% else %}
             <p>No se encontraron resultados para "{{ search.terms | escape }}"</p>
+            <!-- Botón cuando no hay resultados -->
+            <div class="mt-4 text-center">
+              <a href="/collections/all" class="inline-block px-6 py-3 bg-[#1d495b] text-white font-medium rounded-full hover:bg-opacity-90">
+                Volver a la tienda
+              </a>
+            </div>
           {% endfor %}
         </div>
         {% render 'pagination', pagination: paginate %}

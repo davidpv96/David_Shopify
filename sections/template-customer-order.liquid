@@ -1,0 +1,135 @@
+<div class="max-w-6xl mx-auto px-4 py-12">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-[#0e2129]">Pedido {{ order.name }}</h1>
+            <p class="text-gray-600 my-2">Realizado el {{ order.created_at | date: format: 'date' }}</p>
+            <span class="inline-block text-sm text-white bg-[#0e2129] rounded-full my-2 px-4 py-1">{{ order.financial_status_label }}</span>
+        </div>
+        
+        <a href="{{ routes.account_url }}" class="mt-4 md:mt-0 text-[#0e2129] hover:text-opacity-80 underline font-medium">Volver a la cuenta</a>
+    </div>
+
+    <div class="space-y-8">
+        {% for line_item in order.line_items %}
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+                    <div class="w-full h-64 bg-gray-100 rounded-md overflow-hidden">
+                        {% if line_item.image %}
+                            <img class="w-full h-full object-cover" src="{{ line_item.image | img_url: 'medium' }}" alt="{{ line_item.image.alt }}">
+                        {% else %}
+                            {{ 'product-1' | placeholder_svg_tag: 'w-full h-full object-cover' }}    
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <h2 class="text-xl font-semibold text-[#0e2129] mb-4">{{ line_item.title | link_to: line_item.product.url }}</h2>
+
+                        <table class="w-full mb-4">
+                            <tbody>
+                                <tr>
+                                    <td class="py-2 text-gray-600">Precio</td>
+                                    <td class="py-2 font-medium text-[#0e2129]">{{ line_item.original_price | money }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 text-gray-600">Cantidad</td>
+                                    <td class="py-2 font-medium text-[#0e2129]">{{ line_item.quantity }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-2 text-gray-600">Precio final</td>
+                                    <td class="py-2 font-medium text-[#0e2129]">{{ line_item.final_line_price | money }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="text-gray-600">
+                            {{ line_item.product.description | truncatewords: 15 }}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg font-semibold text-[#0e2129] mb-4">Dirección de entrega</h3>
+
+                        <div class="text-gray-600 space-y-1">
+                            <p>{{ order.shipping_address.address1 }}</p>
+                            {% if order.shipping_address.address2 %}<p>{{ order.shipping_address.address2 }}</p>{% endif %}
+                            <p>{{ order.shipping_address.city }}, {{ order.shipping_address.province }}</p>
+                            <p>{{ order.shipping_address.zip }}, {{ order.shipping_address.country }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-50 p-6 border-t border-gray-200">
+                    <h3 class="text-lg font-semibold text-[#0e2129] mb-4">Estado del envío</h3>
+
+                    {% if line_item.successfully_fulfilled_quantity > 0 %}
+                        <p class="mb-2">Hemos enviado {{ line_item.successfully_fulfilled_quantity }} unidades de su pedido reciente.</p>
+                        <p class="mb-2">Empresa de envío: {{ line_item.fulfillment.tracking_company }}</p>
+                        <p class="mb-2">Número de seguimiento: {{ line_item.fulfillment.tracking_number }}</p>
+
+                        <a target="_blank" href="{{ line_item.fulfillment.tracking_url }}" class="inline-block mt-2 text-sm text-white font-medium bg-[#0e2129] hover:bg-opacity-90 px-4 py-2 rounded">
+                            Seguir pedido <span class="ml-1">{% render 'icon-link' %}</span>
+                        </a>
+                    {% else %}
+                        <p class="text-gray-600">Este artículo aún no ha sido enviado</p>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="mt-12 bg-white shadow-md rounded-lg overflow-hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+            <div>
+                <h3 class="text-lg font-semibold text-[#0e2129] mb-4">Dirección de facturación</h3>
+                <div class="text-gray-600">
+                    {{ order.billing_address | format_address }}
+                </div>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold text-[#0e2129] mb-4">Información de pago</h3>
+
+                {% for transaction in order.transactions %}
+                    <div class="mb-4">
+                        {% assign credit_card_company = transaction.payment_details.credit_card_company %}
+                        {% assign credit_card_last_four_digits = transaction.payment_details.credit_card_number %}
+
+                        {% if credit_card_company %}
+                            <p class="font-medium">{{ credit_card_company }}</p>
+                            <p class="text-gray-600">**** **** **** {{ credit_card_last_four_digits }}</p>
+
+                            {% case transaction.status_label %}
+                                {% when 'Failure' %}
+                                    {% assign status_color = 'bg-red-600' %}
+                                {% else %}
+                                    {% assign status_color = 'bg-green-600' %}
+                            {% endcase %}
+
+                            <span class="inline-block mt-2 {{ status_color }} rounded-full text-sm px-3 py-1 text-white">{{ transaction.status_label }}</span>
+                        {% else %}
+                            <p class="text-gray-600">Este pedido fue procesado manualmente por {{ shop.name }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold text-[#0e2129] mb-4">Resumen del pedido</h3>
+                <table class="w-full">
+                    <tbody>
+                        <tr>
+                            <td class="py-2 text-gray-600">Subtotal</td>
+                            <td class="py-2 font-medium text-[#0e2129]">{{ order.subtotal_price | money }}</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 text-gray-600">Envío</td>
+                            <td class="py-2 font-medium text-[#0e2129]">{{ order.shipping_price | money }}</td>
+                        </tr>
+                        <tr class="border-t border-gray-200">
+                            <td class="py-2 text-lg font-semibold text-[#0e2129]">Total</td>
+                            <td class="py-2 text-lg font-semibold text-[#0e2129]">{{ order.total_price | money }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
